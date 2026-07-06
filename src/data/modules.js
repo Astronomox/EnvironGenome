@@ -1,0 +1,23 @@
+export const MODULES = [
+  { id:"home", path:"/app", label:"Home", eyebrow:"Dashboard", title:"Home portal",
+    desc:"Live platform pulse. New alerts, submissions and citations as they land.",
+    icon:"M3 10l9-7 9 7v10a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z" },
+  { id:"registry", path:"/app/registry", label:"Registry", eyebrow:"Chemistry and genome", title:"Contaminant registry",
+    desc:"Query any pollutant by CAS, formula or name, with the genome damage it leaves behind.",
+    icon:"M4 4h16v4H4zM4 10h16v10H4zM8 14h8" },
+  { id:"map", path:"/app/map", label:"Map", eyebrow:"Field intelligence", title:"Geolocation hazard map",
+    desc:"Geotagged hazard sites across Lagos, rated 0 to 3 by severity and pending review.",
+    icon:"M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2zM9 3v16M15 5v16" },
+  { id:"conservation", path:"/app/conservation", label:"Conservation", eyebrow:"Threat forecasting", title:"Conservation intelligence",
+    desc:"Spot emerging ecosystem threats early and draft mitigation the committee can act on.",
+    icon:"M12 2C7 7 7 13 12 22c5-9 5-15 0-20zM12 8v6" },
+  { id:"standards", path:"/app/standards", label:"Standards", eyebrow:"Regulation", title:"Standards reference library",
+    desc:"Every active statute, global to Nigerian domestic, searchable and side by side.",
+    icon:"M6 3h9l3 3v15H6zM13 3v4h4M9 12h6M9 16h6" },
+  { id:"therapeutic", path:"/app/therapeutic", label:"Therapeutic", eyebrow:"Clinical", title:"Therapeutic rehabilitation",
+    desc:"Anonymised intake that matches presenting symptoms to probable environmental cause.",
+    icon:"M12 5v14M5 12h14" },
+  { id:"scores", path:"/app/scores", label:"Scores", eyebrow:"Habitability", title:"Global classification score",
+    desc:"Composite site grades blending air, natural features and toxic-exposure probability.",
+    icon:"M4 20V10M10 20V4M16 20v-8M22 20h-2M2 20h20" }
+];
