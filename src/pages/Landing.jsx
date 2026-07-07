@@ -125,7 +125,7 @@ export default function Landing() {
           ))}
         </div>
       </div>
-      <div className="land-foot">EnviroGenome, demo build v1.0. University of Lagos and Lagos University Teaching Hospital.</div>
+      <div className="land-foot">EnviroGenome, demo build v1.0. University of Lagos and Lagos University Teaching Hospital. Built by Astronomox.</div>
     </div>
   );
 }
