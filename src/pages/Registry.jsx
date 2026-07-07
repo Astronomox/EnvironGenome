@@ -164,6 +164,95 @@ function CompareView({ filtered, selCas, compareCas, setSelCas, setCompareCas, o
   );
 }
 
+function BulkUpload({ toast }) {
+  const [drag, setDrag] = useState(false);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState([]);
+
+  const TEMPLATE_CSV = `name,cas,formula,iarc,genotoxic\nBenzene,71-43-2,C6H6,Group 1 Carcinogen,true\nToluene,108-88-3,C7H8,Group 3,false`;
+
+  function parseCSV(text) {
+    const lines = text.trim().split("\n");
+    const headers = lines[0].split(",").map(h => h.trim());
+    return lines.slice(1).map(line => {
+      const vals = line.split(",");
+      return Object.fromEntries(headers.map((h, i) => [h, vals[i]?.trim() || ""]));
+    });
+  }
+
+  function handleFile(f) {
+    if (!f) return;
+    setFile(f);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const rows = parseCSV(e.target.result);
+      setPreview(rows.slice(0, 5));
+    };
+    reader.readAsText(f);
+  }
+
+  function submit() {
+    if (!file) return;
+    toast(`${preview.length} entries (preview) queued for moderation review`);
+    setFile(null); setPreview([]);
+  }
+
+  return (
+    <div className="card card-pad">
+      <div className="eyebrow" style={{ marginBottom: 12 }}>CSV bulk importer</div>
+      <div
+        onDragOver={e => { e.preventDefault(); setDrag(true); }}
+        onDragLeave={() => setDrag(false)}
+        onDrop={e => { e.preventDefault(); setDrag(false); handleFile(e.dataTransfer.files[0]); }}
+        style={{ border: `2px dashed ${drag ? "var(--ink)" : "var(--hair-2)"}`, borderRadius: 10,
+          padding: "28px 20px", textAlign: "center", transition: "border-color .2s", cursor: "pointer",
+          background: drag ? "var(--smoke)" : "transparent" }}
+        onClick={() => document.getElementById("csv-input").click()}>
+        <input id="csv-input" type="file" accept=".csv" style={{ display: "none" }}
+          onChange={e => handleFile(e.target.files[0])} />
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--graphite)" strokeWidth="1.6" style={{ width: 24, height: 24, margin: "0 auto 10px" }}>
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+        </svg>
+        <div style={{ fontSize: 13.5, fontWeight: 500 }}>{file ? file.name : "Drop CSV or click to upload"}</div>
+        <div className="mono" style={{ fontSize: 10.5, color: "var(--graphite)", marginTop: 4 }}>
+          Required columns: name, cas, formula, iarc, genotoxic
+        </div>
+      </div>
+
+      {preview.length > 0 && (
+        <div style={{ marginTop: 14 }}>
+          <div className="eyebrow" style={{ marginBottom: 8 }}>Preview (first {preview.length} rows)</div>
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Name</th><th>CAS</th><th>Formula</th><th>IARC</th><th>Genotoxic</th></tr></thead>
+              <tbody>
+                {preview.map((r, i) => (
+                  <tr key={i}>
+                    <td className="name">{r.name}</td>
+                    <td className="g">{r.cas}</td>
+                    <td className="g">{r.formula}</td>
+                    <td style={{ fontSize: 12 }}>{r.iarc}</td>
+                    <td><span style={{ fontFamily: "var(--mono)", fontSize: 10, padding: "2px 7px", borderRadius: 4, background: r.genotoxic === "true" ? "rgba(216,68,44,.08)" : "var(--smoke)", color: r.genotoxic === "true" ? "var(--sev3)" : "var(--graphite)" }}>{r.genotoxic === "true" ? "Yes" : "No"}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
+            <button className="btn btn-dark" onClick={submit}>Submit for review</button>
+            <button className="btn btn-ghost" onClick={() => { setFile(null); setPreview([]); }}>Clear</button>
+          </div>
+        </div>
+      )}
+
+      <button className="btn btn-ghost" style={{ marginTop: 14 }}
+        onClick={() => { const blob = new Blob([TEMPLATE_CSV], { type: "text/csv" }); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "envirogenome-template.csv"; a.click(); toast("Template downloaded"); }}>
+        Download CSV template
+      </button>
+    </div>
+  );
+}
+
 export default function Registry() {
   const { key, openKey } = useKey();
   const toast = useToast();
@@ -283,6 +372,9 @@ export default function Registry() {
 
           <div className="sect-t">Propose a compound association</div>
           <PeerSubmit compound={selected.name} toast={toast} />
+
+          <div className="sect-t">Bulk upload</div>
+          <BulkUpload toast={toast} />
         </>
       )}
     </>

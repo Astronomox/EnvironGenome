@@ -81,3 +81,34 @@
 /* scroll hint */
 .scroll-hint{margin-top:30px; cursor:pointer; animation:bob 2s infinite var(--e); display:inline-flex;}
 @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+
+/* ===== entrance animations ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.hero-in { animation: fadeIn .8s var(--e) both; }
+.hero h1  { animation: fadeUp .7s .15s var(--e) both; }
+.hero p   { animation: fadeUp .7s .28s var(--e) both; }
+.hero-actions { animation: fadeUp .6s .42s var(--e) both; }
+.scroll-hint  { animation: fadeUp .5s .55s var(--e) both; }
+.sensor       { animation: fadeUp .7s .2s var(--e) both; }
+
+/* flowbar scroll reveal */
+.flowbar {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity .5s var(--e), transform .5s var(--e), padding-left .3s var(--e), background .3s;
+}
+.flowbar.visible { opacity: 1; transform: translateX(0); }
+
+/* land stats count-up shimmer */
+.lstat .n { animation: fadeUp .6s var(--e) both; }
+.lstat:nth-child(1) .n { animation-delay: .1s; }
+.lstat:nth-child(2) .n { animation-delay: .2s; }
+.lstat:nth-child(3) .n { animation-delay: .3s; }
+.lstat:nth-child(4) .n { animation-delay: .4s; }

@@ -39,12 +39,26 @@ function SensorStrip() {
 function FlowRail() {
   const nav = useNavigate();
   const [cy, setCy] = useState(0);
+  const railRef = useRef(null);
+
   useEffect(() => {
     const id = setInterval(() => setCy(c => (c + 1) % MODULES.length), 2200);
     return () => clearInterval(id);
   }, []);
+
+  // scroll reveal
+  useEffect(() => {
+    if (!railRef.current) return;
+    const bars = railRef.current.querySelectorAll(".flowbar");
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+    bars.forEach((b, i) => { b.style.transitionDelay = (i * 0.07) + "s"; obs.observe(b); });
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <div className="flowbars">
+    <div className="flowbars" ref={railRef}>
       {MODULES.map((m, i) => (
         <div key={m.id} className={"flowbar" + (i === cy ? " cy" : "")} onClick={() => nav(m.path)}>
           <div className="idx">0{i + 1}</div>

@@ -102,19 +102,18 @@ export default function Layout() {
         <header className="topbar">
           <span className="crumb">{current.eyebrow} / <b>{current.title}</b></span>
           <span className="spacer" />
-          <button className="cmd-trigger" onClick={() => setCmdOpen(true)}>
+          <button className="cmd-trigger" onClick={() => setCmdOpen(true)} aria-label="Open search palette">
             <svg viewBox="0 0 24 24" fill="none" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>
             <span>Search everything</span>
             <span className="kbd">⌘K</span>
           </button>
-          {/* notification bell */}
-          <button className="btn-key" onClick={() => setNotifOpen(o => !o)} style={{ position:"relative" }}>
+          <button className="btn-key" onClick={() => setNotifOpen(o => !o)} style={{ position:"relative" }} aria-label="Notifications">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width:16, height:16 }}>
               <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
             </svg>
             {unread > 0 && <span style={{ position:"absolute", top:5, right:5, width:7, height:7, borderRadius:"50%", background:"var(--sev3)", border:"1.5px solid var(--paper)" }} />}
           </button>
-          <button className="btn-key" onClick={openKey}>
+          <button className="btn-key" onClick={openKey} aria-label={connected ? "Gemini API connected" : "Connect Gemini API key"}>
             <span className={"key-dot" + (connected ? " ok" : "")} />
             {connected ? "Gemini on" : "Gemini key"}
           </button>

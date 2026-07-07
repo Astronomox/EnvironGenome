@@ -160,6 +160,59 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      <div className="sect-t">Platform analytics</div>
+      <div className="grid g3">
+        {/* submission pipeline */}
+        <div className="card card-pad">
+          <div className="eyebrow" style={{ marginBottom:14 }}>Submission pipeline</div>
+          {[["Pending review","4",40],["Validated","28",100],["Rejected","2",8],["Published","89",100]].map(([l,n,pct]) => (
+            <div key={l} style={{ marginBottom:10 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12.5, marginBottom:4 }}>
+                <span>{l}</span>
+                <span className="mono" style={{ color:"var(--graphite)" }}>{n}</span>
+              </div>
+              <div className="meter"><i style={{ width:pct+"%" }} /></div>
+            </div>
+          ))}
+        </div>
+
+        {/* module usage */}
+        <div className="card card-pad">
+          <div className="eyebrow" style={{ marginBottom:14 }}>Module usage this month</div>
+          {[["Registry","1,240 queries",94],["Map","892 views",68],["Standards","543 views",41],["Therapeutic","312 sessions",24],["Scores","289 views",22],["Conservation","198 views",15]].map(([l,n,pct]) => (
+            <div key={l} style={{ marginBottom:10 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", fontSize:12.5, marginBottom:4 }}>
+                <span>{l}</span>
+                <span className="mono" style={{ color:"var(--graphite)", fontSize:11 }}>{n}</span>
+              </div>
+              <div className="meter"><i style={{ width:pct+"%" }} /></div>
+            </div>
+          ))}
+        </div>
+
+        {/* platform status */}
+        <div className="card card-pad">
+          <div className="eyebrow" style={{ marginBottom:14 }}>Platform status</div>
+          <div className="stack" style={{ gap:10 }}>
+            {[
+              ["API","Operational","ok"],
+              ["Map tiles","Operational","ok"],
+              ["Gemini integration","User key required","ok"],
+              ["Vercel deployment","Pending","warn"],
+              ["Data last updated","2026-07-07","info"],
+              ["Build version","1.0.0","info"],
+            ].map(([l,v,t]) => (
+              <div key={l} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid var(--hair)" }}>
+                <span style={{ fontSize:13 }}>{l}</span>
+                <span className="mono" style={{ fontSize:10.5, padding:"2px 8px", borderRadius:5,
+                  background: t==="ok"?"rgba(47,158,68,.08)":t==="warn"?"rgba(199,123,58,.08)":"var(--smoke)",
+                  color: t==="ok"?"var(--ok)":t==="warn"?"#c77b3a":"var(--graphite)" }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </>
   );
 }

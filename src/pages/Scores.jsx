@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { PageHeader, SearchInput, Segmented } from "../components/ui";
 import { districts } from "../data/platform";
 import { computeGCS, computeAllGCS } from "../utils/gcs";
+import { toCSV, download } from "../utils/export";
 
 function scoreColor(v) {
   return v >= 80 ? "#2f9e44" : v >= 65 ? "#5a7d3a" : v >= 50 ? "#8a8a83" : v >= 40 ? "#c77b3a" : "#D8442C";
@@ -70,6 +71,23 @@ export default function Scores() {
     return d;
   }, [q, sort, trend]);
 
+  function exportScores() {
+    const cols = [{ key:"name", label:"District" }, { key:"score", label:"GCS Score (0-100)" }, { key:"trend", label:"6-month trend" }];
+    const rows = shown.map(([name, v, hist]) => ({ name, score: v, trend: v >= 70 ? "Improving" : v >= 50 ? "Stable" : "Declining" }));
+    download(toCSV(rows, cols), "envirogenome-district-scores.csv", "text/csv");
+  }
+
+  function printScores() {
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>EnviroGenome District Scores</title>
+    <style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;} h1{font-size:22px;} table{width:100%;border-collapse:collapse;} th{text-align:left;border-bottom:2px solid #000;padding:8px;font-family:monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;} td{padding:8px;border-bottom:1px solid #ddd;} .score{font-weight:bold;} .foot{font-family:monospace;font-size:10px;color:#888;margin-top:24px;}</style>
+    </head><body><h1>EnviroGenome Guardian</h1><p style="font-family:monospace;font-size:12px;color:#666;">Global Classification Score, District Report, ${new Date().toISOString().slice(0,10)}</p>
+    <table><thead><tr><th>District</th><th>GCS Score</th><th>Grade</th><th>Trend</th></tr></thead><tbody>
+    ${shown.map(([n,v]) => `<tr><td>${n}</td><td class="score">${v}%</td><td>${v>=80?"Optimal":v>=65?"Good":v>=50?"Moderate":v>=40?"Poor":"Critical"}</td><td>${v>=70?"Improving":v>=50?"Stable":"Declining"}</td></tr>`).join("")}
+    </tbody></table><div class="foot">EnviroGenome Guardian, University of Lagos and LUTH, Demo build v1.0, Built by Astronomox</div></body></html>`;
+    const w = window.open("", "_blank");
+    w.document.write(html); w.document.close(); w.focus(); w.print();
+  }
+
   return (
     <>
       <PageHeader eyebrow="Habitability" title="Global classification score"
@@ -77,6 +95,8 @@ export default function Scores() {
         <SearchInput value={q} onChange={setQ} placeholder="Find a district" />
         <Segmented value={sort} onChange={setSort}
           options={[{ value:"score", label:"By score" }, { value:"name", label:"A to Z" }]} />
+        <button className="btn btn-ghost" onClick={exportScores}>Export CSV</button>
+        <button className="btn btn-ghost" onClick={printScores}>Print report</button>
       </PageHeader>
 
       <div className="grid g2" style={{ alignItems:"start" }}>
