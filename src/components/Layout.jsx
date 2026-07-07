@@ -126,9 +126,9 @@ export default function Layout() {
 
       <nav className="glassnav">
         {MODULES.map(m => (
-          <NavLink key={m.id} to={m.path} end={m.id === "home"} className={({ isActive }) => (isActive ? "on" : "")}>
+          <NavLink key={m.id} to={m.path} end={m.id === "home"} aria-label={m.label}
+            className={({ isActive }) => (isActive ? "on" : "")}>
             <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon} /></svg>
-            <span>{m.label}</span>
           </NavLink>
         ))}
       </nav>
