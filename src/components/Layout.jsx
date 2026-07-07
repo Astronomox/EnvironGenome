@@ -5,6 +5,7 @@ import { useKey } from "../hooks/KeyContext";
 import CommandPalette from "./CommandPalette";
 import ShortcutsModal from "./ShortcutsModal";
 import NotifPanel from "./NotifPanel";
+import Onboarding from "./Onboarding";
 
 const Logo = ({ light }) => (
   <svg className="mark" viewBox="0 0 26 26" fill="none" stroke={light ? "#FAFAF8" : "#0A0A0A"} strokeWidth="1.6">
@@ -44,6 +45,15 @@ export default function Layout() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [unread] = useState(3);
+  const [contrast, setContrast] = useState(false);
+  const [showOnboard] = useState(() => {
+    try { return !localStorage.getItem("eg_onboarded"); } catch { return false; }
+  });
+  const [onboarded, setOnboarded] = useState(!showOnboard);
+
+  // apply high contrast class to root
+  if (contrast) document.documentElement.style.setProperty("--paper","#fff");
+  else document.documentElement.style.removeProperty("--paper");
 
   const current = MODULES.find(m =>
     m.path === loc.pathname || (m.id !== "home" && loc.pathname.startsWith(m.path))
@@ -81,8 +91,10 @@ export default function Layout() {
         ))}
         <div className="side-foot">
           Demo build v1.0<br />UNILAG and LUTH<br />
-          <button style={{ marginTop:6, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer" }}
+          <button style={{ marginTop:6, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer", display:"block" }}
             onClick={() => setShortcutsOpen(true)}>? Shortcuts</button>
+          <button style={{ marginTop:4, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer", display:"block" }}
+            onClick={() => setContrast(c => !c)}>{contrast ? "Standard contrast" : "High contrast"}</button>
         </div>
       </aside>
 
@@ -126,6 +138,7 @@ export default function Layout() {
       <ShortcutsModal open={shortcutsOpen} setOpen={setShortcutsOpen} />
       <NotifPanel open={notifOpen} setOpen={setNotifOpen} />
       <KeyModal />
+      {!onboarded && <Onboarding onDone={() => setOnboarded(true)} />}
     </div>
   );
 }

@@ -2,6 +2,61 @@ import { useState } from "react";
 import { PageHeader } from "../components/ui";
 import AiPanel from "../components/AiPanel";
 import { symptoms } from "../data/platform";
+import { sites, SEV_COLOR, SEV_LABEL } from "../data/platform";
+
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function ProximityCalc() {
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
+  const [results, setResults] = useState(null);
+  function calc() {
+    const la = parseFloat(lat), lo = parseFloat(lng);
+    if (isNaN(la) || isNaN(lo)) return;
+    const nearby = sites
+      .map(s => ({ ...s, dist: haversine(la, lo, s.lat, s.lng) }))
+      .filter(s => s.dist <= 10)
+      .sort((a, b) => a.dist - b.dist)
+      .slice(0, 5);
+    setResults(nearby);
+  }
+  return (
+    <div>
+      <div className="form-grid" style={{ marginBottom:12 }}>
+        <div className="fg"><label>Patient latitude</label><input value={lat} onChange={e=>setLat(e.target.value)} placeholder="e.g. 6.5244" /></div>
+        <div className="fg"><label>Patient longitude</label><input value={lng} onChange={e=>setLng(e.target.value)} placeholder="e.g. 3.3792" /></div>
+      </div>
+      <button className="btn btn-ghost" onClick={calc}>Find nearby hazard sites within 10 km</button>
+      {results !== null && (
+        <div style={{ marginTop:14 }}>
+          {results.length === 0 ? (
+            <div style={{ fontSize:13.5, color:"var(--graphite)" }}>No registered hazard sites within 10 km of these coordinates.</div>
+          ) : (
+            <div className="stack" style={{ gap:8 }}>
+              {results.map(s => (
+                <div key={s.id} style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 12px", border:"1px solid var(--hair)", borderRadius:9, background:"var(--panel)" }}>
+                  <span style={{ width:9, height:9, borderRadius:2, background:SEV_COLOR[s.sev], flex:"none" }} />
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:13.5, fontWeight:500 }}>{s.name}</div>
+                    <div className="mono" style={{ fontSize:11, color:"var(--graphite)" }}>{s.sub}</div>
+                  </div>
+                  <div className="mono" style={{ fontSize:11, color:"var(--graphite)", textAlign:"right" }}>
+                    <div>{s.dist.toFixed(2)} km</div>
+                    <div className={"sev s"+s.sev} style={{ padding:"2px 6px", marginTop:3 }}><span className="sq" />L{s.sev}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
@@ -108,6 +163,11 @@ export default function Therapeutic() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="sect-t">Proximity analysis</div>
+      <div className="card card-pad">
+        <div className="eyebrow" style={{ marginBottom:12 }}>Nearest registered hazard sites to patient location</div>
+        <ProximityCalc />
       </div>
     </>
   );

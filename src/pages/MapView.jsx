@@ -3,7 +3,39 @@ import { useSearchParams } from "react-router-dom";
 import L from "leaflet";
 import { PageHeader, Segmented, SearchInput } from "../components/ui";
 import AiPanel from "../components/AiPanel";
-import { sites as initialSites, SEV_COLOR, SEV_LABEL } from "../data/platform";
+import { sites as initialSites, SEV_COLOR, SEV_LABEL, siteHistory } from "../data/platform";
+
+const MONTHS = ["Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May","Jun","Jul"];
+
+function TimeSlider({ siteId, siteName }) {
+  const [pos, setPos] = useState(11);
+  const hist = siteHistory[siteId] || [];
+  const val = hist[pos] ?? 0;
+  return (
+    <div>
+      <div style={{ display:"flex", gap:4, alignItems:"flex-end", height:60, marginBottom:8 }}>
+        {hist.map((v, i) => (
+          <div key={i} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:3, cursor:"pointer" }} onClick={() => setPos(i)}>
+            <div style={{ width:"100%", background: i===pos ? SEV_COLOR[v] : "var(--smoke-2)", borderRadius:"3px 3px 0 0",
+              height: (v+1)/4*48+"px", transition:"height .25s, background .2s",
+              border: i===pos ? `2px solid ${SEV_COLOR[v]}` : "none" }} />
+          </div>
+        ))}
+      </div>
+      <input type="range" min={0} max={11} value={pos} onChange={e => setPos(+e.target.value)}
+        style={{ width:"100%", accentColor:"var(--ink)" }} />
+      <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
+        {MONTHS.map((m, i) => (
+          <span key={m} className="mono" style={{ fontSize:9, color: i===pos ? "var(--ink)" : "var(--graphite)", fontWeight: i===pos ? 600 : 400 }}>{m}</span>
+        ))}
+      </div>
+      <div style={{ marginTop:12, display:"flex", alignItems:"center", gap:10 }}>
+        <div className={"sev s"+val}><span className="sq" />Level {val}</div>
+        <span style={{ fontSize:13, color:"var(--graphite)" }}>{siteName} in {MONTHS[pos]} 2025-26: <b>{SEV_LABEL[val]}</b></span>
+      </div>
+    </div>
+  );
+}
 import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
@@ -206,6 +238,12 @@ export default function MapView() {
       {ai.status !== "idle" && (
         <><div className="sect-t">Generated audit report</div><AiPanel label="Gemini audit draft" state={ai} /></>
       )}
+
+      <div className="sect-t">Site severity history (12 months)</div>
+      <div className="card card-pad">
+        <div className="eyebrow" style={{ marginBottom:10 }}>Playback slider for {selected.name}</div>
+        <TimeSlider siteId={selected.id} siteName={selected.name} />
+      </div>
     </>
   );
 }
