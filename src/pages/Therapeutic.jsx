@@ -169,6 +169,50 @@ export default function Therapeutic() {
         <div className="eyebrow" style={{ marginBottom:12 }}>Nearest registered hazard sites to patient location</div>
         <ProximityCalc />
       </div>
+
+      <div className="sect-t">Treatment pathway planner</div>
+      <TreatmentPlanner sel={sel} />
     </>
+  );
+}
+
+const PATHWAYS = {
+  "Lead":{ phase1:"Chelation therapy (DMSA oral or CaNa2EDTA IV based on blood lead level)", phase2:"Nutritional supplementation: calcium, iron, zinc to compete with lead uptake", phase3:"Remove from exposure source and monitor blood lead every 3 months", monitor:"Blood lead level, haemoglobin, renal function panel" },
+  "Mercury":{ phase1:"DMSA chelation for methylmercury; supportive care for acute inorganic exposure", phase2:"Selenium supplementation, high-protein diet to aid renal clearance", phase3:"Neurological assessment at 6 and 12 months post-exposure cessation", monitor:"Urine mercury, nerve conduction velocity, renal function" },
+  "Arsenic":{ phase1:"DMSA or DMPS chelation; aggressive hydration to promote urinary excretion", phase2:"Antioxidant supplementation: Vitamins C and E, selenium, folate", phase3:"Dermatological surveillance (keratosis, Bowen disease risk) annually", monitor:"Urine arsenic speciation, skin examination, full blood count" },
+  "Cadmium":{ phase1:"No specific antidote; stop exposure immediately; avoid further renal stress (NSAIDs, nephrotoxic drugs)", phase2:"Zinc supplementation to displace cadmium from MT binding sites", phase3:"Long-term renal function monitoring, bone density scan at 2 years", monitor:"Urine beta-2 microglobulin, serum creatinine, bone density" },
+  "Benzene":{ phase1:"Remove from exposure; supportive bone marrow monitoring; G-CSF if neutropenia develops", phase2:"Full haematological workup every 6 months for 5 years", phase3:"Genetic counselling if chromosomal aberrations detected on blood smear", monitor:"Full blood count, liver enzymes, chromosome analysis" },
+};
+
+function TreatmentPlanner({ sel }) {
+  const [pollutant, setPollutant] = useState("Lead");
+  const pw = PATHWAYS[pollutant];
+  return (
+    <div className="card card-pad">
+      <div className="fg" style={{ marginBottom:18 }}>
+        <label>Suspected primary pollutant exposure</label>
+        <select value={pollutant} onChange={e => setPollutant(e.target.value)}>
+          {Object.keys(PATHWAYS).map(p => <option key={p}>{p}</option>)}
+        </select>
+      </div>
+      {pw && (
+        <div className="stack" style={{ gap:10 }}>
+          {[["Phase 1 (Acute)", pw.phase1, "var(--sev3)"], ["Phase 2 (Subacute)", pw.phase2, "var(--sev2)"], ["Phase 3 (Long-term)", pw.phase3, "var(--sev1)"]].map(([label, text, color]) => (
+            <div key={label} style={{ display:"flex", gap:14, padding:"12px 14px", border:"1px solid var(--hair)", borderRadius:10, background:"var(--panel)" }}>
+              <div style={{ width:4, borderRadius:4, background:color, flex:"none" }} />
+              <div>
+                <div className="mono" style={{ fontSize:10.5, color:"var(--graphite)", marginBottom:4 }}>{label}</div>
+                <div style={{ fontSize:13.5, lineHeight:1.6 }}>{text}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{ display:"flex", gap:10, alignItems:"center", padding:"10px 14px", background:"var(--smoke)", borderRadius:9 }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--graphite)" strokeWidth="1.6" style={{ width:16, height:16, flex:"none" }}><path d="M22 12A10 10 0 1112 2" /><path d="M22 2L12 12M22 2h-6M22 2v6" /></svg>
+            <div><span className="mono" style={{ fontSize:10.5, color:"var(--graphite)" }}>MONITORING PARAMETERS</span><div style={{ fontSize:13 }}>{pw.monitor}</div></div>
+          </div>
+        </div>
+      )}
+      <div className="mono" style={{ fontSize:10, color:"var(--mute)", marginTop:14, lineHeight:1.6 }}>Treatment pathways are reference templates. All clinical decisions must be made by a licensed physician with access to the patient's full clinical picture. Refer to LUTH Occupational Medicine for specialist review.</div>
+    </div>
   );
 }

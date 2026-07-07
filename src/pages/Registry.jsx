@@ -6,6 +6,7 @@ import { contaminants } from "../data/contaminants";
 import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
+import { toCSV, download } from "../utils/export";
 
 function PeerSubmit({ compound, toast }) {
   const [form, setForm] = useState({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" });
@@ -80,6 +81,87 @@ function ChemDetail({ c, onCite }) {
   );
 }
 
+function CompareView({ filtered, selCas, compareCas, setSelCas, setCompareCas, onCite }) {
+  const a = contaminants.find(c => c.cas === selCas);
+  const b = contaminants.find(c => c.cas === compareCas);
+  function CompareCol({ c, role, setFn }) {
+    return (
+      <div>
+        <div className="fg" style={{ marginBottom: 14 }}>
+          <label>{role}</label>
+          <select value={c?.cas || ""} onChange={e => setFn(e.target.value)}>
+            <option value="">Select compound</option>
+            {filtered.map(x => <option key={x.cas} value={x.cas}>{x.name}</option>)}
+          </select>
+        </div>
+        {c ? (
+          <div className="chem-detail">
+            <div className="chem-hd">
+              <div><h2>{c.name}</h2><div className="formula">{c.formula} / CAS {c.cas}</div></div>
+              {c.genotoxic && <div className="geno-flag">Genotoxic, {c.iarc}</div>}
+            </div>
+            <div className="chem-col" style={{ padding: "18px 22px" }}>
+              <table className="proptbl"><tbody>
+                {c.props.map(([k, v]) => <tr key={k}><td>{k}</td><td>{v}</td></tr>)}
+              </tbody></table>
+              <div style={{ marginTop: 16 }}>
+                <div className="eyebrow" style={{ marginBottom: 8 }}>Mutations</div>
+                {c.mutations.map((m, i) => (
+                  <div key={i} style={{ fontSize: 12.5, padding: "6px 0", borderBottom: "1px solid var(--hair)", display: "flex", gap: 10 }}>
+                    <span style={{ fontStyle: "italic", minWidth: 100, color: "var(--graphite)" }}>{m[0]}</span>
+                    <span className="mono" style={{ color: "var(--graphite)", minWidth: 80 }}>{m[1]}</span>
+                    <span>{m[2]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="card card-pad" style={{ color: "var(--mute)", fontSize: 13 }}>Select a compound above to load it here.</div>
+        )}
+      </div>
+    );
+  }
+
+  const sharedProps = a && b ? a.props.filter(([k]) => b.props.find(([k2]) => k2 === k)).map(([k]) => {
+    const av = a.props.find(([k2]) => k2 === k)?.[1];
+    const bv = b.props.find(([k2]) => k2 === k)?.[1];
+    return { k, av, bv, diff: av !== bv };
+  }) : [];
+
+  return (
+    <div>
+      <div className="grid g2" style={{ gap: 18 }}>
+        <CompareCol c={a} role="Compound A" setFn={setSelCas} />
+        <CompareCol c={b} role="Compound B" setFn={setCompareCas} />
+      </div>
+      {sharedProps.length > 0 && (
+        <>
+          <div className="sect-t">Side-by-side property diff</div>
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Property</th><th>A: {a?.name}</th><th>B: {b?.name}</th><th>Match</th></tr></thead>
+              <tbody>
+                {sharedProps.map(({ k, av, bv, diff }) => (
+                  <tr key={k} style={{ background: diff ? "rgba(216,68,44,.04)" : "transparent" }}>
+                    <td className="g">{k}</td>
+                    <td className="mono" style={{ fontSize: 12 }}>{av}</td>
+                    <td className="mono" style={{ fontSize: 12 }}>{bv}</td>
+                    <td>{diff
+                      ? <span style={{ color: "var(--sev3)", fontFamily: "var(--mono)", fontSize: 10 }}>DIFFERS</span>
+                      : <span style={{ color: "var(--ok)", fontFamily: "var(--mono)", fontSize: 10 }}>SAME</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function Registry() {
   const { key, openKey } = useKey();
   const toast = useToast();
@@ -87,7 +169,20 @@ export default function Registry() {
   const [q, setQ] = useState(params.get("q") || "");
   const [cat, setCat] = useState("all");
   const [selCas, setSelCas] = useState(contaminants[0].cas);
+  const [compareCas, setCompareCas] = useState(null);
+  const [view, setView] = useState("detail"); // detail | compare
   const [ai, setAi] = useState({ status: "idle", text: "" });
+
+  function exportCSV() {
+    const cols = [
+      { key:"name", label:"Name" }, { key:"cas", label:"CAS" },
+      { key:"formula", label:"Formula" }, { key:"iarc", label:"IARC"},
+      { key:"genotoxic", label:"Genotoxic" }
+    ];
+    const rows = filtered.map(c => ({ ...c, genotoxic: c.genotoxic ? "Yes" : "No" }));
+    download(toCSV(rows, cols), "envirogenome-contaminants.csv", "text/csv");
+    toast(`Exported ${rows.length} entries as CSV`);
+  }
 
   useEffect(() => {
     const pq = params.get("q");
@@ -131,25 +226,35 @@ export default function Registry() {
         <SearchInput value={q} onChange={setQ} onEnter={ask} placeholder="Name, CAS, formula, or a question" />
         <Segmented value={cat} onChange={setCat}
           options={[{ value: "all", label: "All" }, { value: "geno", label: "Genotoxic" }, { value: "other", label: "Other" }]} />
+        <Segmented value={view} onChange={setView}
+          options={[{ value: "detail", label: "Detail" }, { value: "compare", label: "Compare" }]} />
+        <button className="btn btn-ghost" onClick={exportCSV}>Export CSV</button>
         <button className="btn btn-dark" onClick={ask}><span className="ai-spark">✦</span> Ask Gemini</button>
       </PageHeader>
 
       {ai.status !== "idle" && <div style={{ marginBottom: 18 }}><AiPanel label="Gemini interpretation" state={ai} /></div>}
 
-      <div className="md">
-        <div className="md-list">
-          {filtered.length === 0 ? <Empty text={`No compounds match "${q}"`} /> : filtered.map(c => (
-            <div key={c.cas} className={"li" + (c.cas === selCas ? " sel" : "")} onClick={() => setSelCas(c.cas)}>
-              <div style={{ minWidth: 0 }}>
-                <div className="t">{c.name}</div>
-                <div className="s">{c.formula} / {c.cas}</div>
+      {view === "compare" ? (
+        <CompareView
+          filtered={filtered} selCas={selCas} compareCas={compareCas}
+          setSelCas={setSelCas} setCompareCas={setCompareCas}
+          onCite={c => toast(`Citation for ${c.name} copied`)} />
+      ) : (
+        <div className="md">
+          <div className="md-list">
+            {filtered.length === 0 ? <Empty text={`No compounds match "${q}"`} /> : filtered.map(c => (
+              <div key={c.cas} className={"li" + (c.cas === selCas ? " sel" : "")} onClick={() => setSelCas(c.cas)}>
+                <div style={{ minWidth: 0 }}>
+                  <div className="t">{c.name}</div>
+                  <div className="s">{c.formula} / {c.cas}</div>
+                </div>
+                {c.genotoxic && <span className="badge sev s3" style={{ padding: "2px 6px" }}><span className="sq" /></span>}
               </div>
-              {c.genotoxic && <span className="badge sev s3" style={{ padding: "2px 6px" }}><span className="sq" /></span>}
-            </div>
-          ))}
+            ))}
+          </div>
+          {selected && <ChemDetail c={selected} onCite={() => toast(`Citation for ${selected.name} copied`)} />}
         </div>
-        {selected && <ChemDetail c={selected} onCite={() => toast(`Citation for ${selected.name} copied`)} />}
-      </div>
+      )}
 
       {/* citation export */}
       {selected && (

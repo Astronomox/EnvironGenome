@@ -4,6 +4,7 @@ import L from "leaflet";
 import { PageHeader, Segmented, SearchInput } from "../components/ui";
 import AiPanel from "../components/AiPanel";
 import { sites as initialSites, SEV_COLOR, SEV_LABEL, siteHistory } from "../data/platform";
+import { sitesToGeoJSON, download, auditReportHTML } from "../utils/export";
 
 const MONTHS = ["Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May","Jun","Jul"];
 
@@ -143,11 +144,25 @@ export default function MapView() {
     } catch (e) { setAi({ status: "error", text: e.message }); }
   }
 
+  function exportGeoJSON() {
+    download(sitesToGeoJSON(sites), "envirogenome-lagos-sites.geojson", "application/json");
+    toast("GeoJSON downloaded");
+  }
+
+  function printReport() {
+    if (ai.status !== "done") { toast("Draft an audit report first, then print"); return; }
+    const html = auditReportHTML(selected, ai.text);
+    const w = window.open("", "_blank");
+    w.document.write(html); w.document.close(); w.focus(); w.print();
+  }
+
   return (
     <>
       <PageHeader eyebrow="Field intelligence" title="Geolocation hazard map"
         sub="Geotagged hazard submissions across metropolitan Lagos, rated 0 to 3.">
         <SearchInput value={q} onChange={setQ} placeholder="Filter sites" />
+        <button className="btn btn-ghost" onClick={exportGeoJSON}>Export GeoJSON</button>
+        <button className="btn btn-ghost" onClick={printReport}>Print report</button>
         <button className={"btn " + (tab === "submit" ? "btn-dark" : "btn-ghost")} onClick={() => setTab(t => t === "submit" ? "sites" : "submit")}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 15, height: 15 }}><path d="M12 5v14M5 12h14" /></svg>
           Flag site

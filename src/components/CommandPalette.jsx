@@ -13,15 +13,18 @@ function buildIndex() {
   }));
   contaminants.forEach(c => idx.push({
     group: "Contaminants", label: c.name, sub: "CAS " + c.cas, path: "/app/registry?q=" + encodeURIComponent(c.name),
-    icon: "M4 4h16v4H4zM4 10h16v10H4z", key: "c-" + c.cas
+    icon: "M4 4h16v4H4zM4 10h16v10H4z", key: "c-" + c.cas,
+    preview: `<b>${c.formula}</b> / CAS ${c.cas}<br>${c.iarc}<br>${c.genotoxic ? "<span style='color:var(--sev3)'>Genotoxic</span>" : "Non-genotoxic"}<br><br>${c.mutations[0] ? c.mutations[0][2] : ""}`
   }));
   sites.forEach(s => idx.push({
     group: "Hazard sites", label: s.name, sub: "Level " + s.sev, path: "/app/map?site=" + s.id,
-    icon: "M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z", key: "s-" + s.id
+    icon: "M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z", key: "s-" + s.id,
+    preview: `<b>${["L0","L1","L2","L3"][s.sev]}</b> ${["Baseline","Minor","Moderate","<span style='color:var(--sev3)'>Severe</span>"][s.sev]}<br>${s.sub}<br>${s.coord}<br>By ${s.by}<br>${s.date}`
   }));
   standards.forEach((s, i) => idx.push({
     group: "Standards", label: s.t, sub: s.tier, path: "/app/standards?q=" + encodeURIComponent(s.t.slice(0, 12)),
-    icon: "M6 3h9l3 3v15H6z", key: "st-" + i
+    icon: "M6 3h9l3 3v15H6z", key: "st-" + i,
+    preview: `<b>${s.tier}</b><br>${s.body}<br>${s.tag}`
   }));
   return idx;
 }
@@ -81,32 +84,41 @@ export default function CommandPalette({ open, setOpen }) {
             placeholder="Search modules, contaminants, sites, standards" />
           <span className="esc">ESC</span>
         </div>
-        <div className="cmd-results">
-          {grouped.flat.length === 0 ? (
-            <div className="cmd-empty">No matches for "{q}"</div>
-          ) : (
-            grouped.order.map(grp => {
-              const items = grouped.g[grp];
-              if (!items || !items.length) return null;
-              return (
-                <div key={grp}>
-                  <div className="cmd-grp">{grp}</div>
-                  {items.map(item => {
-                    running += 1;
-                    const isOn = running === active;
-                    return (
-                      <div key={item.key} className={"cmd-item" + (isOn ? " on" : "")}
-                        onMouseEnter={() => setActive(grouped.flat.indexOf(item))}
-                        onClick={() => go(item)}>
-                        <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
-                        <span className="ci-t">{item.label}</span>
-                        <span className="ci-s">{item.sub}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })
+        <div style={{ display:"flex", minHeight:0 }}>
+          <div className="cmd-results" style={{ flex:1, minWidth:0 }}>
+            {grouped.flat.length === 0 ? (
+              <div className="cmd-empty">No matches for "{q}"</div>
+            ) : (
+              grouped.order.map(grp => {
+                const items = grouped.g[grp];
+                if (!items || !items.length) return null;
+                return (
+                  <div key={grp}>
+                    <div className="cmd-grp">{grp}</div>
+                    {items.map(item => {
+                      running += 1;
+                      const isOn = running === active;
+                      return (
+                        <div key={item.key} className={"cmd-item" + (isOn ? " on" : "")}
+                          onMouseEnter={() => setActive(grouped.flat.indexOf(item))}
+                          onClick={() => go(item)}>
+                          <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={item.icon} /></svg>
+                          <span className="ci-t">{item.label}</span>
+                          <span className="ci-s">{item.sub}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })
+            )}
+          </div>
+          {grouped.flat[active] && grouped.flat[active].preview && (
+            <div style={{ width:220, borderLeft:"1px solid var(--hair)", padding:"16px 14px", background:"var(--smoke)", flexShrink:0 }}>
+              <div className="eyebrow" style={{ marginBottom:10 }}>Preview</div>
+              <div style={{ fontSize:12.5, lineHeight:1.6, color:"var(--graphite)" }}
+                dangerouslySetInnerHTML={{ __html: grouped.flat[active].preview }} />
+            </div>
           )}
         </div>
       </div>

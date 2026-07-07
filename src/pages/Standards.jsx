@@ -6,6 +6,7 @@ import { standards } from "../data/platform";
 import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
+import { checklistText, download } from "../utils/export";
 
 function DiffView({ a, b }) {
   const aWords = new Set(a.toLowerCase().split(/\W+/));
@@ -71,6 +72,30 @@ export default function Standards() {
     )}
   ];
 
+  const [clStd, setClStd] = useState("Federal Environmental Quality Standards Act (Cap E10)");
+  const [clAi, setClAi] = useState({ status: "idle", text: "" });
+  const [checklist, setChecklist] = useState([]);
+
+  async function buildChecklist() {
+    if (!key) { openKey(); return; }
+    setClAi({ status: "loading", text: "" }); setChecklist([]);
+    try {
+      const t = await askGemini(key,
+        `You are a compliance officer. For the environmental standard "${clStd}", generate 8 to 10 concrete actionable compliance checklist items for a facility operating in Lagos, Nigeria. Each item should be a single clear action starting with a verb. Return ONLY a JSON array of strings, no markdown, no extra text. Example: ["Submit quarterly effluent samples to NESREA", "Display emergency contact numbers at all discharge points"]`);
+      try {
+        const clean = t.replace(/```json|```/g,"").trim();
+        const items = JSON.parse(clean);
+        setChecklist(items); setClAi({ status: "done", text: "" });
+        toast("Checklist generated");
+      } catch { setClAi({ status: "error", text: "Could not parse checklist. Try again." }); }
+    } catch (e) { setClAi({ status: "error", text: e.message }); }
+  }
+
+  function downloadChecklist() {
+    download(checklistText(clStd, checklist), "envirogenome-checklist.txt");
+    toast("Checklist downloaded");
+  }
+
   async function compare() {
     if (!key) { openKey(); return; }
     setAi({ status: "loading", text: "" }); setShowDiff(true);
@@ -118,6 +143,42 @@ export default function Standards() {
         </div>
         {showDiff && <DiffView a={ja} b={jb} />}
         {ai.status !== "idle" && <div style={{ marginTop: 16 }}><AiPanel label="Gemini gap analysis" state={ai} /></div>}
+      </div>
+
+      <div className="sect-t">Compliance checklist builder</div>
+      <div className="card card-pad">
+        <div className="eyebrow" style={{ marginBottom: 12 }}>Generate an actionable compliance checklist from any instrument</div>
+        <div className="fg" style={{ marginBottom: 14 }}>
+          <label>Instrument</label>
+          <select value={clStd} onChange={e => setClStd(e.target.value)}>
+            {standards.map(s => <option key={s.t}>{s.t}</option>)}
+          </select>
+        </div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button className="btn btn-dark" onClick={buildChecklist}
+            disabled={clAi.status === "loading"}>
+            <span className="ai-spark">✦</span> {clAi.status === "loading" ? "Generating..." : "Build checklist"}
+          </button>
+          {checklist.length > 0 && (
+            <button className="btn btn-ghost" onClick={downloadChecklist}>Download .txt</button>
+          )}
+        </div>
+        {clAi.status === "error" && <div style={{ color: "var(--sev3)", fontSize: 13, marginTop: 12 }}>{clAi.text}</div>}
+        {checklist.length > 0 && (
+          <div style={{ marginTop: 18 }}>
+            <div className="eyebrow" style={{ marginBottom: 12 }}>{clStd.slice(0, 50)}</div>
+            <div className="stack" style={{ gap: 8 }}>
+              {checklist.map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 12px",
+                  border: "1px solid var(--hair)", borderRadius: 9, background: "var(--panel)" }}>
+                  <div style={{ width: 20, height: 20, border: "1.5px solid var(--hair-2)", borderRadius: 5, flex: "none", marginTop: 1 }} />
+                  <span style={{ fontSize: 13.5 }}>{item}</span>
+                  <span className="mono" style={{ marginLeft: "auto", fontSize: 10, color: "var(--mute)", flex: "none" }}>{i+1}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
