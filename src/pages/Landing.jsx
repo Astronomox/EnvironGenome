@@ -46,14 +46,25 @@ function FlowRail() {
     return () => clearInterval(id);
   }, []);
 
-  // scroll reveal
+  // scroll reveal - progressive enhancement only
   useEffect(() => {
     if (!railRef.current) return;
     const bars = railRef.current.querySelectorAll(".flowbar");
+    // only run animation if IntersectionObserver is supported
+    if (!window.IntersectionObserver) return;
     const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("visible"); obs.unobserve(e.target); } });
-    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
-    bars.forEach((b, i) => { b.style.transitionDelay = (i * 0.07) + "s"; obs.observe(b); });
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add("visible");
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -20px 0px" });
+    bars.forEach((b, i) => {
+      b.style.transitionDelay = (i * 0.06) + "s";
+      b.classList.add("animate-ready");
+      obs.observe(b);
+    });
     return () => obs.disconnect();
   }, []);
 

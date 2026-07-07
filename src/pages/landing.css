@@ -98,13 +98,17 @@
 .scroll-hint  { animation: fadeUp .5s .55s var(--e) both; }
 .sensor       { animation: fadeUp .7s .2s var(--e) both; }
 
-/* flowbar scroll reveal */
+/* flowbar scroll reveal - bars are visible by default, animation enhances */
 .flowbar {
-  opacity: 0;
-  transform: translateX(-10px);
+  opacity: 1;
+  transform: translateX(0);
   transition: opacity .5s var(--e), transform .5s var(--e), padding-left .3s var(--e), background .3s;
 }
-.flowbar.visible { opacity: 1; transform: translateX(0); }
+.flowbar.animate-ready {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+.flowbar.animate-ready.visible { opacity: 1; transform: translateX(0); }
 
 /* land stats count-up shimmer */
 .lstat .n { animation: fadeUp .6s var(--e) both; }
