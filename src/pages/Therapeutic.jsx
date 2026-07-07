@@ -172,6 +172,30 @@ export default function Therapeutic() {
 
       <div className="sect-t">Treatment pathway planner</div>
       <TreatmentPlanner sel={sel} />
+
+      <div className="sect-t">Family counselling toolkit</div>
+      <div className="grid g3">
+        {[
+          { title:"Reducing continued exposure", icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", items:["Remove child from affected area during remediation","Use certified water filters if mains supply is suspect","Ventilate indoor spaces, seal cracks near contaminated soil","Wash hands before meals; remove shoes at the door","Avoid homegrown produce near known hazard sites"] },
+          { title:"Warning signs to watch", icon:"M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01", items:["Unexplained fatigue or cognitive changes in children","Skin rashes or discolouration without clear cause","Recurring headaches or nausea near the hazard site","Elevated blood pressure in otherwise healthy adults","Unusual birth outcomes in the household"] },
+          { title:"Community action steps", icon:"M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75", items:["Report new symptoms to LUTH Occupational Medicine","Flag the hazard site on EnviroGenome for tracking","Request NESREA field inspection if site is unregistered","Connect with community advocacy groups for remediation","Keep records: dates, symptoms, and proximity to site"] },
+        ].map(s => (
+          <div className="card card-pad" key={s.title}>
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:14 }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--graphite)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width:18, height:18, flex:"none" }}><path d={s.icon} /></svg>
+              <div style={{ fontWeight:500, fontSize:14 }}>{s.title}</div>
+            </div>
+            <div className="stack" style={{ gap:6 }}>
+              {s.items.map((item, i) => (
+                <div key={i} style={{ display:"flex", gap:8, fontSize:13, lineHeight:1.5 }}>
+                  <span style={{ color:"var(--graphite)", flex:"none" }}>{i+1}.</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }

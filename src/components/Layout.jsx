@@ -120,7 +120,7 @@ export default function Layout() {
           </button>
         </header>
 
-        <main className="content">
+        <main className="content" id="main-content" role="main" aria-label={current.title}>
           <div className="pagewrap"><Outlet /></div>
         </main>
       </div>

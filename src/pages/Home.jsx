@@ -3,6 +3,48 @@ import { useState, useEffect, useRef } from "react";
 import { PageHeader } from "../components/ui";
 import { feed, sites, SEV_COLOR, SEV_LABEL } from "../data/platform";
 
+const PAPERS = [
+  { title:"Linking petroleum PAH profiles to p53 mutation spectra in Niger Delta cohorts", journal:"J. Environmental Molecular Toxicology", year:2026, tags:["DOI resolved","42 citations","Open access"], link:"/app/registry?q=Benzo" },
+  { title:"Cadmium exposure and GCN4 dysregulation in Lagos industrial zone workers", journal:"Environmental Health Perspectives", year:2026, tags:["Peer reviewed","18 data points","UNILAG authored"], link:"/app/registry?q=Cadmium" },
+  { title:"Chromium VI effluent and chromosomal aberrations in Ikeja factory cohort", journal:"Mutation Research", year:2025, tags:["Open access","LUTH clinical data","12 citations"], link:"/app/map?site=2" },
+  { title:"Species vulnerability index for Lagos wetland manatee under anthropogenic pressure", journal:"Aquatic Conservation", year:2025, tags:["Conservation data","IUCN aligned","Field verified"], link:"/app/conservation" },
+  { title:"Bayesian etiology mapping of respiratory presentations in high-PM2.5 Lagos zones", journal:"International Journal of Epidemiology", year:2026, tags:["Clinical data","LUTH cohort","Model validated"], link:"/app/therapeutic" },
+];
+
+function ResearchCarousel({ nav }) {
+  const [idx, setIdx] = useState(0);
+  const [fading, setFading] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setFading(true);
+      setTimeout(() => { setIdx(i => (i + 1) % PAPERS.length); setFading(false); }, 350);
+    }, 5000);
+    return () => clearInterval(id);
+  }, []);
+  const p = PAPERS[idx];
+  return (
+    <div className="card card-pad" style={{ display:"flex", flexDirection:"column", minHeight:240 }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:14 }}>
+        <div className="eyebrow">Featured research</div>
+        <div style={{ display:"flex", gap:5 }}>
+          {PAPERS.map((_, i) => (
+            <div key={i} onClick={() => setIdx(i)} style={{ width:6, height:6, borderRadius:"50%", cursor:"pointer",
+              background: i===idx ? "var(--ink)" : "var(--hair-2)", transition:"background .2s" }} />
+          ))}
+        </div>
+      </div>
+      <div style={{ flex:1, opacity: fading ? 0 : 1, transition:"opacity .35s" }}>
+        <div className="serif" style={{ fontSize:19, lineHeight:1.28, letterSpacing:"-.01em", maxWidth:"44ch" }}>{p.title}</div>
+        <div className="mono" style={{ fontSize:11.5, color:"var(--graphite)", marginTop:12 }}>{p.journal}, {p.year}</div>
+        <div className="chem-links" style={{ marginTop:12, flexWrap:"wrap" }}>
+          {p.tags.map(t => <span className="pill" key={t}>{t}</span>)}
+        </div>
+      </div>
+      <button className="btn btn-ghost" style={{ marginTop:16, alignSelf:"flex-start" }} onClick={() => nav(p.link)}>View in platform</button>
+    </div>
+  );
+}
+
 const Kpi = ({ lab, val, sub }) => (
   <div className="kpi"><div className="lab">{lab}</div><div className="val">{val}</div><div className="sub"><b>{sub}</b></div></div>
 );
@@ -96,22 +138,7 @@ export default function Home() {
           <button className="btn btn-ghost" style={{ width:"100%", marginTop:12 }} onClick={() => nav("/app/map")}>View all on map</button>
         </div>
 
-        <div className="card card-pad">
-          <div className="eyebrow" style={{ marginBottom:14 }}>Featured research</div>
-          <div className="serif" style={{ fontSize:21, lineHeight:1.25, letterSpacing:"-.01em", maxWidth:"48ch" }}>
-            Linking petroleum PAH profiles to p53 mutation spectra in Niger Delta cohorts
-          </div>
-          <div className="mono" style={{ fontSize:11.5, color:"var(--graphite)", marginTop:12 }}>J. Environmental Molecular Toxicology, 2026</div>
-          <div style={{ fontSize:13.5, color:"var(--graphite)", marginTop:12, lineHeight:1.6 }}>
-            Cross-referenced against 1,240 registry entries and 18 Lagos hazard sites. Demonstrates platform data supporting peer-reviewed causal inference.
-          </div>
-          <div className="chem-links" style={{ marginTop:14, flexWrap:"wrap" }}>
-            <span className="pill">DOI resolved</span>
-            <span className="pill">42 citations</span>
-            <span className="pill">Open access</span>
-          </div>
-          <button className="btn btn-ghost" style={{ marginTop:14 }} onClick={() => nav("/app/registry?q=Benzene")}>View Benzene in registry</button>
-        </div>
+        <ResearchCarousel nav={nav} />
       </div>
 
       {/* quick nav cards */}
@@ -119,8 +146,8 @@ export default function Home() {
       <div className="grid g4">
         {[
           { label:"Flag a hazard site", sub:"Submit new field observation", path:"/app/map", icon:"M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z" },
-          { label:"Look up a contaminant", sub:"12 compounds with genome data", path:"/app/registry", icon:"M4 4h16v4H4zM4 10h16v10H4z" },
-          { label:"Check district scores", sub:"18 Lagos habitability grades", path:"/app/scores", icon:"M4 20V10M10 20V4M16 20v-8" },
+          { label:"Look up a contaminant", sub:"49 compounds with genome data", path:"/app/registry", icon:"M4 4h16v4H4zM4 10h16v10H4z" },
+          { label:"Check district scores", sub:"24 Lagos habitability grades", path:"/app/scores", icon:"M4 20V10M10 20V4M16 20v-8" },
           { label:"File a clinical case", sub:"Anonymised therapeutic intake", path:"/app/therapeutic", icon:"M12 5v14M5 12h14" },
         ].map(({ label, sub, path, icon }) => (
           <div key={path} className="card card-pad" style={{ cursor:"pointer", transition:"border-color .15s" }}

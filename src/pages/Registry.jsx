@@ -7,6 +7,7 @@ import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 import { toCSV, download } from "../utils/export";
+import PathwayDiagram from "../components/PathwayDiagram";
 
 function PeerSubmit({ compound, toast }) {
   const [form, setForm] = useState({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" });
@@ -72,6 +73,7 @@ function ChemDetail({ c, onCite }) {
           </table>
           <div className="eyebrow" style={{ margin: "18px 0 10px" }}>External resources</div>
           <div className="chem-links">{c.links.map(l => <span className="pill" key={l}>{l}</span>)}</div>
+          <PathwayDiagram cas={c.cas} />
           <div style={{ marginTop: 16 }}>
             <button className="btn btn-ghost" onClick={onCite}>Cite this entry</button>
           </div>

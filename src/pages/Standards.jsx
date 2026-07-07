@@ -36,6 +36,60 @@ function DiffView({ a, b }) {
   );
 }
 
+const REV_DATA = {
+  "WHO Ambient Air Quality Guidelines": [
+    { year:"2021", label:"4th edition", note:"PM2.5 annual guideline tightened from 10 to 5 ug/m3" },
+    { year:"2006", label:"3rd edition", note:"Introduced NO2 and ozone annual guidelines" },
+    { year:"2000", label:"2nd edition", note:"Extended to include indoor air quality markers" },
+    { year:"1987", label:"1st edition", note:"Original WHO air quality framework" },
+  ],
+  "Stockholm Convention on Persistent Organic Pollutants": [
+    { year:"2023", label:"Amendment 12", note:"Added UV-328 and chlorinated paraffins (SCCP)" },
+    { year:"2019", label:"Amendment 10", note:"Dicofol and perfluorooctanoic acid (PFOA) added" },
+    { year:"2009", label:"Amendment 4",  note:"Nine new POPs added including PFOS and lindane" },
+    { year:"2001", label:"Original text", note:"Initial 12 POPs listed for global elimination" },
+  ],
+  "Federal Environmental Quality Standards Act (Cap E10)": [
+    { year:"2004", label:"Cap E10 LFN",  note:"Revised Laws of the Federation consolidation" },
+    { year:"1992", label:"Original Act",  note:"Federal Environmental Protection Agency Act enacted" },
+  ],
+};
+function getRevisions(standard) {
+  const exact = REV_DATA[standard];
+  if (exact) return exact;
+  return [
+    { year:"2024", label:"Latest revision", note:"Under review by issuing body" },
+    { year:"2020", label:"Previous edition", note:"Superseded by current version" },
+    { year:"2015", label:"Amendment", note:"Minor technical corrections" },
+  ];
+}
+
+function RevisionHistory({ standard }) {
+  const revs = getRevisions(standard);
+  return (
+    <div style={{ margin:"16px 0" }}>
+      <div className="eyebrow" style={{ marginBottom:12 }}>Revision history: {standard.slice(0, 50)}</div>
+      <div style={{ position:"relative", paddingLeft:24 }}>
+        <div style={{ position:"absolute", left:8, top:0, bottom:0, width:1.5, background:"var(--hair-2)" }} />
+        {revs.map((r, i) => (
+          <div key={i} style={{ display:"flex", gap:16, marginBottom:14, position:"relative" }}>
+            <div style={{ position:"absolute", left:-20, top:3, width:10, height:10, borderRadius:"50%",
+              background: i===0 ? "var(--ink)" : "var(--hair-2)", border:"2px solid var(--paper)" }} />
+            <div style={{ minWidth:42 }}>
+              <div className="mono" style={{ fontSize:11, fontWeight:600, color: i===0 ? "var(--ink)" : "var(--graphite)" }}>{r.year}</div>
+            </div>
+            <div>
+              <div style={{ fontSize:13.5, fontWeight: i===0 ? 600 : 400 }}>{r.label}</div>
+              <div style={{ fontSize:12.5, color:"var(--graphite)", marginTop:2 }}>{r.note}</div>
+            </div>
+            {i===0 && <span style={{ marginLeft:"auto", fontFamily:"var(--mono)", fontSize:10, color:"var(--ok)", border:"1px solid var(--ok)", borderRadius:5, padding:"2px 7px", height:"fit-content" }}>Current</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Standards() {
   const { key, openKey } = useKey();
   const toast = useToast();
@@ -122,6 +176,8 @@ export default function Standards() {
           selectedKey={selRow} onRowClick={r => setSelRow(r.t)}
           initialSort={{ key: "tier", dir: 1 }} />
       )}
+
+      {selRow && <RevisionHistory standard={selRow} />}
 
       <div className="sect-t">Regulatory gap analyser</div>
       <div className="card card-pad">

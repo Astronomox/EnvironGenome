@@ -80,13 +80,52 @@ export default function MapView() {
     markersRef.current.push(m);
   }, []);
 
+  const clusterLayerRef = useRef(null);
+
+  function updateClusters(map, visibleSites) {
+    const zoom = map.getZoom();
+    // at zoom >= 13 show individual markers; below that show cluster circles
+    if (zoom >= 13) {
+      if (clusterLayerRef.current) { map.removeLayer(clusterLayerRef.current); clusterLayerRef.current = null; }
+      markersRef.current.forEach(m => { if (!map.hasLayer(m)) m.addTo(map); });
+      return;
+    }
+    // hide individual markers
+    markersRef.current.forEach(m => { if (map.hasLayer(m)) map.removeLayer(m); });
+    if (clusterLayerRef.current) { map.removeLayer(clusterLayerRef.current); }
+    // simple grid clustering: 0.05 degree cells
+    const cells = {};
+    visibleSites.forEach(s => {
+      const ck = `${Math.floor(s.lat / 0.05)}_${Math.floor(s.lng / 0.05)}`;
+      if (!cells[ck]) cells[ck] = [];
+      cells[ck].push(s);
+    });
+    const group = L.layerGroup();
+    Object.values(cells).forEach(cell => {
+      const lat = cell.reduce((a, s) => a + s.lat, 0) / cell.length;
+      const lng = cell.reduce((a, s) => a + s.lng, 0) / cell.length;
+      const maxSev = Math.max(...cell.map(s => s.sev));
+      const r = Math.min(22, 12 + cell.length * 2);
+      const icon = L.divIcon({
+        className: "",
+        html: `<div style="width:${r*2}px;height:${r*2}px;border-radius:50%;background:${SEV_COLOR[maxSev]};border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)">${cell.length}</div>`,
+        iconSize: [r * 2, r * 2], iconAnchor: [r, r]
+      });
+      const m = L.marker([lat, lng], { icon });
+      m.on("click", () => map.setView([lat, lng], 13));
+      m.bindTooltip(`${cell.length} site${cell.length > 1 ? "s" : ""}, click to zoom`, { direction: "top" });
+      group.addLayer(m);
+    });
+    group.addTo(map);
+    clusterLayerRef.current = group;
+  }
+
   useEffect(() => {
     if (mapObj.current || !mapEl.current) return;
     const map = L.map(mapEl.current, { zoomControl: true, scrollWheelZoom: false }).setView([6.52, 3.38], 12);
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "OpenStreetMap contributors" }).addTo(map);
     mapObj.current = map;
     sites.forEach(s => addMarkerToMap(s));
-    // click-to-pin for submission
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
       setSub(p => ({ ...p, lat: lat.toFixed(5), lng: lng.toFixed(5) }));
@@ -96,7 +135,8 @@ export default function MapView() {
       }).addTo(map);
       setTab("submit");
     });
-    setTimeout(() => { map.invalidateSize(); selectSite(selId, true); }, 140);
+    map.on("zoomend", () => updateClusters(map, sites));
+    setTimeout(() => { map.invalidateSize(); selectSite(selId, true); updateClusters(map, sites); }, 140);
     return () => { map.remove(); mapObj.current = null; };
   }, []);
 
