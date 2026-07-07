@@ -19,5 +19,8 @@ export const MODULES = [
     icon:"M12 5v14M5 12h14" },
   { id:"scores", path:"/app/scores", label:"Scores", eyebrow:"Habitability", title:"Global classification score",
     desc:"Composite site grades blending air, natural features and toxic-exposure probability.",
-    icon:"M4 20V10M10 20V4M16 20v-8M22 20h-2M2 20h20" }
+    icon:"M4 20V10M10 20V4M16 20v-8M22 20h-2M2 20h20" },
+  { id:"contact", path:"/app/contact", label:"Contact", eyebrow:"Support", title:"Contact",
+    desc:"Route inquiries, emergency reporting, and FAQ.",
+    icon:"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6" }
 ];

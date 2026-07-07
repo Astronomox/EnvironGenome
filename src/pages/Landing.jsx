@@ -85,6 +85,9 @@ export default function Landing() {
               <button className="cta cta-primary" onClick={() => nav("/app")}>Enter platform</button>
               <button className="cta cta-ghost" onClick={() => nav("/app/map")}>See live hazard map</button>
             </div>
+            <div className="scroll-hint" onClick={() => document.querySelector(".flowrail")?.scrollIntoView({ behavior: "smooth" })}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(250,250,248,.4)" strokeWidth="1.5" style={{ width: 20, height: 20 }}><path d="M6 9l6 6 6-6" /></svg>
+            </div>
           </div>
           <SensorStrip />
         </div>

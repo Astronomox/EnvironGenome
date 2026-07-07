@@ -54,7 +54,14 @@ export default function Registry() {
   const [selCas, setSelCas] = useState(contaminants[0].cas);
   const [ai, setAi] = useState({ status: "idle", text: "" });
 
-  useEffect(() => { const pq = params.get("q"); if (pq) setQ(pq); }, [params]);
+  useEffect(() => {
+    const pq = params.get("q");
+    if (pq) {
+      setQ(pq);
+      const match = contaminants.find(c => c.name.toLowerCase().includes(pq.toLowerCase()));
+      if (match) setSelCas(match.cas);
+    }
+  }, [params]);
 
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();

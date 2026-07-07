@@ -13,7 +13,18 @@ export default function Therapeutic() {
   const toast = useToast();
   const [sel, setSel] = useState([]);
   const [ai, setAi] = useState({ status: "idle", text: "" });
+  const [refAi, setRefAi] = useState({ status: "idle", text: "" });
   const toggle = (s) => setSel(p => p.includes(s) ? p.filter(x => x !== s) : [...p, s]);
+
+  async function genReferral() {
+    if (!key) { openKey(); return; }
+    setRefAi({ status: "loading", text: "" });
+    try {
+      const t = await askGemini(key,
+        `Draft a formal referral letter from an attending physician to the Department of Occupational and Environmental Medicine at Lagos University Teaching Hospital (LUTH). The patient (anonymised ID: EGX-4582) presents with: ${sel.join(", ")}. Based on preliminary environmental etiology matching, suspected environmental exposure is the likely cause. Request environmental testing verification for the suspected source location and recommend rehabilitation interventions matched to hazard elimination progress. Under 150 words, professional medical letter format. Bold the header and sign-off with **text**.`);
+      setRefAi({ status: "done", text: t }); toast("Referral letter generated");
+    } catch (e) { setRefAi({ status: "error", text: e.message }); }
+  }
 
   async function match() {
     if (!sel.length) { setAi({ status: "error", text: "Select at least one presenting symptom first." }); return; }
@@ -63,6 +74,33 @@ export default function Therapeutic() {
               Select symptoms and run the match to see ranked environmental causes, confirmatory biomarkers, and exposure sources.
             </div>
           ) : <AiPanel label="Gemini differential" state={ai} />}
+
+          {/* post-match actions */}
+          {ai.status === "done" && (
+            <div className="card card-pad" style={{ marginTop: 14 }}>
+              <div className="eyebrow" style={{ marginBottom: 10 }}>Case actions</div>
+              <div className="stack" style={{ gap: 8 }}>
+                <button className="btn btn-ghost" style={{ width: "100%", justifyContent: "flex-start" }} onClick={genReferral}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width: 15, height: 15 }}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8" /></svg>
+                  Generate referral letter to LUTH
+                </button>
+                <button className="btn btn-ghost" style={{ width: "100%", justifyContent: "flex-start" }} onClick={() => toast("Follow-up scheduled for 30 days from today")}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width: 15, height: 15 }}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
+                  Schedule 30-day follow-up
+                </button>
+                <button className="btn btn-ghost" style={{ width: "100%", justifyContent: "flex-start" }} onClick={() => { setSel([]); setAi({ status: "idle", text: "" }); toast("Form reset for next patient"); }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width: 15, height: 15 }}><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" /></svg>
+                  New patient intake
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* referral letter */}
+          {refAi.status !== "idle" && (
+            <div style={{ marginTop: 14 }}><AiPanel label="Gemini referral letter" state={refAi} /></div>
+          )}
+
           <div className="card card-pad" style={{ marginTop: 14 }}>
             <div className="eyebrow" style={{ marginBottom: 10 }}>Referral</div>
             <div style={{ fontSize: 13.5, lineHeight: 1.6 }}>

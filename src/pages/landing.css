@@ -77,3 +77,7 @@
   .hero{padding:100px 22px 50px;} .flowrail,.land-stats{padding:52px 22px;} .land-nav{padding:18px 22px;}
   .land-stats-in{grid-template-columns:1fr;}
 }
+
+/* scroll hint */
+.scroll-hint{margin-top:30px; cursor:pointer; animation:bob 2s infinite var(--e); display:inline-flex;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}

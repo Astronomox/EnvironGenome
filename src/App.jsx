@@ -10,6 +10,8 @@ import Conservation from "./pages/Conservation";
 import Standards from "./pages/Standards";
 import Therapeutic from "./pages/Therapeutic";
 import Scores from "./pages/Scores";
+import Contact from "./pages/Contact";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -26,7 +28,9 @@ export default function App() {
               <Route path="standards" element={<Standards />} />
               <Route path="therapeutic" element={<Therapeutic />} />
               <Route path="scores" element={<Scores />} />
+              <Route path="contact" element={<Contact />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </ToastProvider>
