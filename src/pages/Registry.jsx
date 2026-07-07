@@ -7,6 +7,41 @@ import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 
+function PeerSubmit({ compound, toast }) {
+  const [form, setForm] = useState({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" });
+  const [done, setDone] = useState(false);
+  function submit() {
+    if (!form.organism || !form.locus) { toast("Organism and locus are required"); return; }
+    setDone(true); toast(`Association submitted for moderation. Ref #PR-${Math.floor(10000+Math.random()*90000)}`);
+  }
+  if (done) return (
+    <div className="card card-pad" style={{ display:"flex", alignItems:"center", gap:14 }}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" strokeWidth="2" style={{ width:22, height:22, flex:"none" }}><circle cx="12" cy="12" r="10" /><path d="M8 12l3 3 5-5" /></svg>
+      <div><div style={{ fontWeight:500 }}>Association submitted for peer review</div>
+        <div style={{ fontSize:13, color:"var(--graphite)" }}>A reviewer will be assigned within 48 hours.</div></div>
+      <button className="btn btn-ghost" style={{ marginLeft:"auto" }} onClick={() => { setDone(false); setForm({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" }); }}>Submit another</button>
+    </div>
+  );
+  return (
+    <div className="card card-pad">
+      <div className="eyebrow" style={{ marginBottom:14 }}>Propose genome association for {compound}</div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+        <div className="fg"><label>Organism</label><input value={form.organism} onChange={e => setForm(p=>({...p,organism:e.target.value}))} placeholder="e.g. Homo sapiens" /></div>
+        <div className="fg"><label>Gene locus</label><input value={form.locus} onChange={e => setForm(p=>({...p,locus:e.target.value}))} placeholder="e.g. TP53 / chr17" /></div>
+        <div className="fg"><label>Damage pattern</label><input value={form.pattern} onChange={e => setForm(p=>({...p,pattern:e.target.value}))} placeholder="e.g. G to T transversion" /></div>
+        <div className="fg"><label>Evidence grade</label>
+          <select value={form.evidence} onChange={e => setForm(p=>({...p,evidence:e.target.value}))}>
+            <option value="strong">Strong</option><option value="moderate">Moderate</option><option value="poor">Poor</option>
+          </select>
+        </div>
+        <div className="fg" style={{ gridColumn:"span 2" }}><label>Supporting notes or DOI</label>
+          <textarea rows={3} value={form.notes} onChange={e => setForm(p=>({...p,notes:e.target.value}))} placeholder="Paste DOI or summarise evidence" /></div>
+      </div>
+      <button className="btn btn-dark" style={{ marginTop:14 }} onClick={submit}>Submit for peer review</button>
+    </div>
+  );
+}
+
 function ChemDetail({ c, onCite }) {
   return (
     <div className="chem-detail">
@@ -115,6 +150,34 @@ export default function Registry() {
         </div>
         {selected && <ChemDetail c={selected} onCite={() => toast(`Citation for ${selected.name} copied`)} />}
       </div>
+
+      {/* citation export */}
+      {selected && (
+        <>
+          <div className="sect-t">Citation export</div>
+          <div className="card card-pad">
+            <div className="grid g2" style={{ alignItems:"start", gap:14 }}>
+              <div>
+                <div className="eyebrow" style={{ marginBottom:10 }}>APA</div>
+                <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
+                  EnviroGenome Guardian. (2026). {selected.name} (CAS {selected.cas}). EnviroGenome Contaminant Registry. University of Lagos. https://envirogenome.unilag.edu.ng/registry/{selected.cas}
+                </div>
+                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`EnviroGenome Guardian. (2026). ${selected.name} (CAS ${selected.cas}). EnviroGenome Contaminant Registry.`); toast("APA citation copied"); }}>Copy APA</button>
+              </div>
+              <div>
+                <div className="eyebrow" style={{ marginBottom:10 }}>Vancouver / NLM</div>
+                <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
+                  EnviroGenome Guardian. {selected.name} [{selected.formula}]. CAS {selected.cas}. Lagos: EnviroGenome Contaminant Registry, University of Lagos; 2026. Available from: https://envirogenome.unilag.edu.ng/registry/{selected.cas}
+                </div>
+                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`EnviroGenome Guardian. ${selected.name} [${selected.formula}]. CAS ${selected.cas}.`); toast("Vancouver citation copied"); }}>Copy Vancouver</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="sect-t">Propose a compound association</div>
+          <PeerSubmit compound={selected.name} toast={toast} />
+        </>
+      )}
     </>
   );
 }

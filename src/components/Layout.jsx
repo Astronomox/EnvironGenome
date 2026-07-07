@@ -3,6 +3,8 @@ import { NavLink, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { MODULES } from "../data/modules";
 import { useKey } from "../hooks/KeyContext";
 import CommandPalette from "./CommandPalette";
+import ShortcutsModal from "./ShortcutsModal";
+import NotifPanel from "./NotifPanel";
 
 const Logo = ({ light }) => (
   <svg className="mark" viewBox="0 0 26 26" fill="none" stroke={light ? "#FAFAF8" : "#0A0A0A"} strokeWidth="1.6">
@@ -20,7 +22,7 @@ function KeyModal() {
     <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && closeKey()}>
       <div className="modal">
         <h3>Connect Gemini</h3>
-        <p>AI features call the Gemini API directly from your browser. Paste a key to switch them on.</p>
+        <p>AI features call the Gemini API directly from your browser. Paste a key to switch them on. Saved in sessionStorage so it persists across page refreshes until you close the tab.</p>
         <input type="password" placeholder="AIza..." value={val} autoComplete="off"
           onChange={(e) => setVal(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && saveKey(val)} autoFocus />
@@ -28,7 +30,7 @@ function KeyModal() {
           <button className="m-cancel" onClick={closeKey}>Cancel</button>
           <button className="m-save" onClick={() => saveKey(val)}>Save key</button>
         </div>
-        <div className="hint">Held in memory for this session only. Never stored or sent anywhere but Google's API. Get a key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">aistudio.google.com/apikey</a>.</div>
+        <div className="hint">Held in sessionStorage only. Never sent anywhere but Google's API. Get a key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">aistudio.google.com/apikey</a>.</div>
       </div>
     </div>
   );
@@ -39,19 +41,27 @@ export default function Layout() {
   const loc = useLocation();
   const { connected, openKey } = useKey();
   const [cmdOpen, setCmdOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [unread] = useState(3);
 
   const current = MODULES.find(m =>
     m.path === loc.pathname || (m.id !== "home" && loc.pathname.startsWith(m.path))
   ) || MODULES[0];
 
-  // global Cmd+K
+  // Cmd+K, ?, and number key navigation
   useEffect(() => {
     const h = (e) => {
+      const tag = document.activeElement?.tagName.toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); setCmdOpen(o => !o); }
+      if (e.key === "?" && !e.metaKey && !e.ctrlKey) setShortcutsOpen(o => !o);
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= MODULES.length && !e.metaKey && !e.ctrlKey) nav(MODULES[num - 1].path);
     };
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
-  }, []);
+  }, [nav]);
 
   return (
     <div className="shell">
@@ -69,7 +79,11 @@ export default function Layout() {
             <span className="kbd">{i + 1}</span>
           </NavLink>
         ))}
-        <div className="side-foot">Demo build v1.0<br />UNILAG and LUTH</div>
+        <div className="side-foot">
+          Demo build v1.0<br />UNILAG and LUTH<br />
+          <button style={{ marginTop:6, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer" }}
+            onClick={() => setShortcutsOpen(true)}>? Shortcuts</button>
+        </div>
       </aside>
 
       <div className="main">
@@ -80,6 +94,13 @@ export default function Layout() {
             <svg viewBox="0 0 24 24" fill="none" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>
             <span>Search everything</span>
             <span className="kbd">⌘K</span>
+          </button>
+          {/* notification bell */}
+          <button className="btn-key" onClick={() => setNotifOpen(o => !o)} style={{ position:"relative" }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width:16, height:16 }}>
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+            </svg>
+            {unread > 0 && <span style={{ position:"absolute", top:5, right:5, width:7, height:7, borderRadius:"50%", background:"var(--sev3)", border:"1.5px solid var(--paper)" }} />}
           </button>
           <button className="btn-key" onClick={openKey}>
             <span className={"key-dot" + (connected ? " ok" : "")} />
@@ -102,6 +123,8 @@ export default function Layout() {
       </nav>
 
       <CommandPalette open={cmdOpen} setOpen={setCmdOpen} />
+      <ShortcutsModal open={shortcutsOpen} setOpen={setShortcutsOpen} />
+      <NotifPanel open={notifOpen} setOpen={setNotifOpen} />
       <KeyModal />
     </div>
   );
