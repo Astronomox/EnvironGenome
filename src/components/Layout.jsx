@@ -84,7 +84,7 @@ export default function Layout() {
         {MODULES.map((m, i) => (
           <NavLink key={m.id} to={m.path} end={m.id === "home"}
             className={({ isActive }) => "side-link" + (isActive ? " on" : "")}>
-            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon} /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon} /></svg>
             {m.label}
             <span className="kbd">{i + 1}</span>
           </NavLink>
@@ -124,10 +124,12 @@ export default function Layout() {
         </main>
       </div>
 
-      <nav className="glassnav">
+      <nav className="glassnav" aria-label="Primary">
         {MODULES.map(m => (
-          <NavLink key={m.id} to={m.path} end={m.id === "home"} className={({ isActive }) => (isActive ? "on" : "")}>
-            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon} /></svg>
+          <NavLink key={m.id} to={m.path} end={m.id === "home"}
+            title={m.label} aria-label={m.label}
+            className={({ isActive }) => (isActive ? "on" : "")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={m.icon} /></svg>
             <span>{m.label}</span>
           </NavLink>
         ))}
