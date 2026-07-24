@@ -127,7 +127,11 @@ a{color:inherit; text-decoration:none;}
 .meter.r i{background:var(--sev3);}
 
 /* ===== data table ===== */
-.tbl-wrap{border:1px solid var(--hair); border-radius:var(--r); overflow:hidden; background:var(--panel);}
+.tbl-wrap{border:1px solid var(--hair); border-radius:var(--r); overflow-x:auto; overflow-y:hidden;
+  background:var(--panel); -webkit-overflow-scrolling:touch; overscroll-behavior-x:contain;}
+.tbl-wrap::-webkit-scrollbar{height:6px;}
+.tbl-wrap::-webkit-scrollbar-track{background:transparent;}
+.tbl-wrap::-webkit-scrollbar-thumb{background:var(--hair-2); border-radius:3px;}
 table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
 .tbl thead th{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--graphite);
   text-align:left; padding:11px 14px; border-bottom:1px solid var(--hair); font-weight:500; background:var(--smoke); user-select:none;}
@@ -295,7 +299,36 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
   .glassnav a.on svg{stroke:var(--paper);}
   .glassnav a:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
   .pagewrap{padding:16px 14px 88px;} .cmd-trigger{min-width:0; width:40px; padding:0; justify-content:center;} .cmd-trigger span,.cmd-trigger .kbd{display:none;}
-  .form-grid,.checks,.g2,.g3,.g4{grid-template-columns:1fr;} .scoregrid{grid-template-columns:repeat(4,1fr);}
+  .form-grid,.checks,.g2,.g3,.g4{grid-template-columns:1fr;} .scoregrid{grid-template-columns:repeat(3,1fr);}
   .phead h1{font-size:22px;}
+
+  /* tables: keep columns legible, scroll sideways instead of crushing */
+  table.tbl{min-width:560px;}
+  .tbl thead th,.tbl tbody td{padding:10px 12px; white-space:nowrap;}
+  .tbl tbody td.name{white-space:normal; min-width:150px;}
+  .muttbl{min-width:420px;} .proptbl{min-width:0;}
+
+  /* page header stacks, tools scroll rather than wrap into a tall block */
+  .phead{flex-direction:column; align-items:stretch; gap:12px;}
+  .phead .htools{overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; -webkit-overflow-scrolling:touch;}
+  .phead .htools>*{flex:none;}
+  .phead .sub{font-size:12.5px;}
+
+  /* toolbars and segmented controls scroll instead of stacking */
+  .map-toolbar{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .map-toolbar>*{flex:none;}
+
+  /* map and lists sized for a phone */
+  .leafmap{height:380px;}
+  .site-list{max-height:300px;}
+
+  /* chem detail header stacks */
+  .chem-hd{flex-direction:column; gap:12px;}
+  .chem-hd h2{font-size:23px;}
+  .chem-col{padding:16px 18px;}
+
+  /* stop any stray wide child from scrolling the whole page */
+  .shell{overflow-x:hidden;}
+  .content{min-width:0;}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important;}}
