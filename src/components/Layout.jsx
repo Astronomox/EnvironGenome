@@ -65,7 +65,7 @@ export default function Layout() {
           </NavLink>
         ))}
         <div className="side-foot">
-          Demo build v1.0<br />UNILAG and LUTH<br />
+          Demo build v4.1.32<br />Coursework project<br />
           <button style={{ marginTop:6, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer", display:"block" }}
             onClick={() => setShortcutsOpen(true)}>? Shortcuts</button>
           <button style={{ marginTop:4, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer", display:"block" }}
