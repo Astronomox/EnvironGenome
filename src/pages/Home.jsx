@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/ui";
-import { feed, sites, SEV_COLOR, SEV_LABEL } from "../data/platform";
+import { feed, sites, districts, SEV_COLOR, SEV_LABEL } from "../data/platform";
 import { contaminants } from "../data/contaminants";
-import { districts } from "../data/platform";
+import { literature } from "../data/literature";
 
 const Kpi = ({ lab, val, sub }) => (
   <div className="kpi"><div className="lab">{lab}</div><div className="val">{val}</div>{sub && <div className="sub"><b>{sub}</b></div>}</div>
@@ -10,6 +11,7 @@ const Kpi = ({ lab, val, sub }) => (
 
 export default function Home() {
   const nav = useNavigate();
+  const [openLit, setOpenLit] = useState(-1);
   const counts = [0, 1, 2, 3].map(s => sites.filter(x => x.sev === s).length);
   const total = sites.length || 1;
   const pending = sites.filter(s => s.status === "Pending verification");
@@ -101,6 +103,21 @@ export default function Home() {
         ))}
       </div>
 
+      <div className="sect-t">Cited research ({literature.length})</div>
+      <div className="stack">
+        {literature.map((l, i) => (
+          <div className="card" key={i} style={{ cursor:"pointer" }} onClick={() => setOpenLit(openLit === i ? -1 : i)}>
+            <div className="card-pad" style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+              <span className="pill" style={{ flex:"none", marginTop:1 }}>{l.tag}</span>
+              <div style={{ minWidth:0 }}>
+                <div style={{ fontSize:13, lineHeight:1.5 }}>{l.cite}</div>
+                {openLit === i && <div style={{ fontSize:12.5, color:"var(--graphite)", lineHeight:1.6, marginTop:8 }}>{l.finding}</div>}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="sect-t">Platform status</div>
       <div className="grid g3">
         <div className="card card-pad">
@@ -109,7 +126,7 @@ export default function Home() {
             {[
               ["Map tiles","OpenStreetMap, live","ok"],
               ["Gemini integration","Server-side, no key needed","ok"],
-              ["Build version","1.0.0","info"],
+              ["Build version","4.1.32","info"],
             ].map(([l,v,t]) => (
               <div key={l} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid var(--hair)" }}>
                 <span style={{ fontSize:13 }}>{l}</span>

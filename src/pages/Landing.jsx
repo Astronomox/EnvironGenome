@@ -128,7 +128,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="land-foot">EnviroGenome, demo build v1.0. A UNILAG Data Science coursework project. Built by Astronomox.</div>
+      <div className="land-foot">EnviroGenome, demo build v4.1.32. A student coursework project. Built by Astronomox.</div>
     </div>
   );
 }
