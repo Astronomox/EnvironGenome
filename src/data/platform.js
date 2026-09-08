@@ -20,11 +20,22 @@ export const siteHistory = {};
 // until real IUCN Red List / conservation-body data is attached.
 export const species = [];
 
-// The 37-entry standards list mixed real, well-known instruments (Stockholm
-// Convention, NESREA Act, etc.) with entries whose exact tag/date I never
-// verified. Emptied pending an actual verification pass rather than
-// presenting an unverified list as authoritative.
-export const standards = [];
+// Real, well-established instruments only. Exact amendment/revision dates
+// beyond what's in Standards.jsx's REV_DATA lookup are not claimed here.
+export const standards = [
+  { t:"Montreal Protocol on Substances that Deplete the Ozone Layer", body:"United Nations Environment Programme", tier:"Global", tag:"Treaty", year:"1987" },
+  { t:"United Nations Framework Convention on Climate Change (UNFCCC)", body:"United Nations", tier:"Global", tag:"Treaty", year:"1992" },
+  { t:"Basel Convention on the Control of Transboundary Movements of Hazardous Wastes", body:"United Nations Environment Programme", tier:"Global", tag:"Treaty", year:"1989" },
+  { t:"Stockholm Convention on Persistent Organic Pollutants", body:"United Nations Environment Programme", tier:"Global", tag:"Treaty", year:"2001" },
+  { t:"Kyoto Protocol", body:"United Nations", tier:"Global", tag:"Treaty", year:"1997" },
+  { t:"Paris Agreement", body:"United Nations", tier:"Global", tag:"Treaty", year:"2015" },
+  { t:"Kigali Amendment to the Montreal Protocol", body:"United Nations Environment Programme", tier:"Global", tag:"Treaty", year:"2016" },
+  { t:"WHO Ambient Air Quality Guidelines", body:"World Health Organization", tier:"Global", tag:"Guideline", year:"2021" },
+  { t:"National Environmental Standards and Regulations Enforcement Agency (NESREA) Act", body:"Federal Government of Nigeria", tier:"Nigeria", tag:"Act", year:"2007" },
+  { t:"Environmental Management and Protection Law of Lagos State", body:"Lagos State Government", tier:"Nigeria", tag:"Law", year:"2017" },
+  { t:"Lagos State Waste Management Authority (LAWMA) Act", body:"Lagos State Government", tier:"Nigeria", tag:"Act", year:"1991" },
+  { t:"National Policy on Environment", body:"Federal Ministry of Environment, Nigeria", tier:"Nigeria", tag:"Policy", year:"1989" },
+];
 
 // District habitability scores (and their air/nature/water/toxic/terrain
 // sub-scores in utils/gcs.js) were invented numbers with a comment falsely
