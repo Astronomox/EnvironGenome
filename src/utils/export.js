@@ -53,7 +53,7 @@ export function auditReportHTML(site, reportText) {
 <div class="body">${reportText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</div>
 <hr>
 <div class="foot">
-  EnviroGenome Guardian &nbsp;|&nbsp; University of Lagos &amp; LUTH &nbsp;|&nbsp; Demo build v1.0<br>
+  EnviroGenome Guardian &nbsp;|&nbsp; demo build v4.1.32<br>
   Generated: ${new Date().toISOString().slice(0,19).replace("T"," ")} UTC
 </div>
 </body></html>`;
@@ -65,7 +65,7 @@ export function checklistText(standard, items) {
     `COMPLIANCE CHECKLIST`,
     `Standard: ${standard}`,
     `Generated: ${new Date().toISOString().slice(0,10)}`,
-    `EnviroGenome Guardian - University of Lagos`,
+    `EnviroGenome Guardian`,
     ``,
     ...items.map((item, i) => `[ ] ${i+1}. ${item}`)
   ];

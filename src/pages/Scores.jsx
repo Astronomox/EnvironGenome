@@ -83,7 +83,7 @@ export default function Scores() {
     </head><body><h1>EnviroGenome Guardian</h1><p style="font-family:monospace;font-size:12px;color:#666;">Global Classification Score, District Report, ${new Date().toISOString().slice(0,10)}</p>
     <table><thead><tr><th>District</th><th>GCS Score</th><th>Grade</th><th>Trend</th></tr></thead><tbody>
     ${shown.map(([n,v]) => `<tr><td>${n}</td><td class="score">${v}%</td><td>${v>=80?"Optimal":v>=65?"Good":v>=50?"Moderate":v>=40?"Poor":"Critical"}</td><td>${v>=70?"Improving":v>=50?"Stable":"Declining"}</td></tr>`).join("")}
-    </tbody></table><div class="foot">EnviroGenome Guardian, demo build v1.0, coursework project</div></body></html>`;
+    </tbody></table><div class="foot">EnviroGenome Guardian, demo build v4.1.32, coursework project</div></body></html>`;
     const w = window.open("", "_blank");
     w.document.write(html); w.document.close(); w.focus(); w.print();
   }
