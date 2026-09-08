@@ -1,6 +1,6 @@
 /* ===== EnviroGenome, precision console (monochrome, finalized) ===== */
 :root{
-  --ink:#0A0A0A; --paper:#FAFAF8; --graphite:#6B6B6B; --mute:#9A9A93;
+  --ink:#0A0A0A; --paper:#FAFAF8; --graphite:#6B6B6B; --mute:#59584F;
   --hair:#E7E7E2; --hair-2:#D5D5CF; --panel:#FFFFFF; --smoke:#F4F3EE; --smoke-2:#EDECE6;
   --sev0:#B9B9B3; --sev1:#8A8A83; --sev2:#3C3C38; --sev3:#D8442C; --ok:#2f9e44;
   --serif:"Fraunces",Georgia,serif;
@@ -57,7 +57,7 @@ a{color:inherit; text-decoration:none;}
 .btn-key{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; height:34px;
   border:1px solid var(--hair-2); padding:0 12px; border-radius:9px; display:flex; align-items:center; gap:7px; transition:border-color .15s, background .15s; white-space:nowrap;}
 .btn-key:hover{border-color:var(--ink); background:var(--panel);}
-.key-dot{width:7px; height:7px; border-radius:50%; background:var(--sev3);} .key-dot.ok{background:var(--ok);}
+
 .content{padding:0; flex:1;}
 .pagewrap{padding:20px 24px 120px; max-width:1280px; margin:0 auto; width:100%;}
 
@@ -270,11 +270,6 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
 .modal{background:var(--paper); border-radius:14px; max-width:440px; width:100%; padding:28px; border:1px solid var(--hair-2);}
 .modal h3{font-family:var(--serif); font-size:23px; font-weight:400; margin-bottom:8px;}
 .modal p{font-size:13px; color:var(--graphite); line-height:1.6; margin-bottom:18px;}
-.modal input{width:100%; border:1px solid var(--hair-2); border-radius:9px; padding:12px; font-size:14px; font-family:var(--mono); outline:none; margin-bottom:14px;}
-.modal input:focus{border-color:var(--ink);}
-.modal-actions{display:flex; gap:9px;} .modal-actions button{flex:1; height:42px; border-radius:9px; font-size:13px; font-weight:500;}
-.m-save{background:var(--ink); color:var(--paper);} .m-cancel{border:1px solid var(--hair-2);}
-.modal .hint{font-family:var(--mono); font-size:10px; color:var(--graphite); margin-top:12px; line-height:1.5;} .modal .hint a{color:var(--ink); text-decoration:underline;}
 
 /* responsive */
 @media(max-width:1040px){

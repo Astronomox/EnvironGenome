@@ -37,7 +37,6 @@ function TimeSlider({ siteId, siteName }) {
     </div>
   );
 }
-import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 
@@ -53,7 +52,6 @@ export default function MapView() {
   const [q, setQ] = useState("");
   const initId = parseInt(params.get("site") ?? "0", 10);
   const [selId, setSelId] = useState(Number.isNaN(initId) ? 0 : initId);
-  const { key, openKey } = useKey();
   const toast = useToast();
   const [ai, setAi] = useState({ status: "idle", text: "" });
   const [sites, setSites] = useState(initialSites);
@@ -174,11 +172,10 @@ export default function MapView() {
   }
 
   async function draftReport() {
-    if (!key) { openKey(); return; }
     setAi({ status: "loading", text: "" });
     const s = selected;
     try {
-      const t = await askGemini(key,
+      const t = await askGemini(
         `Draft a concise environmental audit report for a hazard site, suitable for a legal filing. Site: ${s.name}. Coordinates: ${s.coord}. Substance: ${s.sub}. Severity: Level ${s.sev} (${SEV_LABEL[s.sev]}). Reported by: ${s.by} on ${s.date}. Status: ${s.status}. Under 180 words with these sections in plain prose: Summary, Findings, Recommended action, Regulatory reference (cite a relevant Nigerian standard such as NESREA effluent regulations). Bold each section label with **label**.`);
       setAi({ status: "done", text: t }); toast("Audit report drafted");
     } catch (e) { setAi({ status: "error", text: e.message }); }
@@ -248,6 +245,7 @@ export default function MapView() {
                 <div className="mono" style={{ fontSize: 11.5, color: "var(--graphite)" }}>{selected.sub}</div>
                 <div className="site-meta" style={{ marginTop: 12 }}>
                   <b>{selected.coord}</b><br />Reported {selected.date}<br />By {selected.by}<br />Status: <b>{selected.status}</b>
+                  {selected.source && <><br />Source: {selected.source}</>}
                 </div>
                 <div className="site-photos"><div className="ph">IMG 01</div><div className="ph">IMG 02</div><div className="ph">EXIF ok</div></div>
                 <button className="btn btn-dark" style={{ width: "100%", marginTop: 14 }} onClick={draftReport}>
@@ -275,7 +273,7 @@ export default function MapView() {
                   </div>
                   <div className="mono" style={{ fontSize: 10.5, color: "var(--graphite)", marginTop: 6 }}>{SEV_LABEL[sub.sev]}</div>
                 </div>
-                <div className="fg"><label>Reporter name / institution</label><input value={sub.reporter} onChange={e => setSub(p => ({ ...p, reporter: e.target.value }))} placeholder="e.g. Dr. Adebayo, UNILAG" /></div>
+                <div className="fg"><label>Reporter name / institution</label><input value={sub.reporter} onChange={e => setSub(p => ({ ...p, reporter: e.target.value }))} placeholder="e.g. Jane Okafor, field survey team" /></div>
                 <div className="fg"><label>Notes / observations</label><textarea rows={3} value={sub.notes} onChange={e => setSub(p => ({ ...p, notes: e.target.value }))} placeholder="Chain-of-custody notes, containment observations" /></div>
                 <div className="fg"><label>Photo evidence</label>
                   <div style={{ display: "flex", gap: 8 }}>

@@ -49,11 +49,11 @@ function MiniSparkline({ vals, color }) {
 
 export default function Scores() {
   const computed = useMemo(() => computeAllGCS(districts), []);
-  const [pick, setPick] = useState(computed.find(([n]) => n === "Yaba") || computed[3]);
+  const [pick, setPick] = useState(computed[0] || null);
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("score");
 
-  const detail = useMemo(() => computeGCS(pick[0]), [pick]);
+  const detail = useMemo(() => pick ? computeGCS(pick[0]) : null, [pick]);
 
   // mock 6-month trend per district
   const trend = useMemo(() => {
@@ -83,7 +83,7 @@ export default function Scores() {
     </head><body><h1>EnviroGenome Guardian</h1><p style="font-family:monospace;font-size:12px;color:#666;">Global Classification Score, District Report, ${new Date().toISOString().slice(0,10)}</p>
     <table><thead><tr><th>District</th><th>GCS Score</th><th>Grade</th><th>Trend</th></tr></thead><tbody>
     ${shown.map(([n,v]) => `<tr><td>${n}</td><td class="score">${v}%</td><td>${v>=80?"Optimal":v>=65?"Good":v>=50?"Moderate":v>=40?"Poor":"Critical"}</td><td>${v>=70?"Improving":v>=50?"Stable":"Declining"}</td></tr>`).join("")}
-    </tbody></table><div class="foot">EnviroGenome Guardian, University of Lagos and LUTH, Demo build v1.0, Built by Astronomox</div></body></html>`;
+    </tbody></table><div class="foot">EnviroGenome Guardian, demo build v1.0, coursework project</div></body></html>`;
     const w = window.open("", "_blank");
     w.document.write(html); w.document.close(); w.focus(); w.print();
   }
@@ -99,13 +99,21 @@ export default function Scores() {
         <button className="btn btn-ghost" onClick={printScores}>Print report</button>
       </PageHeader>
 
+      {shown.length === 0 && (
+        <div className="empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 20V10M10 20V4M16 20v-8" /></svg>
+          No district data yet. This module has no real per-district input data behind it, so nothing is shown.
+        </div>
+      )}
+
+      {shown.length > 0 && (
       <div className="grid g2" style={{ alignItems:"start" }}>
         {/* grid + sparklines */}
         <div className="card card-pad">
           <div className="eyebrow" style={{ marginBottom:14 }}>District grades ({shown.length}), live computed</div>
           <div className="scoregrid">
             {shown.map(([name, v]) => (
-              <div key={name} className={"scell" + (pick[0] === name ? " sel" : "")}
+              <div key={name} className={"scell" + (pick && pick[0] === name ? " sel" : "")}
                 style={{ background:scoreColor(v) }} onClick={() => setPick([name, v])}>
                 <span className="v">{v}</span><span className="n">{name}</span>
               </div>
@@ -134,10 +142,12 @@ export default function Scores() {
           <div className="card card-pad">
             <div className="eyebrow" style={{ marginBottom:6 }}>Composite breakdown</div>
             <div className="row" style={{ gap:10, marginBottom:18 }}>
-              <div className="serif" style={{ fontSize:26 }}>{pick[0]}</div>
-              <div style={{ width:40, height:40, borderRadius:8, background:scoreColor(pick[1]), display:"flex", alignItems:"center", justifyContent:"center" }}>
-                <span style={{ fontFamily:"var(--serif)", fontSize:17, color:"#fff" }}>{pick[1]}</span>
-              </div>
+              <div className="serif" style={{ fontSize:26 }}>{pick ? pick[0] : "--"}</div>
+              {pick && (
+                <div style={{ width:40, height:40, borderRadius:8, background:scoreColor(pick[1]), display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <span style={{ fontFamily:"var(--serif)", fontSize:17, color:"#fff" }}>{pick[1]}</span>
+                </div>
+              )}
             </div>
             {detail && detail.breakdown.map(({ label, value, weight }, i) => (
               <WeightBar key={label} label={label} raw={value} weight={weight} weighted={detail.weighted[i].value} />
@@ -162,6 +172,7 @@ export default function Scores() {
           </div>
         </div>
       </div>
+      )}
     </>
   );
 }

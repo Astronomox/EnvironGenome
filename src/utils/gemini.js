@@ -1,21 +1,27 @@
-// Gemini client, called directly from the browser with a user-supplied key.
-export async function askGemini(key, prompt) {
-  if (!key) throw new Error("NO_KEY");
-  const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + encodeURIComponent(key);
+// Gemini client. Requests go through the app's own /api/gemini endpoint, which
+// holds the API key server-side (see /api/gemini.js). No key ever reaches the
+// browser or gets typed in by a user.
+export async function askGemini(prompt) {
   let res;
   try {
-    res = await fetch(url, {
+    res = await fetch("/api/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      body: JSON.stringify({ prompt })
     });
   } catch (e) {
-    throw new Error("Network error reaching Gemini. Check your connection.");
+    throw new Error("Could not reach the AI service. Check your connection and try again.");
   }
-  const data = await res.json();
-  if (data.error) throw new Error("Gemini error: " + (data.error.message || "request failed") + ". Check your key.");
-  const parts = data?.candidates?.[0]?.content?.parts;
-  return parts && parts[0] ? parts[0].text : "No response returned.";
+  let data;
+  try {
+    data = await res.json();
+  } catch (e) {
+    throw new Error("The AI service returned an unreadable response.");
+  }
+  if (!res.ok || data.error) {
+    throw new Error(data.error || "The AI service could not complete this request.");
+  }
+  return data.text || "No response returned.";
 }
 
 // light markdown to html for bold and bullets

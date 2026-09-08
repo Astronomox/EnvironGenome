@@ -57,36 +57,33 @@ function ProximityCalc() {
     </div>
   );
 }
-import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 
 const Field = ({ label, children }) => <div className="fg"><label>{label}</label>{children}</div>;
 
 export default function Therapeutic() {
-  const { key, openKey } = useKey();
   const toast = useToast();
   const [sel, setSel] = useState([]);
   const [ai, setAi] = useState({ status: "idle", text: "" });
   const [refAi, setRefAi] = useState({ status: "idle", text: "" });
+  const [caseId] = useState(() => "EGX-" + Math.floor(1000 + Math.random() * 9000));
   const toggle = (s) => setSel(p => p.includes(s) ? p.filter(x => x !== s) : [...p, s]);
 
   async function genReferral() {
-    if (!key) { openKey(); return; }
     setRefAi({ status: "loading", text: "" });
     try {
-      const t = await askGemini(key,
-        `Draft a formal referral letter from an attending physician to the Department of Occupational and Environmental Medicine at Lagos University Teaching Hospital (LUTH). The patient (anonymised ID: EGX-4582) presents with: ${sel.join(", ")}. Based on preliminary environmental etiology matching, suspected environmental exposure is the likely cause. Request environmental testing verification for the suspected source location and recommend rehabilitation interventions matched to hazard elimination progress. Under 150 words, professional medical letter format. Bold the header and sign-off with **text**.`);
+      const t = await askGemini(
+        `Draft a formal referral letter from an attending physician to the Department of Occupational and Environmental Medicine at Lagos University Teaching Hospital (LUTH). The patient (anonymised ID: ${caseId}) presents with: ${sel.join(", ")}. Based on preliminary environmental etiology matching, suspected environmental exposure is the likely cause. Request environmental testing verification for the suspected source location and recommend rehabilitation interventions matched to hazard elimination progress. Under 150 words, professional medical letter format. Bold the header and sign-off with **text**.`);
       setRefAi({ status: "done", text: t }); toast("Referral letter generated");
     } catch (e) { setRefAi({ status: "error", text: e.message }); }
   }
 
   async function match() {
     if (!sel.length) { setAi({ status: "error", text: "Select at least one presenting symptom first." }); return; }
-    if (!key) { openKey(); return; }
     setAi({ status: "loading", text: "" });
     try {
-      const t = await askGemini(key,
+      const t = await askGemini(
         `You are a clinical decision-support aid for environmental medicine at Lagos University Teaching Hospital. A patient presents with: ${sel.join(", ")}. List the 3 most probable environmental or toxic etiologies in descending confidence. For each: name the pollutant class, one recommended confirmatory biomarker or lab test, and typical exposure source in the Lagos context. Under 150 words, plain prose with pollutant names in bold using **name**. Add a one-line note that this is decision-support, not diagnosis.`);
       setAi({ status: "done", text: t }); toast("Differential generated");
     } catch (e) { setAi({ status: "error", text: e.message }); }
@@ -99,7 +96,7 @@ export default function Therapeutic() {
 
       <div className="anon-note" style={{ marginBottom: 18 }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 018 0v3" /></svg>
-        Anonymised identifier <b style={{ color: "var(--ink)" }}>EGX-4582</b> generated automatically. No patient name is stored.
+        Anonymised identifier <b style={{ color: "var(--ink)" }}>{caseId}</b> generated automatically. No patient name is stored.
       </div>
 
       <div className="grid g2" style={{ alignItems: "start" }}>
@@ -159,7 +156,7 @@ export default function Therapeutic() {
           <div className="card card-pad" style={{ marginTop: 14 }}>
             <div className="eyebrow" style={{ marginBottom: 10 }}>Referral</div>
             <div style={{ fontSize: 13.5, lineHeight: 1.6 }}>
-              Route to <b>Lagos University Teaching Hospital</b>, Occupational and Environmental Medicine. Secure channel active.
+              This demo doesn't have a real referral channel to any hospital. The letter above is a draft template only -- routing it anywhere is a manual, human step.
             </div>
           </div>
         </div>

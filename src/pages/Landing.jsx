@@ -128,15 +128,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <div className="land-stats">
-        <div className="land-stats-in">
-          {[["42,150", "Contaminants registered"], ["89,733", "Hazard sites mapped"],
-            ["6,847", "Genome and toxin pairings"], ["104", "Jurisdictions indexed"]].map(([n, l]) => (
-            <div className="lstat" key={l}><div className="n">{n}</div><div className="l">{l}</div></div>
-          ))}
-        </div>
-      </div>
-      <div className="land-foot">EnviroGenome, demo build v1.0. University of Lagos and Lagos University Teaching Hospital. Built by Astronomox.</div>
+      <div className="land-foot">EnviroGenome, demo build v1.0. A UNILAG Data Science coursework project. Built by Astronomox.</div>
     </div>
   );
 }

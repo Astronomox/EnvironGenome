@@ -1,6 +1,5 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { KeyProvider } from "./hooks/KeyContext";
 import { ToastProvider } from "./hooks/ToastContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PageSkeleton from "./components/PageSkeleton";
@@ -26,7 +25,7 @@ const Fallback = () => (
 
 export default function App() {
   return (
-    <KeyProvider>
+    <>
       <ToastProvider>
         <BrowserRouter>
           <ErrorBoundary>
@@ -63,6 +62,6 @@ export default function App() {
           </ErrorBoundary>
         </BrowserRouter>
       </ToastProvider>
-    </KeyProvider>
+    </>
   );
 }

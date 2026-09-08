@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { MODULES } from "../data/modules";
-import { useKey } from "../hooks/KeyContext";
 import CommandPalette from "./CommandPalette";
 import ShortcutsModal from "./ShortcutsModal";
 import NotifPanel from "./NotifPanel";
@@ -14,33 +13,9 @@ const Logo = ({ light }) => (
   </svg>
 );
 
-function KeyModal() {
-  const { modalOpen, closeKey, saveKey, key } = useKey();
-  const [val, setVal] = useState(key);
-  useEffect(() => { if (modalOpen) setVal(key); }, [modalOpen, key]);
-  if (!modalOpen) return null;
-  return (
-    <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && closeKey()}>
-      <div className="modal">
-        <h3>Connect Gemini</h3>
-        <p>AI features call the Gemini API directly from your browser. Paste a key to switch them on. Saved in sessionStorage so it persists across page refreshes until you close the tab.</p>
-        <input type="password" placeholder="AIza..." value={val} autoComplete="off"
-          onChange={(e) => setVal(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && saveKey(val)} autoFocus />
-        <div className="modal-actions">
-          <button className="m-cancel" onClick={closeKey}>Cancel</button>
-          <button className="m-save" onClick={() => saveKey(val)}>Save key</button>
-        </div>
-        <div className="hint">Held in sessionStorage only. Never sent anywhere but Google's API. Get a key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">aistudio.google.com/apikey</a>.</div>
-      </div>
-    </div>
-  );
-}
-
 export default function Layout() {
   const nav = useNavigate();
   const loc = useLocation();
-  const { connected, openKey } = useKey();
   const [cmdOpen, setCmdOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -113,10 +88,6 @@ export default function Layout() {
             </svg>
             {unread > 0 && <span style={{ position:"absolute", top:5, right:5, width:7, height:7, borderRadius:"50%", background:"var(--sev3)", border:"1.5px solid var(--paper)" }} />}
           </button>
-          <button className="btn-key" onClick={openKey} aria-label={connected ? "Gemini API connected" : "Connect Gemini API key"}>
-            <span className={"key-dot" + (connected ? " ok" : "")} />
-            {connected ? "Gemini on" : "Gemini key"}
-          </button>
         </header>
 
         <main className="content" id="main-content" role="main" aria-label={current.title}>
@@ -138,7 +109,6 @@ export default function Layout() {
       <CommandPalette open={cmdOpen} setOpen={setCmdOpen} />
       <ShortcutsModal open={shortcutsOpen} setOpen={setShortcutsOpen} />
       <NotifPanel open={notifOpen} setOpen={setNotifOpen} />
-      <KeyModal />
       {!onboarded && <Onboarding onDone={() => setOnboarded(true)} />}
     </div>
   );

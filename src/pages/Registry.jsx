@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import { PageHeader, SearchInput, Segmented, Empty } from "../components/ui";
 import AiPanel from "../components/AiPanel";
 import { contaminants } from "../data/contaminants";
-import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 import { toCSV, download } from "../utils/export";
@@ -254,12 +253,11 @@ function BulkUpload({ toast }) {
 }
 
 export default function Registry() {
-  const { key, openKey } = useKey();
   const toast = useToast();
   const [params] = useSearchParams();
   const [q, setQ] = useState(params.get("q") || "");
   const [cat, setCat] = useState("all");
-  const [selCas, setSelCas] = useState(contaminants[0].cas);
+  const [selCas, setSelCas] = useState(contaminants[0]?.cas || null);
   const [compareCas, setCompareCas] = useState(null);
   const [view, setView] = useState("detail"); // detail | compare
   const [ai, setAi] = useState({ status: "idle", text: "" });
@@ -301,10 +299,9 @@ export default function Registry() {
 
   async function ask() {
     if (!q.trim()) { toast("Type a question or compound first"); return; }
-    if (!key) { openKey(); return; }
     setAi({ status: "loading", text: "" });
     try {
-      const t = await askGemini(key,
+      const t = await askGemini(
         `You are a toxicology database assistant for the EnviroGenome platform. A user searched: "${q}". Respond in under 130 words. If it is a CAS number, formula or chemical name, summarise the contaminant key toxicological profile and any known genotoxic or mutagenic effects on specific genes. If it is a question, answer it precisely, naming relevant compounds and affected genes. Plain prose, no headers.`);
       setAi({ status: "done", text: t });
     } catch (e) { setAi({ status: "error", text: e.message }); }
@@ -333,7 +330,7 @@ export default function Registry() {
       ) : (
         <div className="md">
           <div className="md-list">
-            {filtered.length === 0 ? <Empty text={`No compounds match "${q}"`} /> : filtered.map(c => (
+            {filtered.length === 0 ? <Empty text={q ? `No compounds match "${q}"` : "No contaminant entries loaded yet."} /> : filtered.map(c => (
               <div key={c.cas} className={"li" + (c.cas === selCas ? " sel" : "")} onClick={() => setSelCas(c.cas)}>
                 <div style={{ minWidth: 0 }}>
                   <div className="t">{c.name}</div>
@@ -356,16 +353,16 @@ export default function Registry() {
               <div>
                 <div className="eyebrow" style={{ marginBottom:10 }}>APA</div>
                 <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
-                  EnviroGenome Guardian. (2026). {selected.name} (CAS {selected.cas}). EnviroGenome Contaminant Registry. University of Lagos. https://envirogenome.unilag.edu.ng/registry/{selected.cas}
+                  {selected.name} (CAS {selected.cas}). Retrieved from the EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).
                 </div>
-                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`EnviroGenome Guardian. (2026). ${selected.name} (CAS ${selected.cas}). EnviroGenome Contaminant Registry.`); toast("APA citation copied"); }}>Copy APA</button>
+                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} (CAS ${selected.cas}). EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).`); toast("APA citation copied"); }}>Copy APA</button>
               </div>
               <div>
                 <div className="eyebrow" style={{ marginBottom:10 }}>Vancouver / NLM</div>
                 <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
-                  EnviroGenome Guardian. {selected.name} [{selected.formula}]. CAS {selected.cas}. Lagos: EnviroGenome Contaminant Registry, University of Lagos; 2026. Available from: https://envirogenome.unilag.edu.ng/registry/{selected.cas}
+                  {selected.name} [{selected.formula}]. CAS {selected.cas}. EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).
                 </div>
-                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`EnviroGenome Guardian. ${selected.name} [${selected.formula}]. CAS ${selected.cas}.`); toast("Vancouver citation copied"); }}>Copy Vancouver</button>
+                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} [${selected.formula}]. CAS ${selected.cas}. EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).`); toast("Vancouver citation copied"); }}>Copy Vancouver</button>
               </div>
             </div>
           </div>

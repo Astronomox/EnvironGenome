@@ -1,12 +1,8 @@
 import { useState } from "react";
 
-const NOTIFS = [
-  { id:1, type:"alert", text:"Level 3 alert at Iddo Terminus, pending verification", time:"09:42", unread:true },
-  { id:2, type:"info", text:"Cadmium to GCN4 association peer-approved and published", time:"09:15", unread:true },
-  { id:3, type:"alert", text:"WHO Ambient Air Quality Guidelines revised, standards updated", time:"08:50", unread:true },
-  { id:4, type:"info", text:"Therapy referral #4582 closed at LUTH", time:"08:31", unread:false },
-  { id:5, type:"info", text:"Benzene to Tp53 transversion record validated", time:"07:58", unread:false },
-];
+// No real notification source is wired up yet. These used to be invented
+// events (fake alerts, fake "peer-approved" research claims); removed.
+const NOTIFS = [];
 
 export default function NotifPanel({ open, setOpen }) {
   const [items, setItems] = useState(NOTIFS);

@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import { PageHeader, SearchInput, Segmented, Table, Empty } from "../components/ui";
 import AiPanel from "../components/AiPanel";
 import { standards } from "../data/platform";
-import { useKey } from "../hooks/KeyContext";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 import { checklistText, download } from "../utils/export";
@@ -55,17 +54,22 @@ const REV_DATA = {
   ],
 };
 function getRevisions(standard) {
-  const exact = REV_DATA[standard];
-  if (exact) return exact;
-  return [
-    { year:"2024", label:"Latest revision", note:"Under review by issuing body" },
-    { year:"2020", label:"Previous edition", note:"Superseded by current version" },
-    { year:"2015", label:"Amendment", note:"Minor technical corrections" },
-  ];
+  // Only return revision history where it's actually known (REV_DATA above).
+  // The old fallback silently generated an identical fake 2024/2020/2015
+  // timeline for any standard not in that list -- removed.
+  return REV_DATA[standard] || null;
 }
 
 function RevisionHistory({ standard }) {
   const revs = getRevisions(standard);
+  if (!revs) {
+    return (
+      <div style={{ margin:"16px 0" }}>
+        <div className="eyebrow" style={{ marginBottom:12 }}>Revision history: {standard.slice(0, 50)}</div>
+        <div style={{ fontSize:13, color:"var(--graphite)" }}>No verified revision history on file for this instrument yet.</div>
+      </div>
+    );
+  }
   return (
     <div style={{ margin:"16px 0" }}>
       <div className="eyebrow" style={{ marginBottom:12 }}>Revision history: {standard.slice(0, 50)}</div>
@@ -91,7 +95,6 @@ function RevisionHistory({ standard }) {
 }
 
 export default function Standards() {
-  const { key, openKey } = useKey();
   const toast = useToast();
   const [params] = useSearchParams();
   const [tier, setTier] = useState("all");
@@ -131,10 +134,9 @@ export default function Standards() {
   const [checklist, setChecklist] = useState([]);
 
   async function buildChecklist() {
-    if (!key) { openKey(); return; }
     setClAi({ status: "loading", text: "" }); setChecklist([]);
     try {
-      const t = await askGemini(key,
+      const t = await askGemini(
         `You are a compliance officer. For the environmental standard "${clStd}", generate 8 to 10 concrete actionable compliance checklist items for a facility operating in Lagos, Nigeria. Each item should be a single clear action starting with a verb. Return ONLY a JSON array of strings, no markdown, no extra text. Example: ["Submit quarterly effluent samples to NESREA", "Display emergency contact numbers at all discharge points"]`);
       try {
         const clean = t.replace(/```json|```/g,"").trim();
@@ -151,10 +153,9 @@ export default function Standards() {
   }
 
   async function compare() {
-    if (!key) { openKey(); return; }
     setAi({ status: "loading", text: "" }); setShowDiff(true);
     try {
-      const t = await askGemini(key,
+      const t = await askGemini(
         `You are a regulatory analyst. Compare these two environmental standards for a multinational operating in Lagos: "${ja}" and "${jb}". In under 170 words, give: the key difference in scope or strictness, one specific area where they conflict or create a compliance gap, and a practical recommendation to comply with both. Plain prose. Bold the two standard names with **name** on first mention.`);
       setAi({ status: "done", text: t }); toast("Gap analysis ready");
     } catch (e) { setAi({ status: "error", text: e.message }); }
@@ -163,14 +164,14 @@ export default function Standards() {
   return (
     <>
       <PageHeader eyebrow="Regulation" title="Standards reference library"
-        sub="Every active instrument from global treaty to Lagos State by-law. Click Set A or Set B on any row to load it into the comparator.">
+        sub="No instruments loaded yet -- the earlier 37-entry list mixed real treaty names with unverified tags and dates. Click Set A or Set B on any row to load it into the comparator.">
         <SearchInput value={q} onChange={setQ} placeholder="Search instruments" />
         <Segmented value={tier} onChange={setTier}
           options={[{ value: "all", label: "All" }, { value: "Global", label: "Global" }, { value: "Regional", label: "Regional" }, { value: "Nigeria", label: "Nigeria" }]} />
       </PageHeader>
 
       {rows.length === 0 ? (
-        <div className="tbl-wrap"><Empty text={`No instruments match "${q}"`} /></div>
+        <div className="tbl-wrap"><Empty text={q ? `No instruments match "${q}"` : "No standards loaded yet."} /></div>
       ) : (
         <Table columns={columns} rows={rows} rowKey={r => r.t}
           selectedKey={selRow} onRowClick={r => setSelRow(r.t)}
