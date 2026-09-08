@@ -13,7 +13,7 @@ export default function NotFound() {
         <button className="btn btn-dark" onClick={() => nav("/app")}>Go to dashboard</button>
         <button className="btn btn-ghost" onClick={() => nav("/")}>Landing page</button>
       </div>
-      <div className="mono" style={{ fontSize: 10, color: "var(--mute)", marginTop: 40 }}>EnviroGenome Guardian, demo build v1.0</div>
+      <div className="mono" style={{ fontSize: 10, color: "var(--mute)", marginTop: 40 }}>EnviroGenome Guardian, demo build v4.1.32</div>
     </div>
   );
 }
