@@ -62,16 +62,24 @@ function ChemDetail({ c, onCite }) {
         </div>
         <div className="chem-col">
           <div className="eyebrow" style={{ marginBottom: 12 }}>Associated mutations</div>
-          <table className="muttbl">
-            <thead><tr><th>Organism</th><th>Locus</th><th>Damage pattern</th></tr></thead>
-            <tbody>
-              {c.mutations.map((m, i) => (
-                <tr key={i}><td style={{ fontStyle: "italic" }}>{m[0]}</td><td className="g">{m[1]}</td><td>{m[2]}</td></tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="eyebrow" style={{ margin: "18px 0 10px" }}>External resources</div>
-          <div className="chem-links">{c.links.map(l => <span className="pill" key={l}>{l}</span>)}</div>
+          {c.mutations.length === 0 ? (
+            <div style={{ fontSize:12.5, color:"var(--graphite)", marginBottom:12 }}>No verified gene-level mutation data on file for this entry.</div>
+          ) : (
+            <table className="muttbl">
+              <thead><tr><th>Organism</th><th>Locus</th><th>Damage pattern</th></tr></thead>
+              <tbody>
+                {c.mutations.map((m, i) => (
+                  <tr key={i}><td style={{ fontStyle: "italic" }}>{m[0]}</td><td className="g">{m[1]}</td><td>{m[2]}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          {(c.links || []).length > 0 && (
+            <>
+              <div className="eyebrow" style={{ margin: "18px 0 10px" }}>External resources</div>
+              <div className="chem-links">{c.links.map(l => <span className="pill" key={l}>{l}</span>)}</div>
+            </>
+          )}
           <PathwayDiagram cas={c.cas} />
           <div style={{ marginTop: 16 }}>
             <button className="btn btn-ghost" onClick={onCite}>Cite this entry</button>
@@ -353,16 +361,16 @@ export default function Registry() {
               <div>
                 <div className="eyebrow" style={{ marginBottom:10 }}>APA</div>
                 <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
-                  {selected.name} (CAS {selected.cas}). Retrieved from the EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).
+                  {selected.name} (CAS {selected.cas}). {selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}
                 </div>
-                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} (CAS ${selected.cas}). EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).`); toast("APA citation copied"); }}>Copy APA</button>
+                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} (CAS ${selected.cas}). ${selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}`); toast("APA citation copied"); }}>Copy APA</button>
               </div>
               <div>
                 <div className="eyebrow" style={{ marginBottom:10 }}>Vancouver / NLM</div>
                 <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
-                  {selected.name} [{selected.formula}]. CAS {selected.cas}. EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).
+                  {selected.name} [{selected.formula}]. CAS {selected.cas}. {selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}
                 </div>
-                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} [${selected.formula}]. CAS ${selected.cas}. EnviroGenome Guardian contaminant registry (student coursework project, not an official published source).`); toast("Vancouver citation copied"); }}>Copy Vancouver</button>
+                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} [${selected.formula}]. CAS ${selected.cas}. ${selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}`); toast("Vancouver citation copied"); }}>Copy Vancouver</button>
               </div>
             </div>
           </div>
