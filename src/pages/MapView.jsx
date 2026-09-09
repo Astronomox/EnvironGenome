@@ -11,6 +11,13 @@ const MONTHS = ["Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May","Jun
 function TimeSlider({ siteId, siteName }) {
   const [pos, setPos] = useState(11);
   const hist = siteHistory[siteId] || [];
+  if (hist.length === 0) {
+    return (
+      <div style={{ fontSize:13, color:"var(--graphite)", padding:"10px 0" }}>
+        No month-by-month history for {siteName}. The source behind this site is a single field survey, not a repeated time series, so no playback trend is shown rather than an invented one.
+      </div>
+    );
+  }
   const val = hist[pos] ?? 0;
   return (
     <div>
@@ -134,8 +141,12 @@ export default function MapView() {
       setTab("submit");
     });
     map.on("zoomend", () => updateClusters(map, sites));
-    setTimeout(() => { map.invalidateSize(); selectSite(selId, true); updateClusters(map, sites); }, 140);
-    return () => { map.remove(); mapObj.current = null; };
+    let cancelled = false;
+    setTimeout(() => {
+      if (cancelled || mapObj.current !== map) return;
+      map.invalidateSize(); selectSite(selId, true); updateClusters(map, sites);
+    }, 140);
+    return () => { cancelled = true; map.remove(); mapObj.current = null; };
   }, []);
 
   useEffect(() => {
@@ -247,7 +258,11 @@ export default function MapView() {
                   <b>{selected.coord}</b><br />Reported {selected.date}<br />By {selected.by}<br />Status: <b>{selected.status}</b>
                   {selected.source && <><br />Source: {selected.source}</>}
                 </div>
-                <div className="site-photos"><div className="ph">IMG 01</div><div className="ph">IMG 02</div><div className="ph">EXIF ok</div></div>
+                {selected.photos && selected.photos.length > 0 ? (
+                  <div className="site-photos">{selected.photos.map((p, i) => <div className="ph" key={i}>{p}</div>)}</div>
+                ) : (
+                  <div style={{ fontSize:11.5, color:"var(--graphite)", marginTop:10 }}>No photo evidence attached to this entry.</div>
+                )}
                 <button className="btn btn-dark" style={{ width: "100%", marginTop: 14 }} onClick={draftReport}>
                   <span className="ai-spark">✦</span> Draft audit report
                 </button>
