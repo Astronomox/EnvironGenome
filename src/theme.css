@@ -121,6 +121,8 @@ a{color:inherit; text-decoration:none;}
 .sev.s2 .sq{background:var(--sev2);} .sev.s3 .sq{background:var(--sev3);}
 .sev.s3{border-color:var(--sev3); color:var(--sev3);}
 .pill{font-family:var(--mono); font-size:10.5px; padding:4px 9px; border:1px solid var(--hair-2); border-radius:16px; color:var(--graphite);}
+.lit-row{display:flex; align-items:flex-start; gap:12px;}
+.lit-tag{flex:none; margin-top:1px;}
 
 .meter{height:5px; background:var(--smoke-2); border-radius:3px; overflow:hidden;}
 .meter i{display:block; height:100%; background:var(--ink); border-radius:3px;}
@@ -296,6 +298,11 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
   .pagewrap{padding:16px 14px 88px;} .cmd-trigger{min-width:0; width:40px; padding:0; justify-content:center;} .cmd-trigger span,.cmd-trigger .kbd{display:none;}
   .form-grid,.checks,.g2{grid-template-columns:1fr;} .g3,.g4{grid-template-columns:repeat(2,1fr);} .scoregrid{grid-template-columns:repeat(3,1fr);}
   .g3-stack-mobile{grid-template-columns:1fr !important;}
+
+  /* cited-research cards: tag above, citation below -- side-by-side gets
+     too cramped once the pill eats a chunk of a 390px-wide row */
+  .lit-row{flex-direction:column; gap:8px;}
+  .lit-tag{margin-top:0;}
   .phead h1{font-size:22px;}
 
   /* tables: keep columns legible, scroll sideways instead of crushing */

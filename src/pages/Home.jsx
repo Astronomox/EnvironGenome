@@ -107,8 +107,8 @@ export default function Home() {
       <div className="stack">
         {literature.map((l, i) => (
           <div className="card" key={i} style={{ cursor:"pointer" }} onClick={() => setOpenLit(openLit === i ? -1 : i)}>
-            <div className="card-pad" style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
-              <span className="pill" style={{ flex:"none", marginTop:1 }}>{l.tag}</span>
+            <div className="card-pad lit-row">
+              <span className="pill lit-tag">{l.tag}</span>
               <div style={{ minWidth:0 }}>
                 <div style={{ fontSize:13, lineHeight:1.5 }}>{l.cite}</div>
                 {openLit === i && <div style={{ fontSize:12.5, color:"var(--graphite)", lineHeight:1.6, marginTop:8 }}>{l.finding}</div>}
