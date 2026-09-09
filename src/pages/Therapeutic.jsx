@@ -178,7 +178,7 @@ export default function Therapeutic() {
       <TreatmentPlanner sel={sel} />
 
       <div className="sect-t">Family counselling toolkit</div>
-      <div className="grid g3">
+      <div className="grid g3 g3-stack-mobile">
         {[
           { title:"Reducing continued exposure", icon:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z", items:["Remove child from affected area during remediation","Use certified water filters if mains supply is suspect","Ventilate indoor spaces, seal cracks near contaminated soil","Wash hands before meals; remove shoes at the door","Avoid homegrown produce near known hazard sites"] },
           { title:"Warning signs to watch", icon:"M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01", items:["Unexplained fatigue or cognitive changes in children","Skin rashes or discolouration without clear cause","Recurring headaches or nausea near the hazard site","Elevated blood pressure in otherwise healthy adults","Unusual birth outcomes in the household"] },

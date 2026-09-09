@@ -294,7 +294,8 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
   .glassnav a.on svg{stroke:var(--paper);}
   .glassnav a:focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
   .pagewrap{padding:16px 14px 88px;} .cmd-trigger{min-width:0; width:40px; padding:0; justify-content:center;} .cmd-trigger span,.cmd-trigger .kbd{display:none;}
-  .form-grid,.checks,.g2,.g3,.g4{grid-template-columns:1fr;} .scoregrid{grid-template-columns:repeat(3,1fr);}
+  .form-grid,.checks,.g2{grid-template-columns:1fr;} .g3,.g4{grid-template-columns:repeat(2,1fr);} .scoregrid{grid-template-columns:repeat(3,1fr);}
+  .g3-stack-mobile{grid-template-columns:1fr !important;}
   .phead h1{font-size:22px;}
 
   /* tables: keep columns legible, scroll sideways instead of crushing */
@@ -303,14 +304,22 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
   .tbl tbody td.name{white-space:normal; min-width:150px;}
   .muttbl{min-width:420px;} .proptbl{min-width:0;}
 
-  /* page header stacks, tools scroll rather than wrap into a tall block */
+  /* page header: stack top to bottom, no hidden horizontal scroll for
+     primary actions -- everything must be reachable by an ordinary
+     vertical scroll, since a hidden side-scroll on the main action bar
+     is a real barrier, not just an aesthetic issue */
   .phead{flex-direction:column; align-items:stretch; gap:12px;}
-  .phead .htools{overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; -webkit-overflow-scrolling:touch;}
-  .phead .htools>*{flex:none;}
+  .phead .htools{flex-direction:column; align-items:stretch; gap:8px;}
+  .phead .htools>*{width:100%;}
+  .phead .htools .seg{width:100%; display:flex; flex-wrap:wrap;}
+  .phead .htools .seg button{flex:1 1 auto; white-space:nowrap;}
   .phead .sub{font-size:12.5px;}
 
-  /* toolbars and segmented controls scroll instead of stacking */
-  .map-toolbar{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  /* toolbars and segmented controls: wrap into full-width rows instead of
+     scrolling sideways, same reasoning as .phead .htools above */
+  .map-toolbar{flex-wrap:wrap;}
+  .map-toolbar .seg{width:100%; display:flex; flex-wrap:wrap;}
+  .map-toolbar .seg button{flex:1 1 auto; white-space:nowrap;}
   .map-toolbar>*{flex:none;}
 
   /* map and lists sized for a phone */
