@@ -170,8 +170,8 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
 .chem-hd .formula{font-family:var(--mono); font-size:13px; color:var(--graphite); margin-top:4px;}
 .chem-body{display:grid; grid-template-columns:1fr 1fr;}
 .chem-col{padding:20px 22px; min-width:0;} .chem-col.brd{border-right:1px solid var(--hair);}
-.proptbl{width:100%; border-collapse:collapse; table-layout:fixed;}
-.proptbl td{padding:8px 0; border-bottom:1px solid var(--hair); font-size:13px; overflow-wrap:anywhere;}
+.proptbl{width:100%; border-collapse:collapse;}
+.proptbl td{padding:8px 0; border-bottom:1px solid var(--hair); font-size:13px; overflow-wrap:break-word;}
 .proptbl tr:last-child td{border-bottom:none;}
 .proptbl td:first-child{color:var(--graphite);} .proptbl td:last-child{text-align:right; font-family:var(--mono);}
 .geno-flag{margin-top:16px; display:inline-flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10px;
