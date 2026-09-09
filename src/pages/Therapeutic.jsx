@@ -65,6 +65,7 @@ const Field = ({ label, children }) => <div className="fg"><label>{label}</label
 export default function Therapeutic() {
   const toast = useToast();
   const [sel, setSel] = useState([]);
+  const [otherSymptom, setOtherSymptom] = useState("");
   const [ai, setAi] = useState({ status: "idle", text: "" });
   const [refAi, setRefAi] = useState({ status: "idle", text: "" });
   const [caseId] = useState(() => "EGX-" + Math.floor(1000 + Math.random() * 9000));
@@ -80,11 +81,12 @@ export default function Therapeutic() {
   }
 
   async function match() {
-    if (!sel.length) { setAi({ status: "error", text: "Select at least one presenting symptom first." }); return; }
+    const combined = [...sel, ...(otherSymptom.trim() ? [otherSymptom.trim()] : [])];
+    if (!combined.length) { setAi({ status: "error", text: "Select at least one presenting symptom, or describe one below, first." }); return; }
     setAi({ status: "loading", text: "" });
     try {
       const t = await askGemini(
-        `You are a clinical decision-support aid for environmental medicine at Lagos University Teaching Hospital. A patient presents with: ${sel.join(", ")}. List the 3 most probable environmental or toxic etiologies in descending confidence. For each: name the pollutant class, one recommended confirmatory biomarker or lab test, and typical exposure source in the Lagos context. Under 150 words, plain prose with pollutant names in bold using **name**. Add a one-line note that this is decision-support, not diagnosis.`);
+        `You are a clinical decision-support aid for environmental medicine at Lagos University Teaching Hospital. A patient presents with: ${combined.join(", ")}. List the 3 most probable environmental or toxic etiologies in descending confidence. For each: name the pollutant class, one recommended confirmatory biomarker or lab test, and typical exposure source in the Lagos context. Under 150 words, plain prose with pollutant names in bold using **name**. Add a one-line note that this is decision-support, not diagnosis.`);
       setAi({ status: "done", text: t }); toast("Differential generated");
     } catch (e) { setAi({ status: "error", text: e.message }); }
   }
@@ -113,6 +115,11 @@ export default function Therapeutic() {
             {symptoms.map(s => (
               <div key={s} className={"chk" + (sel.includes(s) ? " on" : "")} onClick={() => toggle(s)}><span className="box" />{s}</div>
             ))}
+          </div>
+          <div className="fg" style={{ marginTop: 14 }}>
+            <label>Not on this list? Describe it here</label>
+            <textarea rows={2} value={otherSymptom} onChange={e => setOtherSymptom(e.target.value)}
+              placeholder="e.g. metallic taste, recurring nosebleeds, hand tremor only in the evenings" />
           </div>
           <button className="btn btn-dark" style={{ width: "100%", marginTop: 16 }} onClick={match}>
             <span className="ai-spark">✦</span> Match to environmental etiology

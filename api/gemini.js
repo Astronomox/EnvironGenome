@@ -3,13 +3,17 @@
 // never ships to the browser and no individual user ever enters their own
 // key. Set GEMINI_API_KEY in the Vercel project's Environment Variables.
 //
-// Model: uses the "gemini-flash-latest" alias rather than a pinned version
-// (e.g. "gemini-1.5-flash") on purpose. Google retires dated model names on
-// a schedule of months, not years -- gemini-1.5-flash was already fully
-// shut down (confirmed via Google's own docs, Sept 2026), and every
-// gemini-2.5-* model has an announced shutdown date within weeks of this
-// being written. The "-latest" alias is Google's own recommended way to
-// avoid re-breaking this every time they rotate models.
+// Model: pinned to "gemini-3.5-flash-lite" -- Google's cheapest/fastest
+// current tier ("optimized for...lightweight agentic workflows that
+// require fast inference at minimal cost" per Google's own model card).
+// Was briefly on the "gemini-flash-latest" alias, which kept resolving to
+// the pricier Gemini 3.8 Flash for some calls and ran consumption up.
+// Before that, this was hardcoded to "gemini-1.5-flash", which Google has
+// since fully shut down (confirmed via their docs, Sept 2026) -- every
+// request to it returned 404. If this model name also gets retired later,
+// that's the failure mode to check for first: a 404-with-error-body from
+// Google, surfaced below instead of hidden.
+const MODEL = "gemini-3.5-flash-lite";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -33,7 +37,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  const MODEL = "gemini-flash-latest";
   const url =
     `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=` +
     encodeURIComponent(apiKey);

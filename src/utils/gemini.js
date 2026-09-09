@@ -44,3 +44,12 @@ export function fmt(s) {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/^\s*[\*\-]\s/gm, "\u2022 ");
 }
+
+// Strip markdown down to true plain text for clipboard copy -- no **, no
+// HTML, no literal asterisks left behind. Bullet lines become a plain "- ".
+export function toPlainText(s) {
+  return s
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/^\s*[\*\-]\s+/gm, "- ")
+    .trim();
+}
