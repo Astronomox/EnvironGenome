@@ -12,7 +12,11 @@ function DiffView({ a, b }) {
   const bWords = new Set(b.toLowerCase().split(/\W+/));
   const shared = [...aWords].filter(w => w.length > 4 && bWords.has(w));
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }}>
+    <div style={{ marginTop: 16 }}>
+      <div style={{ fontSize:12, color:"var(--graphite)", marginBottom:10 }}>
+        This compares words in the two instruments' names only -- the full regulatory text isn't in this dataset yet -- so a low or zero count is expected for most pairs, not a bug.
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
       {[{ label: a, words: aWords }, { label: b, words: bWords }].map(({ label, words }, i) => (
         <div key={i} className="card card-pad">
           <div className="eyebrow" style={{ marginBottom: 10 }}>{label.slice(0, 50)}</div>
@@ -31,6 +35,7 @@ function DiffView({ a, b }) {
           </div>
         </div>
       ))}
+      </div>
     </div>
   );
 }
@@ -99,8 +104,8 @@ export default function Standards() {
   const [params] = useSearchParams();
   const [tier, setTier] = useState("all");
   const [q, setQ] = useState(params.get("q") || "");
-  const [ja, setJa] = useState("WHO Ambient Air Quality Guidelines");
-  const [jb, setJb] = useState("Federal Environmental Quality Standards Act (Cap E10)");
+  const [ja, setJa] = useState(standards[0]?.t || "");
+  const [jb, setJb] = useState(standards[1]?.t || "");
   const [ai, setAi] = useState({ status: "idle", text: "" });
   const [showDiff, setShowDiff] = useState(false);
   const [selRow, setSelRow] = useState(null);
@@ -122,14 +127,14 @@ export default function Standards() {
     { key: "actions", label: "", sortable: false, render: r => (
       <div style={{ display: "flex", gap: 6 }}>
         <button className="pill" style={{ cursor: "pointer" }}
-          onClick={e => { e.stopPropagation(); setJa(r.t); toast(`Standard A set to: ${r.t.slice(0, 30)}`); }}>Set A</button>
+          onClick={e => { e.stopPropagation(); setJa(r.t); toast(`Standard A set to: ${r.t}`); }}>Set A</button>
         <button className="pill" style={{ cursor: "pointer" }}
-          onClick={e => { e.stopPropagation(); setJb(r.t); toast(`Standard B set to: ${r.t.slice(0, 30)}`); }}>Set B</button>
+          onClick={e => { e.stopPropagation(); setJb(r.t); toast(`Standard B set to: ${r.t}`); }}>Set B</button>
       </div>
     )}
   ];
 
-  const [clStd, setClStd] = useState("Federal Environmental Quality Standards Act (Cap E10)");
+  const [clStd, setClStd] = useState(standards[0]?.t || "");
   const [clAi, setClAi] = useState({ status: "idle", text: "" });
   const [checklist, setChecklist] = useState([]);
 
@@ -164,7 +169,9 @@ export default function Standards() {
   return (
     <>
       <PageHeader eyebrow="Regulation" title="Standards reference library"
-        sub="No instruments loaded yet -- the earlier 37-entry list mixed real treaty names with unverified tags and dates. Click Set A or Set B on any row to load it into the comparator.">
+        sub={standards.length === 0
+          ? "No instruments loaded yet."
+          : `${standards.length} instruments loaded, each a real, named treaty or Nigerian act. Click Set A or Set B on any row to load it into the comparator.`}>
         <SearchInput value={q} onChange={setQ} placeholder="Search instruments" />
         <Segmented value={tier} onChange={setTier}
           options={[{ value: "all", label: "All" }, { value: "Global", label: "Global" }, { value: "Regional", label: "Regional" }, { value: "Nigeria", label: "Nigeria" }]} />
@@ -182,6 +189,9 @@ export default function Standards() {
 
       <div className="sect-t">Regulatory gap analyser</div>
       <div className="card card-pad">
+        <div style={{ fontSize:13, color:"var(--graphite)", marginBottom:16, lineHeight:1.6 }}>
+          Pick two instruments (use "Set A" / "Set B" on any row above, or choose them directly below) to see where their requirements might overlap or conflict, and to ask Gemini for a plain-language compliance gap summary.
+        </div>
         <div className="form-grid">
           <div className="fg"><label>Standard A</label>
             <select value={ja} onChange={e => setJa(e.target.value)}>
