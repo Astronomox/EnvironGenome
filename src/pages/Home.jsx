@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <>
       <PageHeader eyebrow="Dashboard" title="Home portal"
-        sub="An overview of what's actually loaded in the platform right now.">
+        sub="A snapshot of the registry, hazard map, and regulatory data currently in the system.">
         <button className="btn btn-ghost" onClick={() => nav("/app/map")}>Open map</button>
         <button className="btn btn-dark" onClick={() => nav("/app/registry")}>Search registry</button>
       </PageHeader>

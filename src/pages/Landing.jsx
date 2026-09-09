@@ -5,7 +5,6 @@ import "./landing.css";
 
 function SensorStrip() {
   const [bars, setBars] = useState(Array(34).fill(20));
-  const [reading, setReading] = useState("0.0");
   useEffect(() => {
     const id = setInterval(() => {
       setBars(prev => prev.map((_, i) => {
@@ -15,22 +14,10 @@ function SensorStrip() {
     }, 320);
     return () => clearInterval(id);
   }, []);
-  useEffect(() => {
-    const avg = bars.reduce((a, b) => a + b, 0) / bars.length;
-    setReading((avg * 0.9).toFixed(1));
-  }, [bars]);
   return (
     <div className="sensor">
-      <div className="sensor-head">
-        <span className="eyebrow" style={{ color: "rgba(250,250,248,.55)" }}>Ambient monitoring, Lagos grid</span>
-        <span className="live"><span className="pulse" />LIVE</span>
-      </div>
       <div className="bars">
         {bars.map((h, i) => <div key={i} className="bar" style={{ height: h + "%" }} />)}
-      </div>
-      <div className="sensor-foot">
-        <span>PM2.5 / Pb / PCB / SO2</span>
-        <span>{reading} ug/m3</span>
       </div>
     </div>
   );
