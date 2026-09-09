@@ -125,7 +125,7 @@ export default function Therapeutic() {
             <div className="card card-pad" style={{ color: "var(--graphite)", fontSize: 13.5, lineHeight: 1.6 }}>
               Select symptoms and run the match to see ranked environmental causes, confirmatory biomarkers, and exposure sources.
             </div>
-          ) : <AiPanel label="Gemini differential" state={ai} />}
+          ) : <AiPanel label="Gemini differential" state={ai} onRetry={match} />}
 
           {/* post-match actions */}
           {ai.status === "done" && (
@@ -150,7 +150,7 @@ export default function Therapeutic() {
 
           {/* referral letter */}
           {refAi.status !== "idle" && (
-            <div style={{ marginTop: 14 }}><AiPanel label="Gemini referral letter" state={refAi} /></div>
+            <div style={{ marginTop: 14 }}><AiPanel label="Gemini referral letter" state={refAi} onRetry={genReferral} /></div>
           )}
 
           <div className="card card-pad" style={{ marginTop: 14 }}>

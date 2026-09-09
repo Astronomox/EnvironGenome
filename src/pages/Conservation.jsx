@@ -107,7 +107,7 @@ export default function Conservation() {
           <button className="btn btn-dark" onClick={forecast}>
             <span className="ai-spark">✦</span> Forecast and draft mitigation
           </button>
-          {ai.status !== "idle" && <div style={{ marginTop:16 }}><AiPanel label="Gemini mitigation brief" state={ai} /></div>}
+          {ai.status !== "idle" && <div style={{ marginTop:16 }}><AiPanel label="Gemini mitigation brief" state={ai} onRetry={forecast} /></div>}
           {ai.status === "done" && (
             <div style={{ display:"flex", gap:8, marginTop:14 }}>
               <button className="btn btn-ghost" onClick={() => toast("Brief sent to committee portal")}>Send to committee</button>

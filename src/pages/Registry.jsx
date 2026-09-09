@@ -328,7 +328,7 @@ export default function Registry() {
         <button className="btn btn-dark" onClick={ask}><span className="ai-spark">✦</span> Ask Gemini</button>
       </PageHeader>
 
-      {ai.status !== "idle" && <div style={{ marginBottom: 18 }}><AiPanel label="Gemini interpretation" state={ai} /></div>}
+      {ai.status !== "idle" && <div style={{ marginBottom: 18 }}><AiPanel label="Gemini interpretation" state={ai} onRetry={ask} /></div>}
 
       {view === "compare" ? (
         <CompareView

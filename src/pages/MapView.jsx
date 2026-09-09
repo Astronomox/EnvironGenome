@@ -304,7 +304,7 @@ export default function MapView() {
       </div>
 
       {ai.status !== "idle" && (
-        <><div className="sect-t">Generated audit report</div><AiPanel label="Gemini audit draft" state={ai} /></>
+        <><div className="sect-t">Generated audit report</div><AiPanel label="Gemini audit draft" state={ai} onRetry={draftReport} /></>
       )}
 
       <div className="sect-t">Site severity history (12 months)</div>

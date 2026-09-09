@@ -209,7 +209,7 @@ export default function Standards() {
           </button>
         </div>
         {showDiff && <DiffView a={ja} b={jb} />}
-        {ai.status !== "idle" && <div style={{ marginTop: 16 }}><AiPanel label="Gemini gap analysis" state={ai} /></div>}
+        {ai.status !== "idle" && <div style={{ marginTop: 16 }}><AiPanel label="Gemini gap analysis" state={ai} onRetry={compare} /></div>}
       </div>
 
       <div className="sect-t">Compliance checklist builder</div>
@@ -230,7 +230,12 @@ export default function Standards() {
             <button className="btn btn-ghost" onClick={downloadChecklist}>Download .txt</button>
           )}
         </div>
-        {clAi.status === "error" && <div style={{ color: "var(--sev3)", fontSize: 13, marginTop: 12 }}>{clAi.text}</div>}
+        {clAi.status === "error" && (
+          <div style={{ marginTop: 12 }}>
+            <div style={{ color: "var(--sev3)", fontSize: 13 }}>{clAi.text}</div>
+            <button className="btn btn-ghost" style={{ marginTop: 10 }} onClick={buildChecklist}>Retry</button>
+          </div>
+        )}
         {checklist.length > 0 && (
           <div style={{ marginTop: 18 }}>
             <div className="eyebrow" style={{ marginBottom: 12 }}>{clStd.slice(0, 50)}</div>

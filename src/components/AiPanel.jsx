@@ -1,7 +1,7 @@
 import { fmt } from "../utils/gemini";
 import { Skeleton } from "./ui";
 
-export default function AiPanel({ label, state }) {
+export default function AiPanel({ label, state, onRetry }) {
   if (!state || state.status === "idle") return null;
   return (
     <div className="ai-panel">
@@ -12,8 +12,13 @@ export default function AiPanel({ label, state }) {
       {state.status === "loading" ? (
         <Skeleton lines={4} />
       ) : (
-        <div className="ai-body" style={state.status === "error" ? { color: "var(--sev3)" } : null}
-          dangerouslySetInnerHTML={{ __html: state.status === "error" ? state.text : fmt(state.text) }} />
+        <>
+          <div className="ai-body" style={state.status === "error" ? { color: "var(--sev3)" } : null}
+            dangerouslySetInnerHTML={{ __html: state.status === "error" ? state.text : fmt(state.text) }} />
+          {state.status === "error" && onRetry && (
+            <button className="btn btn-ghost" style={{ marginTop: 12 }} onClick={onRetry}>Retry</button>
+          )}
+        </>
       )}
     </div>
   );
