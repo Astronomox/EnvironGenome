@@ -120,7 +120,7 @@ export default function PathwayDiagram({ cas }) {
   return (
     <div style={{ marginTop: 20 }}>
       <div className="eyebrow" style={{ marginBottom: 10 }}>{pw.label}</div>
-      <PanZoom height={280}>
+      <PanZoom height={280} contentWidth={W}>
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: W, height: H, flex: "none", display: "block" }}>
           <defs>
             <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">

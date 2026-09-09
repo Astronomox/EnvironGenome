@@ -3,16 +3,39 @@ import { useRef, useState, useCallback, useEffect } from "react";
 // Lightweight pan/zoom container -- drag to pan, wheel or pinch to zoom,
 // like a map. No external library: just pointer events (which cover both
 // mouse and touch) plus manual two-finger pinch detection.
-const MIN_SCALE = 0.6, MAX_SCALE = 3;
+//
+// Starts at a "fit to width" scale, not scale 1, so the whole diagram is
+// visible on first load -- starting zoomed-in with most of it cropped off
+// (the original version) meant a user had to realize they needed to drag
+// immediately, with no visual cue that there was more to see. Real user
+// feedback: it read as "difficult to use" when the actual problem was
+// just a bad starting position, not the gesture handling itself.
+const MIN_SCALE = 0.35, MAX_SCALE = 3;
 
-export default function PanZoom({ children, height = 320 }) {
+export default function PanZoom({ children, height = 320, contentWidth = 640 }) {
   const wrapRef = useRef(null);
   const [t, setT] = useState({ x: 0, y: 0, scale: 1 });
+  const fitScale = useRef(1);
   const pointers = useRef(new Map());
   const drag = useRef(null);
   const pinch = useRef(null);
 
   const clampScale = (s) => Math.max(MIN_SCALE, Math.min(MAX_SCALE, s));
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const fit = () => {
+      const w = el.clientWidth;
+      const s = clampScale(Math.min(1, (w - 24) / contentWidth));
+      fitScale.current = s;
+      setT({ x: 0, y: 0, scale: s });
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentWidth]);
 
   const onPointerDown = useCallback((e) => {
     wrapRef.current?.setPointerCapture(e.pointerId);
@@ -23,8 +46,7 @@ export default function PanZoom({ children, height = 320 }) {
       drag.current = null;
       const pts = [...pointers.current.values()];
       const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-      const mid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
-      pinch.current = { startDist: dist, origScale: t.scale, mid };
+      pinch.current = { startDist: dist, origScale: t.scale };
     }
   }, [t]);
 
@@ -61,9 +83,8 @@ export default function PanZoom({ children, height = 320 }) {
   }, []);
 
   // React attaches onWheel as a passive listener by default, which silently
-  // blocks preventDefault() (confirmed via a real console warning during
-  // testing) -- meaning the page could scroll a little while the diagram
-  // also zooms. A native, explicitly non-passive listener fixes that.
+  // blocks preventDefault(). A native, explicitly non-passive listener fixes
+  // that so the page doesn't also scroll while the diagram zooms.
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -72,7 +93,7 @@ export default function PanZoom({ children, height = 320 }) {
   }, [onWheel]);
 
   const zoomBy = (delta) => setT(prev => ({ ...prev, scale: clampScale(prev.scale + delta) }));
-  const reset = () => setT({ x: 0, y: 0, scale: 1 });
+  const reset = () => setT({ x: 0, y: 0, scale: fitScale.current });
 
   return (
     <div style={{ position: "relative" }}>
@@ -96,9 +117,9 @@ export default function PanZoom({ children, height = 320 }) {
         </div>
       </div>
       <div style={{ position: "absolute", bottom: 10, right: 10, display: "flex", gap: 6 }}>
-        <button className="btn btn-ghost" style={{ width: 32, height: 32, padding: 0 }} onClick={() => zoomBy(0.25)} aria-label="Zoom in">+</button>
-        <button className="btn btn-ghost" style={{ width: 32, height: 32, padding: 0 }} onClick={() => zoomBy(-0.25)} aria-label="Zoom out">-</button>
-        <button className="btn btn-ghost" style={{ height: 32, padding: "0 10px", fontSize: 11 }} onClick={reset}>Reset</button>
+        <button className="btn btn-ghost" style={{ width: 40, height: 40, padding: 0, fontSize: 16 }} onClick={() => zoomBy(0.25)} aria-label="Zoom in">+</button>
+        <button className="btn btn-ghost" style={{ width: 40, height: 40, padding: 0, fontSize: 16 }} onClick={() => zoomBy(-0.25)} aria-label="Zoom out">-</button>
+        <button className="btn btn-ghost" style={{ height: 40, padding: "0 12px", fontSize: 12 }} onClick={reset}>Reset</button>
       </div>
     </div>
   );
