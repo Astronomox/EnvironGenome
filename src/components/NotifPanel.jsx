@@ -1,14 +1,13 @@
-import { useState } from "react";
+// Notification state now lives in Layout.jsx (the single source of truth for
+// both the panel content and the bell's red dot, so they can't drift out of
+// sync the way the old hardcoded `unread = 3` did). This file just renders
+// what it's given.
+export const initialNotifs = [
+  { id: 1, type: "info", text: "Welcome to EnviroGenome Guardian. This is a coursework demo build.", time: "now", unread: true },
+];
 
-// No real notification source is wired up yet. These used to be invented
-// events (fake alerts, fake "peer-approved" research claims); removed.
-const NOTIFS = [];
-
-export default function NotifPanel({ open, setOpen }) {
-  const [items, setItems] = useState(NOTIFS);
+export default function NotifPanel({ open, setOpen, items, onMarkAll, onDismiss }) {
   const unread = items.filter(n => n.unread).length;
-  const markAll = () => setItems(prev => prev.map(n => ({ ...n, unread: false })));
-  const dismiss = (id) => setItems(prev => prev.filter(n => n.id !== id));
 
   if (!open) return null;
   return (
@@ -18,7 +17,7 @@ export default function NotifPanel({ open, setOpen }) {
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", borderBottom:"1px solid var(--hair)" }}>
           <div style={{ fontWeight:500, fontSize:14 }}>Notifications {unread > 0 && <span style={{ fontFamily:"var(--mono)", fontSize:10, background:"var(--sev3)", color:"var(--paper)", borderRadius:10, padding:"1px 6px", marginLeft:6 }}>{unread}</span>}</div>
           <div style={{ display:"flex", gap:8 }}>
-            {unread > 0 && <button className="btn btn-ghost" style={{ height:28, fontSize:11, padding:"0 10px" }} onClick={markAll}>Mark all read</button>}
+            {unread > 0 && <button className="btn btn-ghost" style={{ height:28, fontSize:11, padding:"0 10px" }} onClick={onMarkAll}>Mark all read</button>}
             <button className="btn btn-ghost" style={{ height:28, fontSize:11, padding:"0 10px" }} onClick={() => setOpen(false)}>Close</button>
           </div>
         </div>
@@ -32,7 +31,7 @@ export default function NotifPanel({ open, setOpen }) {
                 <div style={{ fontSize:13, lineHeight:1.5 }}>{n.text}</div>
                 <div className="mono" style={{ fontSize:10.5, color:"var(--graphite)", marginTop:3 }}>{n.time}</div>
               </div>
-              <button style={{ fontSize:16, color:"var(--graphite)", lineHeight:1, flex:"none" }} onClick={() => dismiss(n.id)}>x</button>
+              <button style={{ fontSize:16, color:"var(--graphite)", lineHeight:1, flex:"none" }} onClick={() => onDismiss(n.id)}>x</button>
             </div>
           ))}
         </div>

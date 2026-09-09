@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { MODULES } from "../data/modules";
 import CommandPalette from "./CommandPalette";
 import ShortcutsModal from "./ShortcutsModal";
-import NotifPanel from "./NotifPanel";
+import NotifPanel, { initialNotifs } from "./NotifPanel";
 import Onboarding from "./Onboarding";
 
 const Logo = ({ light }) => (
@@ -19,7 +19,10 @@ export default function Layout() {
   const [cmdOpen, setCmdOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
-  const [unread] = useState(3);
+  const [notifs, setNotifs] = useState(initialNotifs);
+  const unread = notifs.filter(n => n.unread).length;
+  const markAllNotifs = () => setNotifs(prev => prev.map(n => ({ ...n, unread: false })));
+  const dismissNotif = (id) => setNotifs(prev => prev.filter(n => n.id !== id));
   const [contrast, setContrast] = useState(false);
   const [showOnboard] = useState(() => {
     try { return !localStorage.getItem("eg_onboarded"); } catch { return false; }
@@ -108,7 +111,7 @@ export default function Layout() {
 
       <CommandPalette open={cmdOpen} setOpen={setCmdOpen} />
       <ShortcutsModal open={shortcutsOpen} setOpen={setShortcutsOpen} />
-      <NotifPanel open={notifOpen} setOpen={setNotifOpen} />
+      <NotifPanel open={notifOpen} setOpen={setNotifOpen} items={notifs} onMarkAll={markAllNotifs} onDismiss={dismissNotif} />
       {!onboarded && <Onboarding onDone={() => setOnboarded(true)} />}
     </div>
   );
