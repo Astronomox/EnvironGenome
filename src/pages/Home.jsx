@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/ui";
 import { feed, sites, districts, SEV_COLOR, SEV_LABEL } from "../data/platform";
 import { contaminants } from "../data/contaminants";
 import { literature } from "../data/literature";
+import { askGemini } from "../utils/gemini";
 
 const Kpi = ({ lab, val, sub }) => (
   <div className="kpi"><div className="lab">{lab}</div><div className="val">{val}</div>{sub && <div className="sub"><b>{sub}</b></div>}</div>
@@ -12,6 +13,24 @@ const Kpi = ({ lab, val, sub }) => (
 export default function Home() {
   const nav = useNavigate();
   const [openLit, setOpenLit] = useState(-1);
+  const [geminiStatus, setGeminiStatus] = useState({ state: "checking" }); // checking | not-configured | configured | active | down
+
+  useEffect(() => {
+    fetch("/api/gemini-status")
+      .then(r => r.json())
+      .then(d => setGeminiStatus({ state: d.configured ? "configured" : "not-configured" }))
+      .catch(() => setGeminiStatus({ state: "not-configured" }));
+  }, []);
+
+  async function testGeminiConnection() {
+    setGeminiStatus(s => ({ ...s, state: "testing" }));
+    try {
+      await askGemini("Reply with the single word OK.");
+      setGeminiStatus({ state: "active" });
+    } catch (e) {
+      setGeminiStatus({ state: "down", reason: e.message });
+    }
+  }
   const counts = [0, 1, 2, 3].map(s => sites.filter(x => x.sev === s).length);
   const total = sites.length || 1;
   const pending = sites.filter(s => s.status === "Pending verification");
@@ -119,22 +138,45 @@ export default function Home() {
       </div>
 
       <div className="sect-t">Platform status</div>
-      <div className="grid g3">
+      <div className="grid g3 g3-stack-mobile">
         <div className="card card-pad">
           <div className="eyebrow" style={{ marginBottom:14 }}>System</div>
           <div className="stack" style={{ gap:10 }}>
             {[
               ["Map tiles","OpenStreetMap, live","ok"],
-              ["Gemini integration","Server-side, no key needed","ok"],
               ["Build version","4.1.32","info"],
             ].map(([l,v,t]) => (
-              <div key={l} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:"1px solid var(--hair)" }}>
+              <div key={l} className="status-row" style={{ padding:"8px 0", borderBottom:"1px solid var(--hair)" }}>
                 <span style={{ fontSize:13 }}>{l}</span>
-                <span className="mono" style={{ fontSize:10.5, padding:"2px 8px", borderRadius:5,
+                <span className="mono status-val" style={{ fontSize:10.5, padding:"2px 8px", borderRadius:5,
                   background: t==="ok"?"rgba(47,158,68,.08)":"var(--smoke)",
                   color: t==="ok"?"var(--ok)":"var(--graphite)" }}>{v}</span>
               </div>
             ))}
+            <div className="status-row" style={{ padding:"8px 0", borderBottom: geminiStatus.state==="down" ? "none" : "1px solid var(--hair)" }}>
+              <span style={{ fontSize:13 }}>Gemini integration</span>
+              {(() => {
+                const map = {
+                  checking:  { text:"Checking...",           color:"var(--graphite)", bg:"var(--smoke)" },
+                  testing:   { text:"Testing...",             color:"var(--graphite)", bg:"var(--smoke)" },
+                  "not-configured": { text:"Not configured",  color:"var(--sev3)",     bg:"rgba(216,68,44,.08)" },
+                  configured:{ text:"Configured, not tested", color:"var(--graphite)", bg:"var(--smoke)" },
+                  active:    { text:"Active",                 color:"var(--ok)",       bg:"rgba(47,158,68,.08)" },
+                  down:      { text:"Down",                   color:"var(--sev3)",     bg:"rgba(216,68,44,.08)" },
+                };
+                const s = map[geminiStatus.state] || map.checking;
+                return <span className="mono status-val" style={{ fontSize:10.5, padding:"2px 8px", borderRadius:5, background:s.bg, color:s.color }}>{s.text}</span>;
+              })()}
+            </div>
+            {geminiStatus.state === "down" && (
+              <div style={{ fontSize:11.5, color:"var(--sev3)", paddingBottom:8, lineHeight:1.5 }}>{geminiStatus.reason}</div>
+            )}
+            {geminiStatus.state !== "checking" && geminiStatus.state !== "not-configured" && (
+              <button className="btn btn-ghost" style={{ width:"100%", marginTop:2 }}
+                onClick={testGeminiConnection} disabled={geminiStatus.state === "testing"}>
+                {geminiStatus.state === "testing" ? "Testing..." : "Test connection"}
+              </button>
+            )}
           </div>
         </div>
       </div>

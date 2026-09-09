@@ -123,6 +123,8 @@ a{color:inherit; text-decoration:none;}
 .pill{font-family:var(--mono); font-size:10.5px; padding:4px 9px; border:1px solid var(--hair-2); border-radius:16px; color:var(--graphite);}
 .lit-row{display:flex; align-items:flex-start; gap:12px;}
 .lit-tag{flex:none; margin-top:1px;}
+.status-row{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.status-val{white-space:nowrap;}
 
 .meter{height:5px; background:var(--smoke-2); border-radius:3px; overflow:hidden;}
 .meter i{display:block; height:100%; background:var(--ink); border-radius:3px;}
@@ -303,6 +305,8 @@ table.tbl{width:100%; border-collapse:collapse; font-size:13px;}
      too cramped once the pill eats a chunk of a 390px-wide row */
   .lit-row{flex-direction:column; gap:8px;}
   .lit-tag{margin-top:0;}
+  .status-row{flex-direction:column; align-items:flex-start; gap:6px;}
+  .status-val{white-space:normal;}
   .phead h1{font-size:22px;}
 
   /* tables: keep columns legible, scroll sideways instead of crushing */

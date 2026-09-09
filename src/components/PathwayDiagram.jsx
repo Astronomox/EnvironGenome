@@ -1,4 +1,6 @@
 // Pathway diagram data per compound class
+import PanZoom from "./PanZoom";
+
 const PATHWAYS = {
   // aromatic hydrocarbons (benzene, toluene, styrene, etc.)
   aromatic: {
@@ -118,8 +120,8 @@ export default function PathwayDiagram({ cas }) {
   return (
     <div style={{ marginTop: 20 }}>
       <div className="eyebrow" style={{ marginBottom: 10 }}>{pw.label}</div>
-      <div style={{ background: "var(--smoke)", borderRadius: 12, padding: "18px 14px", overflowX: "auto" }}>
-        <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", minWidth: 560, height: "auto", display: "block" }}>
+      <PanZoom height={280}>
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ width: W, height: H, flex: "none", display: "block" }}>
           <defs>
             <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
               <path d="M0,0 L0,6 L8,3 z" fill="#6B6B6B" />
@@ -143,9 +145,9 @@ export default function PathwayDiagram({ cas }) {
             </g>
           ))}
         </svg>
-      </div>
+      </PanZoom>
       <div className="mono" style={{ fontSize: 10, color: "var(--mute)", marginTop: 6 }}>
-        Pathway is indicative and class-based. Refer to primary literature for compound-specific kinetics.
+        Pathway is indicative and class-based. Refer to primary literature for compound-specific kinetics. Drag to pan, scroll or pinch to zoom.
       </div>
     </div>
   );
