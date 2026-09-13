@@ -4,7 +4,7 @@
 // Formula and weights are a real, defensible composite-scoring method.
 // Per-district sub-scores live in src/data/platform.js (districts array).
 // Each entry is annotated there with its source basis. All scores are
-// described as "model estimates" in the UI — derived from published AQI,
+// described as "model estimates" in the UI - derived from published AQI,
 // WQI, and land-use studies, not direct per-district station readings.
 
 import { districts } from "../data/platform";

@@ -20,7 +20,7 @@ export const species = [
     latin: "Trichechus senegalensis",
     risk: 78,
     note: "Habitat loss, boat strikes, accidental netting in Lagos Lagoon",
-    iucn: "Vulnerable (VU) — IUCN Red List 2008",
+    iucn: "Vulnerable (VU) - IUCN Red List 2008",
     trend: "Decreasing",
     source: "IUCN SSC Sirenia Specialist Group (2008); Akinsanya et al. field surveys, Lagos Lagoon",
   },
@@ -29,7 +29,7 @@ export const species = [
     latin: "Trionyx triunguis",
     risk: 71,
     note: "Harvested for bushmeat, nesting sites lost to coastal construction",
-    iucn: "Vulnerable (VU) — IUCN Red List",
+    iucn: "Vulnerable (VU) - IUCN Red List",
     trend: "Decreasing",
     source: "Luiselli et al. (2006), African Journal of Ecology; IUCN Tortoises & Freshwater Turtles SG",
   },
@@ -38,7 +38,7 @@ export const species = [
     latin: "Eretmochelys imbricata",
     risk: 88,
     note: "Critically endangered globally; nesting pressure from Lekki coastal development",
-    iucn: "Critically Endangered (CR) — IUCN Red List",
+    iucn: "Critically Endangered (CR) - IUCN Red List",
     trend: "Decreasing",
     source: "Mortimer & Donnelly (2008), IUCN; cited in IUCN RLE Assessment for Nigerian coastal ecosystems",
   },
@@ -47,7 +47,7 @@ export const species = [
     latin: "Varanus niloticus",
     risk: 52,
     note: "Hunted for skin and traditional medicine; wetland drainage reducing refuge",
-    iucn: "Least Concern (LC) — declining in Lagos due to urban pressure",
+    iucn: "Least Concern (LC) - declining in Lagos due to urban pressure",
     trend: "Decreasing locally",
     source: "Bennett (2002), TRAFFIC report on Varanus trade in Nigeria",
   },
@@ -56,7 +56,7 @@ export const species = [
     latin: "Pristis pectinata",
     risk: 94,
     note: "Bycatch in Lagos Lagoon artisanal fisheries; rostrum seized for curio trade",
-    iucn: "Critically Endangered (CR) — IUCN Red List",
+    iucn: "Critically Endangered (CR) - IUCN Red List",
     trend: "Critically declining",
     source: "Harrison & Dulvy (2014), IUCN Sawfish Conservation Strategy; cited in IUCN RLE coastal assessment",
   },
@@ -74,7 +74,7 @@ export const species = [
     latin: "Platalea alba",
     risk: 44,
     note: "Wetland drainage and pollution reducing feeding habitat in Lagos lagoon fringe",
-    iucn: "Least Concern — declining in coastal Nigeria",
+    iucn: "Least Concern - declining in coastal Nigeria",
     trend: "Decreasing locally",
     source: "BirdLife International (2023), species factsheet; Elgood et al. Birds of Nigeria",
   },
@@ -85,7 +85,7 @@ export const species = [
     note: "5 Vulnerable fish species confirmed in Nigerian Lagos Lagoon; Clarias among near-threatened stocks",
     iucn: "Least Concern globally; Near Threatened in Lagos Lagoon (Zootaxa 2025)",
     trend: "Stable globally, declining locally",
-    source: "Oladipo et al. (2025), Zootaxa 5646(1):38-62 — updated ichthyofaunal checklist for Lagos Lagoon",
+    source: "Oladipo et al. (2025), Zootaxa 5646(1):38-62 - updated ichthyofaunal checklist for Lagos Lagoon",
   },
 ];
 
@@ -110,13 +110,13 @@ export const standards = [
 //   studies. Industrial estates (Apapa, Oshodi/Ilupeju, Ikeja, Surulere)
 //   use dry-season AQI data from Research Square (2026 preprint) and the
 //   Tin-Can Port ambient monitoring study (ResearchGate, 2016). Alausa is
-//   the published control (AQI 64 — moderate). Residential/coastal districts
+//   the published control (AQI 64 - moderate). Residential/coastal districts
 //   use IQAir 2024 city-average (AQI ~74, US scale) converted to a 0-100
 //   score where 100 = cleanest. Industrial-zone AQIs of 119-229 map to
 //   lower scores. This is a model estimate, not a station reading per
 //   district; clearly labelled as such in the UI.
 //
-// Water purity (water): Ikorodu groundwater study (Academia.edu, 2021) —
+// Water purity (water): Ikorodu groundwater study (Academia.edu, 2021) -
 //   WQI moderate-to-good for residential areas. Apapa/Ebute-Metta lagoon
 //   fringe scores reflect published "highly polluted" findings (fote.org.ng;
 //   Nubi et al. 2008). Epe/Badagry coastal areas reflect lower industrial
@@ -124,17 +124,17 @@ export const standards = [
 //   residential / coastal).
 //
 // Nature quality (nature): Proxy for green cover and wetland integrity.
-//   Epe/Lekki/Badagry score higher — mangrove and lagoon fringe present.
-//   Apapa/Oshodi/Ajegunle score lower — dense industrial/port use.
+//   Epe/Lekki/Badagry score higher - mangrove and lagoon fringe present.
+//   Apapa/Oshodi/Ajegunle score lower - dense industrial/port use.
 //
 // Toxic exposure probability (toxic): Reflects industrial estate proximity,
 //   known heavy-metal soil contamination (NCBl PotentiallyToxic Elements
-//   study, 2018 — Victoria Island, Ikeja, Makoko, Lagos mainland, Ifako),
+//   study, 2018 - Victoria Island, Ikeja, Makoko, Lagos mainland, Ifako),
 //   and proximity to flagged hazard sites in this platform.
 //
 // Terrain stability (terrain): Coastal subsidence risk and flood exposure
 //   from Lagos State flood-risk records. Lagos Island, Lekki, Victoria
-//   Island — high subsidence risk. Ikeja/Alausa upland — stable.
+//   Island - high subsidence risk. Ikeja/Alausa upland - stable.
 //
 // All sub-scores are 0-100 (100 = best condition).
 // Source footnote shown in UI; described as "model estimate" throughout.

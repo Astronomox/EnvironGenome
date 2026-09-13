@@ -7,13 +7,13 @@ import { askGemini } from "../utils/gemini";
 
 // Intervention records grounded in real programmes and documented actions.
 // Outcome status reflects last known state from cited sources.
-// Progress % is a model estimate based on reported milestones — labelled
+// Progress % is a model estimate based on reported milestones - labelled
 // as such in the UI; these are not live dashboard figures.
 const INTERVENTIONS = [
   {
     id: 1,
     species: "West African Manatee",
-    action: "Lagos Lagoon Manatee Protection Campaign — community sensitisation, accidental-bycatch reporting network, and artisanal fisher training",
+    action: "Lagos Lagoon Manatee Protection Campaign - community sensitisation, accidental-bycatch reporting network, and artisanal fisher training",
     date: "2019",
     outcome: "Active",
     progress: 45,
@@ -22,7 +22,7 @@ const INTERVENTIONS = [
   {
     id: 2,
     species: "Hawksbill Sea Turtle",
-    action: "Bar Beach nesting site protection — seasonal exclusion zone enforcement and hatchery support coordinated with NESREA",
+    action: "Bar Beach nesting site protection - seasonal exclusion zone enforcement and hatchery support coordinated with NESREA",
     date: "2021",
     outcome: "Active",
     progress: 38,
@@ -31,7 +31,7 @@ const INTERVENTIONS = [
   {
     id: 3,
     species: "Red Mangrove (Rhizophora racemosa)",
-    action: "Lekki Conservation Centre mangrove replanting — 12,000 propagules planted across 8 hectares of degraded fringe",
+    action: "Lekki Conservation Centre mangrove replanting - 12,000 propagules planted across 8 hectares of degraded fringe",
     date: "2020",
     outcome: "Upheld",
     progress: 72,
@@ -40,7 +40,7 @@ const INTERVENTIONS = [
   {
     id: 4,
     species: "Smalltooth Sawfish",
-    action: "Artisanal bycatch monitoring and rostrum-confiscation programme — Lagos Lagoon landing sites",
+    action: "Artisanal bycatch monitoring and rostrum-confiscation programme - Lagos Lagoon landing sites",
     date: "2018",
     outcome: "Active",
     progress: 30,
@@ -58,16 +58,16 @@ const INTERVENTIONS = [
   {
     id: 6,
     species: "Clarias Mudcat (African Catfish)",
-    action: "Lagos Lagoon seasonal fishing moratorium advocacy — submitted to Lagos State Ministry of Agriculture",
+    action: "Lagos Lagoon seasonal fishing moratorium advocacy - submitted to Lagos State Ministry of Agriculture",
     date: "2023",
     outcome: "Active",
     progress: 25,
-    source: "Oladipo et al. (2025), Zootaxa 5646(1):38-62 — recommendations section",
+    source: "Oladipo et al. (2025), Zootaxa 5646(1):38-62 - recommendations section",
   },
   {
     id: 7,
     species: "Red Mangrove (Rhizophora racemosa)",
-    action: "Court injunction against unauthorised land reclamation at Eti-Osa wetland fringe — filed by NGO coalition",
+    action: "Court injunction against unauthorised land reclamation at Eti-Osa wetland fringe - filed by NGO coalition",
     date: "2021",
     outcome: "Upheld",
     progress: 85,
@@ -200,7 +200,7 @@ export default function Conservation() {
                   <h4>{g.name}</h4>
                   <p>{g.match}</p>
                   <div className="chem-links" style={{ marginTop:8 }}>
-                    <span className="pill">Real programme. Amounts and deadlines change — check the official site before applying.</span>
+                    <span className="pill">Real programme. Amounts and deadlines change - check the official site before applying.</span>
                   </div>
                 </div>
               </div>
