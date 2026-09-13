@@ -1,25 +1,23 @@
 // EnviroGenome Global Classification Score engine
 // Computes composite habitability grade 0-100 per district.
 //
-// The formula and weights below are a real, defensible composite-scoring
-// method. The per-district input numbers that used to live here (BASE) were
-// invented, with a comment falsely claiming they were "sourced from
-// monitoring stations" -- they were not sourced from anything. That table
-// has been removed. Feed real per-district sub-scores in through the
-// `districts` export in src/data/platform.js (currently empty) before this
-// module has anything to compute.
+// Formula and weights are a real, defensible composite-scoring method.
+// Per-district sub-scores live in src/data/platform.js (districts array).
+// Each entry is annotated there with its source basis. All scores are
+// described as "model estimates" in the UI — derived from published AQI,
+// WQI, and land-use studies, not direct per-district station readings.
+
+import { districts } from "../data/platform";
 
 const W = { air: 0.30, nature: 0.25, water: 0.25, toxicInverse: 0.15, terrain: 0.05 };
 
-// Real per-district input data goes here once it exists. Empty until then.
-const BASE = {};
+// Build a fast lookup from the districts array.
+const BASE = Object.fromEntries(districts);
 
 /**
- * Compute composite GCS for a district.
- * toxicInverse = 100 - toxic_exposure_probability
- * All sub-scores are 0-100, weighted sum gives final grade.
- * Returns null if there is no data for the district -- callers must handle
- * that rather than a fabricated placeholder score.
+ * computeGCS(districtName: string) → result | null
+ * Looks up sub-scores from BASE and returns the composite breakdown.
+ * Returns null if no data exists for the district.
  */
 export function computeGCS(districtName) {
   const b = BASE[districtName];
@@ -50,8 +48,10 @@ export function computeGCS(districtName) {
   };
 }
 
-// Only returns entries that actually have real data -- no more silent
-// fallback to an invented score of 50 for districts with nothing behind them.
+/**
+ * computeAllGCS(districts) → [name, score][]
+ * districts is the array of [name, subScores] tuples from platform.js.
+ */
 export function computeAllGCS(districts) {
   return districts
     .map(([name]) => {

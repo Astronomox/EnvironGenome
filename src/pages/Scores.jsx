@@ -119,7 +119,10 @@ export default function Scores() {
               </div>
             ))}
           </div>
-          <div style={{ display:"flex", gap:14, marginTop:18, flexWrap:"wrap", fontFamily:"var(--mono)", fontSize:10, color:"var(--graphite)" }}>
+          <div style={{ marginTop:16, padding:"8px 12px", background:"var(--smoke)", borderRadius:6, fontFamily:"var(--mono)", fontSize:10, color:"var(--graphite)", lineHeight:1.6 }}>
+          <strong>Data basis (model estimates).</strong> Air: AQI measurements from industrial estates in Lagos — Research Square preprint (2026) and Tin-Can Port ambient monitoring study (ResearchGate, 2016); Alausa control AQI 64 (moderate). Water: Ikorodu groundwater WQI study (Academia.edu, 2021); Apapa/Ebute-Metta lagoon pollution assessment (Nubi et al., 2008). Nature: satellite land-cover proxy, mangrove loss data (Adegoke et al., 2010). Toxic: heavy-metal soil PTE study across 4 LGAs (NCBI PMC6257170, 2018). Terrain: Lagos State flood-risk and subsidence records. Sub-scores are 0–100; 100 = best condition.
+        </div>
+        <div style={{ display:"flex", gap:14, marginTop:18, flexWrap:"wrap", fontFamily:"var(--mono)", fontSize:10, color:"var(--graphite)" }}>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#2f9e44" }} />80 to 100 optimal</span>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#8a8a83" }} />50 to 79 moderate</span>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#D8442C" }} />0 to 49 poor</span>
