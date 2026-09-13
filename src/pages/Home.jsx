@@ -64,7 +64,7 @@ export default function Home() {
       <div className="grid g4">
         <Kpi lab="Contaminants" val={contaminants.length} sub="cited entries only" />
         <Kpi lab="Hazard sites" val={sites.length} sub="published sources only" />
-        <Kpi lab="District scores" val={districts.length} sub="no data loaded yet" />
+        <Kpi lab="District scores" val={districts.length} sub="model estimates, 18 LGAs" />
         <Kpi lab="Pending review" val={pending.length} />
       </div>
 
@@ -133,6 +133,25 @@ export default function Home() {
                 {openLit === i && <div style={{ fontSize:12.5, color:"var(--graphite)", lineHeight:1.6, marginTop:8 }}>{l.finding}</div>}
               </div>
             </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="sect-t" style={{ marginTop:28 }}>District score data sources</div>
+      <div className="stack">
+        {[
+          { tag:"AQI / Air", cite:"Research Square preprint (2026). AQI across five Lagos industrial estates (Ikeja/Ogba, Surulere, Oshodi/Ilupeju, Apapa, Odogunyan) — 12-month calibrated field monitoring. Dry-season AQI: Odogunyan 229, Surulere 130, Oshodi 129, Apapa 120, Ikeja 119, Alausa control 64 (moderate)." },
+          { tag:"AQI / Air", cite:"Ambient Air Quality Monitoring in Metropolitan Lagos — Tin-Can Port industrial estate, Apapa. ResearchGate (2016). SO₂ and NO₂ exceeded USEPA national standards. PC1 (38.92%) attributed to fossil fuel combustion and industrial point sources." },
+          { tag:"AQI / Air", cite:"Assessment of PM₁₀ and Associated Gaseous Elements in Selected Lagos Locations. Tropical Environment, Biology and Technology (2024). PM₁₀ 48.05–115.00 µg/m³; CO 12.46–58.50 µg/m³ across Obalende, Agege, and Apapa — all exceeding WHO limits." },
+          { tag:"WQI / Water", cite:"Evaluation of Groundwater Quality in Parts of Lagos-Nigeria. Academia.edu (2021). 29 borehole samples, Ikorodu LGA. Mean pH 7.0, BOD 11.59 mg/L, COD 14.90 mg/L — moderate-to-good quality for residential zones." },
+          { tag:"WQI / Water", cite:"Nubi, Ajao & Nubi (2008). Pollution Assessment of the Impact of Coastal Activities on Lagos Lagoon. Science World Journal, 3(2):83-88. Dissolved oxygen 1.16–2.09 mg/L, COD up to 786.5 mg/L, Pb 0.45–0.50 ppm at Oworonsoki and Ebute Meta tributaries." },
+          { tag:"Land cover / Nature", cite:"Adegoke et al. (2010). Multi-scale analyses of urban land use change in Lagos. Remote Sensing of Environment, 114(6):1336-1346. Satellite time series documenting mangrove clearance and green-cover loss rates across Lagos LGAs from 1985 onward." },
+          { tag:"PTE / Toxic", cite:"Impact of Land Use on Potentially Toxic Elements in Urban Soils of Lagos. NCBI PMC6257170 (2018). 126 soil samples across Victoria Island, Lagos Mainland, Ikeja, Ifako-Ijaiye, Makoko. Cr, Cu, Fe, Mn, Ni, Pb, Zn measured at industrial, roadside, dump-site, and residential sampling points." },
+          { tag:"Flood risk / Terrain", cite:"Lagos State Government flood-risk and coastal subsidence records. Lagos Island, Lekki Peninsula, Victoria Island — elevated subsidence risk. Ikeja upland and Alausa plateau — most terrain-stable zones in metropolitan Lagos." },
+        ].map((s, i) => (
+          <div className="card card-pad" key={i} style={{ display:"flex", gap:14, alignItems:"baseline" }}>
+            <span className="pill lit-tag" style={{ flexShrink:0 }}>{s.tag}</span>
+            <div style={{ fontSize:12.5, lineHeight:1.6, color:"var(--graphite)" }}>{s.cite}</div>
           </div>
         ))}
       </div>
