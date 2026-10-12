@@ -1,25 +1,17 @@
-import { createContext, useContext, useState, useCallback } from "react";
+import { createContext, useContext } from "react";
+import { toast as sonnerToast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
+// Pages call useToast()(message). The provider keeps that API and renders
+// shadcn's Sonner toaster underneath.
 const ToastCtx = createContext(null);
+const notify = (msg) => sonnerToast.success(msg);
 
 export function ToastProvider({ children }) {
-  const [items, setItems] = useState([]);
-  const toast = useCallback((msg) => {
-    const id = Math.random().toString(36).slice(2);
-    setItems(prev => [...prev, { id, msg }]);
-    setTimeout(() => setItems(prev => prev.filter(t => t.id !== id)), 3200);
-  }, []);
   return (
-    <ToastCtx.Provider value={toast}>
+    <ToastCtx.Provider value={notify}>
       {children}
-      <div className="toasts">
-        {items.map(t => (
-          <div className="toast" key={t.id}>
-            <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7" /></svg>
-            {t.msg}
-          </div>
-        ))}
-      </div>
+      <Toaster position="bottom-right" duration={3200} />
     </ToastCtx.Provider>
   );
 }

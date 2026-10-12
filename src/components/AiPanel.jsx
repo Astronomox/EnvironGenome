@@ -1,6 +1,7 @@
 import { fmt, toPlainText } from "../utils/gemini";
-import { Skeleton } from "./ui";
+import { Skeleton } from "./kit";
 import { useToast } from "../hooks/ToastContext";
+import { Button } from "@/components/ui/button";
 
 export default function AiPanel({ label, state, onRetry }) {
   const toast = useToast();
@@ -25,10 +26,10 @@ export default function AiPanel({ label, state, onRetry }) {
             dangerouslySetInnerHTML={{ __html: state.status === "error" ? state.text : fmt(state.text) }} />
           <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
             {state.status === "error" && onRetry && (
-              <button className="btn btn-ghost" onClick={onRetry}>Retry</button>
+              <Button variant="outline" onClick={onRetry}>Retry</Button>
             )}
             {state.status === "done" && (
-              <button className="btn btn-ghost" onClick={copyPlain}>Copy as plain text</button>
+              <Button variant="outline" onClick={copyPlain}>Copy as plain text</Button>
             )}
           </div>
         </>

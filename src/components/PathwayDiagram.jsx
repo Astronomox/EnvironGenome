@@ -10,8 +10,8 @@ const PATHWAYS = {
       { id:"lung", x:220, y:50,  label:"Lung / Skin",     sub:"Absorption",         fill:"#D5D5CF" },
       { id:"blood",x:380, y:50,  label:"Bloodstream",     sub:"Systemic transport", fill:"#3C3C38", text:"#fff" },
       { id:"liver",x:380, y:180, label:"Liver (CYP2E1)",  sub:"Metabolic oxidation",fill:"#6B6B6B", text:"#fff" },
-      { id:"epox", x:220, y:180, label:"Epoxide / Quinone",sub:"Reactive metabolite",fill:"#D8442C", text:"#fff" },
-      { id:"dna",  x:60,  y:180, label:"DNA Adducts",     sub:"Mutagenic damage",   fill:"#D8442C", text:"#fff" },
+      { id:"epox", x:220, y:180, label:"Epoxide / Quinone",sub:"Reactive metabolite",fill:"#D8442C" },
+      { id:"dna",  x:60,  y:180, label:"DNA Adducts",     sub:"Mutagenic damage",   fill:"#D8442C" },
       { id:"urine",x:540, y:180, label:"Urinary excretion",sub:"Glucuronide / sulfate",fill:"#E4E4DF" },
     ],
     edges: [
@@ -27,8 +27,8 @@ const PATHWAYS = {
       { id:"gi",   x:220, y:50,  label:"GI tract",       sub:"Absorption (5 to 15%)",  fill:"#D5D5CF" },
       { id:"blood",x:380, y:50,  label:"Bloodstream",    sub:"Protein binding",         fill:"#3C3C38", text:"#fff" },
       { id:"bone", x:540, y:50,  label:"Bone / Kidney",  sub:"Long-term deposition",   fill:"#6B6B6B", text:"#fff" },
-      { id:"enz",  x:380, y:180, label:"Enzyme inhibition",sub:"Heme / DNA pathways",  fill:"#D8442C", text:"#fff" },
-      { id:"mt",   x:220, y:180, label:"Metallothionein", sub:"Sequestration protein",  fill:"#8A8A83", text:"#fff" },
+      { id:"enz",  x:380, y:180, label:"Enzyme inhibition",sub:"Heme / DNA pathways",  fill:"#D8442C" },
+      { id:"mt",   x:220, y:180, label:"Metallothionein", sub:"Sequestration protein",  fill:"#8A8A83" },
       { id:"renal",x:60,  y:180, label:"Renal excretion", sub:"Urine (slow, years)",    fill:"#E4E4DF" },
     ],
     edges: [
@@ -44,8 +44,8 @@ const PATHWAYS = {
       { id:"gi",    x:220, y:50,  label:"GI absorption",  sub:"Lipophilic uptake",       fill:"#D5D5CF" },
       { id:"fat",   x:380, y:50,  label:"Adipose tissue", sub:"Bioaccumulation",         fill:"#6B6B6B", text:"#fff" },
       { id:"liver", x:540, y:50,  label:"Liver",          sub:"CYP1A1 induction",        fill:"#3C3C38", text:"#fff" },
-      { id:"ahr",   x:540, y:180, label:"AHR activation", sub:"Receptor-mediated tox",   fill:"#D8442C", text:"#fff" },
-      { id:"meta",  x:380, y:180, label:"Metabolites",    sub:"Hydroxylated PCBs",       fill:"#8A8A83", text:"#fff" },
+      { id:"ahr",   x:540, y:180, label:"AHR activation", sub:"Receptor-mediated tox",   fill:"#D8442C" },
+      { id:"meta",  x:380, y:180, label:"Metabolites",    sub:"Hydroxylated PCBs",       fill:"#8A8A83" },
       { id:"excr",  x:220, y:180, label:"Biliary / fecal",sub:"Very slow excretion",     fill:"#E4E4DF" },
     ],
     edges: [
@@ -61,8 +61,8 @@ const PATHWAYS = {
       { id:"upper", x:220, y:50,  label:"Upper airway",   sub:"Mucosal absorption",      fill:"#D5D5CF" },
       { id:"lower", x:380, y:50,  label:"Lower airway",   sub:"Alveolar penetration",    fill:"#6B6B6B", text:"#fff" },
       { id:"blood", x:540, y:50,  label:"Bloodstream",    sub:"Systemic spread",         fill:"#3C3C38", text:"#fff" },
-      { id:"epith", x:380, y:180, label:"Epithelial dmg", sub:"Oxidative stress",        fill:"#D8442C", text:"#fff" },
-      { id:"inf",   x:220, y:180, label:"Inflammation",   sub:"Cytokine cascade",        fill:"#8A8A83", text:"#fff" },
+      { id:"epith", x:380, y:180, label:"Epithelial dmg", sub:"Oxidative stress",        fill:"#D8442C" },
+      { id:"inf",   x:220, y:180, label:"Inflammation",   sub:"Cytokine cascade",        fill:"#8A8A83" },
       { id:"excr",  x:60,  y:180, label:"Exhalation",     sub:"Partial elimination",     fill:"#E4E4DF" },
     ],
     edges: [
@@ -77,9 +77,9 @@ const PATHWAYS = {
       { id:"exp",   x:60,  y:50,  label:"Exposure",       sub:"Skin / ingestion / inhal",fill:"#E4E4DF" },
       { id:"abs",   x:220, y:50,  label:"Absorption",     sub:"Rapid systemic entry",    fill:"#D5D5CF" },
       { id:"blood", x:380, y:50,  label:"Bloodstream",    sub:"Distribution",            fill:"#3C3C38", text:"#fff" },
-      { id:"ache",  x:540, y:50,  label:"AChE inhibition",sub:"Cholinergic crisis",      fill:"#D8442C", text:"#fff" },
+      { id:"ache",  x:540, y:50,  label:"AChE inhibition",sub:"Cholinergic crisis",      fill:"#D8442C" },
       { id:"liver", x:380, y:180, label:"Liver (PON1)",   sub:"Hydrolysis / detox",      fill:"#6B6B6B", text:"#fff" },
-      { id:"meta",  x:220, y:180, label:"Metabolites",    sub:"Oxons (more toxic)",      fill:"#8A8A83", text:"#fff" },
+      { id:"meta",  x:220, y:180, label:"Metabolites",    sub:"Oxons (more toxic)",      fill:"#8A8A83" },
       { id:"urine", x:60,  y:180, label:"Urinary excretion",sub:"Alkyl phosphates",      fill:"#E4E4DF" },
     ],
     edges: [
@@ -141,7 +141,7 @@ export default function PathwayDiagram({ cas }) {
                 fontFamily="var(--sans)" fontSize="10" fontWeight="600"
                 fill={n.text || "#0A0A0A"}>{n.label}</text>
               <text x={n.x + NW / 2} y={n.y + 32} textAnchor="middle"
-                fontFamily="var(--mono)" fontSize="8" fill={n.text ? "rgba(255,255,255,.7)" : "#6B6B6B"}>{n.sub}</text>
+                fontFamily="var(--mono)" fontSize="8" fill={n.text || (n.fill === "#E4E4DF" || n.fill === "#D5D5CF" ? "#59584F" : "#0A0A0A")}>{n.sub}</text>
             </g>
           ))}
         </svg>

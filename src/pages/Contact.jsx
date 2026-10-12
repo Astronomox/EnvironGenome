@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { PageHeader, Segmented } from "../components/ui";
+import { PageHeader, Segmented } from "../components/kit";
 import { useToast } from "../hooks/ToastContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
 
 const FAQS = [
   { q: "How do I create an account?", a: "The demo build runs in open access. In production, accounts will be provisioned by your institution with role-based access for Researcher, Auditor, Clinician, or Policy Maker." },
@@ -44,21 +49,21 @@ export default function Contact() {
               <div style={{ fontSize: 13.5, color: "var(--graphite)", lineHeight: 1.6 }}>
                 This demo doesn't have a real inbox or ticketing system behind it yet, so nothing was actually sent anywhere.
               </div>
-              <button className="btn btn-ghost" style={{ marginTop: 16 }} onClick={() => { setSubmitted(false); setName(""); setEmail(""); setMsg(""); }}>Submit another</button>
+              <Button variant="outline" style={{ marginTop: 16 }} onClick={() => { setSubmitted(false); setName(""); setEmail(""); setMsg(""); }}>Submit another</Button>
             </div>
           ) : (
             <div className="stack" style={{ gap: 12 }}>
-              <div className="fg"><label>Department</label>
-                <select value={dept} onChange={e => setDept(e.target.value)}>
+              <div className="fg"><Label>Department</Label>
+                <NativeSelect value={dept} onChange={e => setDept(e.target.value)}>
                   {DEPTS.map(d => <option key={d}>{d}</option>)}
-                </select>
+                </NativeSelect>
               </div>
               <div className="form-grid">
-                <div className="fg"><label>Full name *</label><input value={name} onChange={e => setName(e.target.value)} placeholder="Jane Okafor" /></div>
-                <div className="fg"><label>Email *</label><input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" /></div>
+                <div className="fg"><Label>Full name *</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="Jane Okafor" /></div>
+                <div className="fg"><Label>Email *</Label><Input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" /></div>
               </div>
-              <div className="fg"><label>Message *</label><textarea rows={5} value={msg} onChange={e => setMsg(e.target.value)} placeholder="Describe your question or issue in detail" /></div>
-              <button className="btn btn-dark" style={{ width: "100%" }} onClick={send}>Send inquiry</button>
+              <div className="fg"><Label>Message *</Label><Textarea rows={5} value={msg} onChange={e => setMsg(e.target.value)} placeholder="Describe your question or issue in detail" /></div>
+              <Button style={{ width: "100%" }} onClick={send}>Send inquiry</Button>
             </div>
           )}
         </div>

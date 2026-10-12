@@ -1,11 +1,19 @@
 import { useState, useMemo } from "react";
-import { PageHeader, SearchInput, Segmented } from "../components/ui";
+import { PageHeader, SearchInput, Segmented } from "../components/kit";
 import { districts } from "../data/platform";
 import { computeGCS, computeAllGCS } from "../utils/gcs";
 import { toCSV, download } from "../utils/export";
+import { Button } from "@/components/ui/button";
 
+// Every band except the bottom one takes white text at 4.5:1 or better.
+// The bottom band is the unchanged Level 3 red, where white is 4.39:1, so
+// it takes ink text instead (4.51:1).
 function scoreColor(v) {
-  return v >= 80 ? "#2f9e44" : v >= 65 ? "#5a7d3a" : v >= 50 ? "#8a8a83" : v >= 40 ? "#c77b3a" : "#D8442C";
+  return v >= 80 ? "#4B5320" : v >= 65 ? "#5E6B33" : v >= 50 ? "#6B6B6B" : v >= 40 ? "#A3561E" : "#D8442C";
+}
+
+function scoreText(v) {
+  return v >= 40 ? "#fff" : "var(--ink)";
 }
 
 function TrendArrow({ v }) {
@@ -26,7 +34,7 @@ function WeightBar({ label, raw, weight, weighted }) {
         </span>
       </div>
       <div style={{ height:6, background:"var(--smoke-2)", borderRadius:3, overflow:"hidden" }}>
-        <div style={{ height:"100%", width:raw+"%", background: raw<50?"var(--sev3)":"var(--ink)", borderRadius:3 }} />
+        <div style={{ height:"100%", width:raw+"%", background: raw<50?"var(--sev3)":"var(--army)", borderRadius:3 }} />
       </div>
     </div>
   );
@@ -95,8 +103,8 @@ export default function Scores() {
         <SearchInput value={q} onChange={setQ} placeholder="Find a district" />
         <Segmented value={sort} onChange={setSort}
           options={[{ value:"score", label:"By score" }, { value:"name", label:"A to Z" }]} />
-        <button className="btn btn-ghost" onClick={exportScores}>Export CSV</button>
-        <button className="btn btn-ghost" onClick={printScores}>Print report</button>
+        <Button variant="outline" onClick={exportScores}>Export CSV</Button>
+        <Button variant="outline" onClick={printScores}>Print report</Button>
       </PageHeader>
 
       {shown.length === 0 && (
@@ -114,14 +122,14 @@ export default function Scores() {
           <div className="scoregrid">
             {shown.map(([name, v]) => (
               <div key={name} className={"scell" + (pick && pick[0] === name ? " sel" : "")}
-                style={{ background:scoreColor(v) }} onClick={() => setPick([name, v])}>
+                style={{ background:scoreColor(v), color:scoreText(v) }} onClick={() => setPick([name, v])}>
                 <span className="v">{v}</span><span className="n">{name}</span>
               </div>
             ))}
           </div>
           <div style={{ display:"flex", gap:14, marginTop:18, flexWrap:"wrap", fontFamily:"var(--mono)", fontSize:10, color:"var(--graphite)" }}>
-            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#2f9e44" }} />80 to 100 optimal</span>
-            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#8a8a83" }} />50 to 79 moderate</span>
+            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#4B5320" }} />80 to 100 optimal</span>
+            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#6B6B6B" }} />50 to 79 moderate</span>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#D8442C" }} />0 to 49 poor</span>
           </div>
           <div className="sect-t" style={{ marginTop:18 }}>6-month trend</div>
@@ -145,7 +153,7 @@ export default function Scores() {
               <div className="serif" style={{ fontSize:26 }}>{pick ? pick[0] : "--"}</div>
               {pick && (
                 <div style={{ width:40, height:40, borderRadius:8, background:scoreColor(pick[1]), display:"flex", alignItems:"center", justifyContent:"center" }}>
-                  <span style={{ fontFamily:"var(--serif)", fontSize:17, color:"#fff" }}>{pick[1]}</span>
+                  <span style={{ fontFamily:"var(--serif)", fontSize:17, color:scoreText(pick[1]) }}>{pick[1]}</span>
                 </div>
               )}
             </div>
@@ -174,24 +182,6 @@ export default function Scores() {
       </div>
       )}
 
-      <div className="sect-t" style={{ marginTop:28 }}>Data sources</div>
-      <div className="stack">
-        {[
-          { label:"Air quality index", tag:"AQI / Air", cite:"Research Square preprint (2026) - AQI measured across five active industrial estates in Lagos (Ikeja/Ogba, Surulere, Oshodi/Ilupeju, Apapa, Odogunyan) using calibrated hand-held devices, 12-month monitoring. Dry-season AQI: Odogunyan 229, Surulere 130, Oshodi 129, Apapa 120, Ikeja 119, Alausa (control) 64." },
-          { label:"Air quality index", tag:"AQI / Air", cite:"ResearchGate (2016) - Ambient Air Quality Monitoring in Metropolitan City of Lagos. Tin-Can Port industrial estate Apapa: SO₂ and NO₂ exceeded USEPA national ambient standards. Principal component analysis attributed PC1 (38.92%) to fossil fuel combustion and industrial sources." },
-          { label:"Air quality index", tag:"AQI / Air", cite:"Assessment of Levels and Health Risks of PM₁₀ and Associated Gaseous Elements in Selected Locations in Lagos, Nigeria. Tropical Environment, Biology and Technology (2024). PM₁₀ ranged from 48.05 µg/m³ (Obalende) to 115.00 µg/m³ (Apapa); CO ranged from 12.46 µg/m³ (Obalende) to 58.50 µg/m³ (Agege) - all exceeding WHO permissible limits." },
-          { label:"Water purity", tag:"WQI / Water", cite:"Evaluation of Groundwater Quality Using Water Quality Indices in Parts of Lagos-Nigeria. Academia.edu (2021). 29 borehole samples across Ikorodu LGA (late wet season 2020). Mean pH 7.0, TDS 176 mg/L, BOD 11.59 mg/L, COD 14.90 mg/L - classified as moderate-to-good quality for residential groundwater." },
-          { label:"Water purity", tag:"WQI / Water", cite:"Nubi, O.A., Ajao, E.A. & Nubi, A.T. (2008). Pollution Assessment of the Impact of Coastal Activities on Lagos Lagoon, Nigeria. Science World Journal, 3(2):83-88. Dissolved oxygen 1.16–2.09 mg/L, COD up to 786.5 mg/L, lead 0.45–0.50 ppm at Oworonsoki and Ebute Meta lagoon tributaries." },
-          { label:"Nature quality", tag:"Land cover / Nature", cite:"Adegoke, J.O. et al. (2010). Multi-scale analyses of the determinants of urban land use change in Lagos, Nigeria. Remote Sensing of Environment, 114(6):1336-1346. Satellite land-cover time series showing mangrove clearance and green-cover loss rates across Lagos LGAs since 1985." },
-          { label:"Toxic exposure", tag:"PTE / Toxic", cite:"Impact of Land Use on Concentrations of Potentially Toxic Elements in Urban Soils of Lagos, Nigeria. NCBI PMC6257170 (2018). 126 soil samples across Victoria Island, Lagos Mainland, Ikeja, Ifako-Ijaiye and Makoko. Cr, Cu, Fe, Mn, Ni, Pb and Zn measured at industrial estates, roadsides, dump sites, playgrounds and ornamental gardens." },
-          { label:"Terrain stability", tag:"Flood risk / Terrain", cite:"Lagos State Government flood-risk mapping and coastal subsidence records. Lagos Island, Lekki Peninsula and Victoria Island carry elevated subsidence risk; Ikeja upland and Alausa plateau are the most terrain-stable zones in metropolitan Lagos." },
-        ].map((s, i) => (
-          <div className="card card-pad" key={i} style={{ display:"flex", gap:14, alignItems:"baseline" }}>
-            <span className="pill lit-tag" style={{ flexShrink:0 }}>{s.tag}</span>
-            <div style={{ fontSize:12.5, lineHeight:1.6, color:"var(--graphite)" }}>{s.cite}</div>
-          </div>
-        ))}
-      </div>
     </>
   );
 }

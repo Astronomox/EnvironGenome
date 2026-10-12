@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   const nav = useNavigate();
@@ -10,8 +11,8 @@ export default function NotFound() {
         The page you requested does not exist or has been moved.
       </p>
       <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
-        <button className="btn btn-dark" onClick={() => nav("/app")}>Go to dashboard</button>
-        <button className="btn btn-ghost" onClick={() => nav("/")}>Landing page</button>
+        <Button onClick={() => nav("/app")}>Go to dashboard</Button>
+        <Button variant="outline" onClick={() => nav("/")}>Landing page</Button>
       </div>
       <div className="mono" style={{ fontSize: 10, color: "var(--mute)", marginTop: 40 }}>EnviroGenome Guardian, demo build v4.1.32</div>
     </div>

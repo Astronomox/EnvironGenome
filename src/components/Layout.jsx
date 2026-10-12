@@ -5,9 +5,12 @@ import CommandPalette from "./CommandPalette";
 import ShortcutsModal from "./ShortcutsModal";
 import NotifPanel, { initialNotifs } from "./NotifPanel";
 import Onboarding from "./Onboarding";
+import References from "./References";
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Logo = ({ light }) => (
-  <svg className="mark" viewBox="0 0 26 26" fill="none" stroke={light ? "#FAFAF8" : "#0A0A0A"} strokeWidth="1.6">
+  <svg className="mark" viewBox="0 0 26 26" fill="none" stroke={light ? "#FAFAF8" : "#4B5320"} strokeWidth="1.6">
     <path d="M7 3c6 4 6 8 0 12 6 4 6 8 0 12M19 3c-6 4-6 8 0 12-6 4-6 8 0 12" />
     <circle cx="13" cy="13" r="1.5" fill="#D8442C" stroke="none" />
   </svg>
@@ -69,10 +72,12 @@ export default function Layout() {
         ))}
         <div className="side-foot">
           Demo build v4.1.32<br />Coursework project<br />
-          <button style={{ marginTop:6, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer", display:"block" }}
-            onClick={() => setShortcutsOpen(true)}>? Shortcuts</button>
-          <button style={{ marginTop:4, fontFamily:"var(--mono)", fontSize:10, color:"var(--mute)", cursor:"pointer", display:"block" }}
-            onClick={() => setContrast(c => !c)}>{contrast ? "Standard contrast" : "High contrast"}</button>
+          <div className="mt-1.5 flex flex-col items-start">
+            <Button variant="link" size="xs" className="h-auto px-0 font-mono text-[10px] text-muted-foreground"
+              onClick={() => setShortcutsOpen(true)}>? Shortcuts</Button>
+            <Button variant="link" size="xs" className="h-auto px-0 font-mono text-[10px] text-muted-foreground"
+              onClick={() => setContrast(c => !c)}>{contrast ? "Standard contrast" : "High contrast"}</Button>
+          </div>
         </div>
       </aside>
 
@@ -85,17 +90,17 @@ export default function Layout() {
             <span>Search everything</span>
             <span className="kbd">⌘K</span>
           </button>
-          <button className="btn-key" onClick={() => setNotifOpen(o => !o)} style={{ position:"relative" }} aria-label="Notifications">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width:16, height:16 }}>
-              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
-            </svg>
-            {unread > 0 && <span style={{ position:"absolute", top:5, right:5, width:7, height:7, borderRadius:"50%", background:"var(--sev3)", border:"1.5px solid var(--paper)" }} />}
-          </button>
+          <Button variant="ghost" size="icon" onClick={() => setNotifOpen(o => !o)} aria-label="Notifications"
+            className="relative text-white hover:bg-army-hover hover:text-white focus-visible:ring-white/60">
+            <Bell />
+            {unread > 0 && <span className="absolute top-1.5 right-1.5 size-2 rounded-full border-[1.5px] border-army bg-sev3" />}
+          </Button>
         </header>
 
         <main className="content" id="main-content" role="main" aria-label={current.title}>
           <div className="pagewrap"><Outlet /></div>
         </main>
+        <References />
       </div>
 
       <nav className="glassnav" aria-label="Primary">

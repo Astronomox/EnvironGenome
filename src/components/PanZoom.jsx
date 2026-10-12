@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 // Lightweight pan/zoom container -- drag to pan, wheel or pinch to zoom,
 // like a map. No external library: just pointer events (which cover both
@@ -129,9 +130,9 @@ export default function PanZoom({ children, height = 320, contentWidth = 640 }) 
         </div>
       </div>
       <div style={{ position: "absolute", bottom: 10, right: 10, display: "flex", gap: 6 }}>
-        <button className="btn btn-ghost" style={{ width: 40, height: 40, padding: 0, fontSize: 16 }} onClick={() => zoomBy(0.25)} aria-label="Zoom in">+</button>
-        <button className="btn btn-ghost" style={{ width: 40, height: 40, padding: 0, fontSize: 16 }} onClick={() => zoomBy(-0.25)} aria-label="Zoom out">-</button>
-        <button className="btn btn-ghost" style={{ height: 40, padding: "0 12px", fontSize: 12 }} onClick={reset}>Reset</button>
+        <Button variant="outline" style={{ width: 40, height: 40, padding: 0, fontSize: 16 }} onClick={() => zoomBy(0.25)} aria-label="Zoom in">+</Button>
+        <Button variant="outline" style={{ width: 40, height: 40, padding: 0, fontSize: 16 }} onClick={() => zoomBy(-0.25)} aria-label="Zoom out">-</Button>
+        <Button variant="outline" style={{ height: 40, padding: "0 12px", fontSize: 12 }} onClick={reset}>Reset</Button>
       </div>
     </div>
   );
