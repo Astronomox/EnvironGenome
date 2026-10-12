@@ -1,10 +1,10 @@
-# EnviroGenome Guardian — Complete Remaining Activities Register
-**Version 1.0 — July 2026**
+# EnviroGenome Guardian - Complete Remaining Activities Register
+**Version 1.0 - July 2026**
 *Covers demo completion, production build, data, model, infrastructure, compliance, and growth*
 
 ---
 
-## SECTION 1 — DEMO COMPLETION (Immediate)
+## SECTION 1 - DEMO COMPLETION (Immediate)
 
 ### 1.1 Map Module
 - [ ] Build new hazard site submission form (GPS pin drop, severity selector, photo uploader, credential field, chain-of-custody checklist)
@@ -109,7 +109,7 @@
 
 ---
 
-## SECTION 2 — MODEL AND COMPUTATION
+## SECTION 2 - MODEL AND COMPUTATION
 
 ### 2.1 Global Classification Score Formula Implementation
 - [ ] Receive and review formulas from domain expert
@@ -156,7 +156,7 @@
 
 ---
 
-## SECTION 3 — DATA LAYER
+## SECTION 3 - DATA LAYER
 
 ### 3.1 Contaminant Registry Data Expansion
 - [ ] Expand from 12 to 50+ validated contaminant entries
@@ -205,7 +205,7 @@
 
 ---
 
-## SECTION 4 — PRODUCTION BACKEND
+## SECTION 4 - PRODUCTION BACKEND
 
 ### 4.1 API Design and Build
 - [ ] Design full REST API specification (OpenAPI 3.1)
@@ -260,7 +260,7 @@
 
 ---
 
-## SECTION 5 — INFRASTRUCTURE AND DEVOPS
+## SECTION 5 - INFRASTRUCTURE AND DEVOPS
 
 ### 5.1 CI/CD Pipeline
 - [ ] Set up GitHub Actions workflow for lint and type-check on every PR
@@ -307,7 +307,7 @@
 
 ---
 
-## SECTION 6 — COMPLIANCE AND GOVERNANCE
+## SECTION 6 - COMPLIANCE AND GOVERNANCE
 
 ### 6.1 Data Privacy
 - [ ] Draft and publish Privacy Policy
@@ -350,7 +350,7 @@
 
 ---
 
-## SECTION 7 — PARTNERSHIPS AND INTEGRATIONS
+## SECTION 7 - PARTNERSHIPS AND INTEGRATIONS
 
 ### 7.1 Regulatory Agency Partnerships (PRD target: 50+)
 - [ ] Initiate formal MOU with NESREA (Nigeria)
@@ -380,7 +380,7 @@
 
 ---
 
-## SECTION 8 — PRODUCT AND UX
+## SECTION 8 - PRODUCT AND UX
 
 ### 8.1 User Research and Testing
 - [ ] Conduct usability testing with at least one environmental auditor
@@ -415,7 +415,7 @@
 
 ---
 
-## SECTION 9 — LAUNCH PREPARATION
+## SECTION 9 - LAUNCH PREPARATION
 
 ### 9.1 Pre-launch
 - [ ] Seed database with minimum viable data (50 contaminants, 100 sites, 50 standards)

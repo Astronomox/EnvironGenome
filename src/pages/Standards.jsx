@@ -1,11 +1,15 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { PageHeader, SearchInput, Segmented, Table, Empty } from "../components/ui";
+import { PageHeader, SearchInput, Segmented, Table, Empty } from "../components/kit";
 import AiPanel from "../components/AiPanel";
+import Term from "../components/Term";
 import { standards } from "../data/platform";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 import { checklistText, download } from "../utils/export";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
 
 function DiffView({ a, b }) {
   const aWords = new Set(a.toLowerCase().split(/\W+/));
@@ -24,8 +28,8 @@ function DiffView({ a, b }) {
             {label.split(" ").slice(0, 20).map((w, j) => (
               <span key={j} style={{
                 fontSize: 12, padding: "2px 7px", borderRadius: 4,
-                background: shared.includes(w.toLowerCase().replace(/\W/g, "")) ? "var(--smoke-2)" : "var(--smoke)",
-                border: `1px solid ${shared.includes(w.toLowerCase().replace(/\W/g, "")) ? "var(--ink)" : "var(--hair)"}`,
+                background: shared.includes(w.toLowerCase().replace(/\W/g, "")) ? "var(--army-tint)" : "var(--smoke)",
+                border: `1px solid ${shared.includes(w.toLowerCase().replace(/\W/g, "")) ? "var(--army)" : "var(--hair)"}`,
                 fontFamily: "var(--mono)"
               }}>{w}</span>
             ))}
@@ -83,9 +87,9 @@ function RevisionHistory({ standard }) {
         {revs.map((r, i) => (
           <div key={i} style={{ display:"flex", gap:16, marginBottom:14, position:"relative" }}>
             <div style={{ position:"absolute", left:-20, top:3, width:10, height:10, borderRadius:"50%",
-              background: i===0 ? "var(--ink)" : "var(--hair-2)", border:"2px solid var(--paper)" }} />
+              background: i===0 ? "var(--army)" : "var(--hair-2)", border:"2px solid var(--paper)" }} />
             <div style={{ minWidth:42 }}>
-              <div className="mono" style={{ fontSize:11, fontWeight:600, color: i===0 ? "var(--ink)" : "var(--graphite)" }}>{r.year}</div>
+              <div className="mono" style={{ fontSize:11, fontWeight:600, color: i===0 ? "var(--army)" : "var(--graphite)" }}>{r.year}</div>
             </div>
             <div>
               <div style={{ fontSize:13.5, fontWeight: i===0 ? 600 : 400 }}>{r.label}</div>
@@ -120,16 +124,16 @@ export default function Standards() {
   }, [q, tier]);
 
   const columns = [
-    { key: "t", label: "Instrument", cls: "name", render: r => r.t },
+    { key: "t", label: "Instrument", cls: "name", render: r => <Term name={r.t} /> },
     { key: "body", label: "Issuing body", cls: "g" },
     { key: "tier", label: "Tier", cls: "g" },
     { key: "tag", label: "Type", cls: "g" },
     { key: "actions", label: "", sortable: false, render: r => (
       <div style={{ display: "flex", gap: 6 }}>
-        <button className="pill" style={{ cursor: "pointer" }}
-          onClick={e => { e.stopPropagation(); setJa(r.t); toast(`Standard A set to: ${r.t}`); }}>Set A</button>
-        <button className="pill" style={{ cursor: "pointer" }}
-          onClick={e => { e.stopPropagation(); setJb(r.t); toast(`Standard B set to: ${r.t}`); }}>Set B</button>
+        <Button variant="secondary" size="xs"
+          onClick={e => { e.stopPropagation(); setJa(r.t); toast(`Standard A set to: ${r.t}`); }}>Set A</Button>
+        <Button variant="secondary" size="xs"
+          onClick={e => { e.stopPropagation(); setJb(r.t); toast(`Standard B set to: ${r.t}`); }}>Set B</Button>
       </div>
     )}
   ];
@@ -193,20 +197,20 @@ export default function Standards() {
           Pick two instruments (use "Set A" / "Set B" on any row above, or choose them directly below) to see where their requirements might overlap or conflict, and to ask Gemini for a plain-language compliance gap summary.
         </div>
         <div className="form-grid">
-          <div className="fg"><label>Standard A</label>
-            <select value={ja} onChange={e => setJa(e.target.value)}>
-              {standards.map(s => <option key={s.t}>{s.t}</option>)}</select></div>
-          <div className="fg"><label>Standard B</label>
-            <select value={jb} onChange={e => setJb(e.target.value)}>
-              {standards.map(s => <option key={s.t}>{s.t}</option>)}</select></div>
+          <div className="fg"><Label>Standard A</Label>
+            <NativeSelect value={ja} onChange={e => setJa(e.target.value)}>
+              {standards.map(s => <option key={s.t}>{s.t}</option>)}</NativeSelect></div>
+          <div className="fg"><Label>Standard B</Label>
+            <NativeSelect value={jb} onChange={e => setJb(e.target.value)}>
+              {standards.map(s => <option key={s.t}>{s.t}</option>)}</NativeSelect></div>
         </div>
         <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
-          <button className="btn btn-dark" onClick={compare}>
+          <Button onClick={compare}>
             <span className="ai-spark">✦</span> Analyse compliance gap
-          </button>
-          <button className={"btn btn-ghost"} onClick={() => setShowDiff(d => !d)}>
+          </Button>
+          <Button variant="outline" onClick={() => setShowDiff(d => !d)}>
             {showDiff ? "Hide" : "Show"} term overlap
-          </button>
+          </Button>
         </div>
         {showDiff && <DiffView a={ja} b={jb} />}
         {ai.status !== "idle" && <div style={{ marginTop: 16 }}><AiPanel label="Gemini gap analysis" state={ai} onRetry={compare} /></div>}
@@ -216,24 +220,24 @@ export default function Standards() {
       <div className="card card-pad">
         <div className="eyebrow" style={{ marginBottom: 12 }}>Generate an actionable compliance checklist from any instrument</div>
         <div className="fg" style={{ marginBottom: 14 }}>
-          <label>Instrument</label>
-          <select value={clStd} onChange={e => setClStd(e.target.value)}>
+          <Label>Instrument</Label>
+          <NativeSelect value={clStd} onChange={e => setClStd(e.target.value)}>
             {standards.map(s => <option key={s.t}>{s.t}</option>)}
-          </select>
+          </NativeSelect>
         </div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button className="btn btn-dark" onClick={buildChecklist}
+          <Button onClick={buildChecklist}
             disabled={clAi.status === "loading"}>
             <span className="ai-spark">✦</span> {clAi.status === "loading" ? "Generating..." : "Build checklist"}
-          </button>
+          </Button>
           {checklist.length > 0 && (
-            <button className="btn btn-ghost" onClick={downloadChecklist}>Download .txt</button>
+            <Button variant="outline" onClick={downloadChecklist}>Download .txt</Button>
           )}
         </div>
         {clAi.status === "error" && (
           <div style={{ marginTop: 12 }}>
             <div style={{ color: "var(--sev3)", fontSize: 13 }}>{clAi.text}</div>
-            <button className="btn btn-ghost" style={{ marginTop: 10 }} onClick={buildChecklist}>Retry</button>
+            <Button variant="outline" style={{ marginTop: 10 }} onClick={buildChecklist}>Retry</Button>
           </div>
         )}
         {checklist.length > 0 && (

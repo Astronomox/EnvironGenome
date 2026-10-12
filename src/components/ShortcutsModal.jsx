@@ -1,42 +1,37 @@
-import { useEffect } from "react";
 import { MODULES } from "../data/modules";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+// "?" is handled once, in Layout. Escape and outside clicks are handled by Dialog.
+function Row({ label, k }) {
+  return (
+    <div className="flex items-center justify-between border-b py-2">
+      <span className="text-[13.5px]">{label}</span>
+      <kbd className="rounded-md border bg-muted px-1.5 py-0.5 font-mono text-[11px]">{k}</kbd>
+    </div>
+  );
+}
 
 export default function ShortcutsModal({ open, setOpen }) {
-  useEffect(() => {
-    const h = (e) => { if (e.key === "?" && !e.ctrlKey && !e.metaKey) setOpen(o => !o); if (e.key === "Escape") setOpen(false); };
-    window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
-  }, [setOpen]);
-
-  if (!open) return null;
   return (
-    <div className="modal-bg" onClick={e => e.target === e.currentTarget && setOpen(false)}>
-      <div className="modal" style={{ maxWidth: 520 }}>
-        <h3>Keyboard shortcuts</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 24px", marginBottom: 20 }}>
-          {[
-            ["⌘ K", "Open command palette"],
-            ["?", "Toggle this modal"],
-            ["Esc", "Close any modal"],
-            ["1 to 8", "Navigate modules"],
-          ].map(([k, l]) => (
-            <div key={k} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--hair)" }}>
-              <span style={{ fontSize: 13.5 }}>{l}</span>
-              <kbd style={{ fontFamily: "var(--mono)", fontSize: 11, border: "1px solid var(--hair-2)", borderRadius: 5, padding: "2px 7px", background: "var(--smoke)" }}>{k}</kbd>
-            </div>
-          ))}
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[520px]">
+        <DialogHeader>
+          <DialogTitle className="font-serif text-[23px] font-normal">Keyboard shortcuts</DialogTitle>
+          <DialogDescription>Move around the platform without a mouse.</DialogDescription>
+        </DialogHeader>
+        <div className="grid grid-cols-2 gap-x-6">
+          {[["⌘ K", "Open command palette"], ["?", "Toggle this dialog"], ["Esc", "Close any dialog"], ["1 to 8", "Navigate modules"]]
+            .map(([k, l]) => <Row key={k} label={l} k={k} />)}
         </div>
-        <div className="sect-t" style={{ marginTop: 0 }}>Module shortcuts</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 24px" }}>
-          {MODULES.map((m, i) => (
-            <div key={m.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid var(--hair)" }}>
-              <span style={{ fontSize: 13 }}>{m.label}</span>
-              <kbd style={{ fontFamily: "var(--mono)", fontSize: 11, border: "1px solid var(--hair-2)", borderRadius: 5, padding: "2px 7px", background: "var(--smoke)" }}>{i + 1}</kbd>
-            </div>
-          ))}
+        <p className="font-mono text-[10.5px] uppercase tracking-[.14em] text-army">Module shortcuts</p>
+        <div className="grid grid-cols-2 gap-x-6">
+          {MODULES.map((m, i) => <Row key={m.id} label={m.label} k={i + 1} />)}
         </div>
-        <button className="btn btn-ghost" style={{ width: "100%", marginTop: 18 }} onClick={() => setOpen(false)}>Close</button>
-      </div>
-    </div>
+        <DialogFooter>
+          <Button variant="outline" className="w-full" onClick={() => setOpen(false)}>Close</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

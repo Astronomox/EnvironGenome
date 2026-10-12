@@ -1,12 +1,19 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { PageHeader, SearchInput, Segmented, Empty } from "../components/ui";
+import { PageHeader, SearchInput, Segmented, Empty } from "../components/kit";
 import AiPanel from "../components/AiPanel";
 import { contaminants } from "../data/contaminants";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
 import { toCSV, download } from "../utils/export";
 import PathwayDiagram from "../components/PathwayDiagram";
+import Term from "../components/Term";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 
 function PeerSubmit({ compound, toast }) {
   const [form, setForm] = useState({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" });
@@ -20,25 +27,25 @@ function PeerSubmit({ compound, toast }) {
       <svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" strokeWidth="2" style={{ width:22, height:22, flex:"none" }}><circle cx="12" cy="12" r="10" /><path d="M8 12l3 3 5-5" /></svg>
       <div><div style={{ fontWeight:500 }}>Association submitted for peer review</div>
         <div style={{ fontSize:13, color:"var(--graphite)" }}>A reviewer will be assigned within 48 hours.</div></div>
-      <button className="btn btn-ghost" style={{ marginLeft:"auto" }} onClick={() => { setDone(false); setForm({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" }); }}>Submit another</button>
+      <Button variant="outline" style={{ marginLeft:"auto" }} onClick={() => { setDone(false); setForm({ organism:"", locus:"", pattern:"", evidence:"strong", notes:"" }); }}>Submit another</Button>
     </div>
   );
   return (
     <div className="card card-pad">
       <div className="eyebrow" style={{ marginBottom:14 }}>Propose genome association for {compound}</div>
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-        <div className="fg"><label>Organism</label><input value={form.organism} onChange={e => setForm(p=>({...p,organism:e.target.value}))} placeholder="e.g. Homo sapiens" /></div>
-        <div className="fg"><label>Gene locus</label><input value={form.locus} onChange={e => setForm(p=>({...p,locus:e.target.value}))} placeholder="e.g. TP53 / chr17" /></div>
-        <div className="fg"><label>Damage pattern</label><input value={form.pattern} onChange={e => setForm(p=>({...p,pattern:e.target.value}))} placeholder="e.g. G to T transversion" /></div>
-        <div className="fg"><label>Evidence grade</label>
-          <select value={form.evidence} onChange={e => setForm(p=>({...p,evidence:e.target.value}))}>
+        <div className="fg"><Label>Organism</Label><Input value={form.organism} onChange={e => setForm(p=>({...p,organism:e.target.value}))} placeholder="e.g. Homo sapiens" /></div>
+        <div className="fg"><Label>Gene locus</Label><Input value={form.locus} onChange={e => setForm(p=>({...p,locus:e.target.value}))} placeholder="e.g. TP53 / chr17" /></div>
+        <div className="fg"><Label>Damage pattern</Label><Input value={form.pattern} onChange={e => setForm(p=>({...p,pattern:e.target.value}))} placeholder="e.g. G to T transversion" /></div>
+        <div className="fg"><Label>Evidence grade</Label>
+          <NativeSelect value={form.evidence} onChange={e => setForm(p=>({...p,evidence:e.target.value}))}>
             <option value="strong">Strong</option><option value="moderate">Moderate</option><option value="poor">Poor</option>
-          </select>
+          </NativeSelect>
         </div>
-        <div className="fg" style={{ gridColumn:"span 2" }}><label>Supporting notes or DOI</label>
-          <textarea rows={3} value={form.notes} onChange={e => setForm(p=>({...p,notes:e.target.value}))} placeholder="Paste DOI or summarise evidence" /></div>
+        <div className="fg" style={{ gridColumn:"span 2" }}><Label>Supporting notes or DOI</Label>
+          <Textarea rows={3} value={form.notes} onChange={e => setForm(p=>({...p,notes:e.target.value}))} placeholder="Paste DOI or summarise evidence" /></div>
       </div>
-      <button className="btn btn-dark" style={{ marginTop:14 }} onClick={submit}>Submit for peer review</button>
+      <Button style={{ marginTop:14 }} onClick={submit}>Submit for peer review</Button>
     </div>
   );
 }
@@ -49,9 +56,9 @@ function ChemDetail({ c, onCite }) {
       <div className="chem-hd">
         <div>
           <h2>{c.name}</h2>
-          <div className="formula">{c.formula} / CAS {c.cas}</div>
+          <div className="formula">{c.formula} / <Term name="CAS" /> {c.cas}</div>
         </div>
-        {c.genotoxic && <div className="geno-flag">Genotoxic, {c.iarc}</div>}
+        {c.genotoxic && <div className="geno-flag"><Term name="Genotoxic" />, {c.iarc}</div>}
       </div>
       <div className="chem-body">
         <div className="chem-col brd">
@@ -63,7 +70,7 @@ function ChemDetail({ c, onCite }) {
         <div className="chem-col">
           <div className="eyebrow" style={{ marginBottom: 12 }}>Associated mutations</div>
           {c.mutations.length === 0 ? (
-            <div style={{ fontSize:12.5, color:"var(--graphite)", marginBottom:12 }}>No verified gene-level mutation data on file for this entry.</div>
+            <div style={{ fontSize:12.5, color:"var(--graphite)", marginBottom:12 }}>No verified gene-level <Term name="Mutation">mutation</Term> data on file for this entry.</div>
           ) : (
             <table className="muttbl">
               <thead><tr><th>Organism</th><th>Locus</th><th>Damage pattern</th></tr></thead>
@@ -77,12 +84,12 @@ function ChemDetail({ c, onCite }) {
           {(c.links || []).length > 0 && (
             <>
               <div className="eyebrow" style={{ margin: "18px 0 10px" }}>External resources</div>
-              <div className="chem-links">{c.links.map(l => <span className="pill" key={l}>{l}</span>)}</div>
+              <div className="chem-links">{c.links.map(l => <Badge variant="secondary" key={l}>{l}</Badge>)}</div>
             </>
           )}
           <PathwayDiagram cas={c.cas} />
           <div style={{ marginTop: 16 }}>
-            <button className="btn btn-ghost" onClick={onCite}>Cite this entry</button>
+            <Button variant="outline" onClick={onCite}>Cite this entry</Button>
           </div>
         </div>
       </div>
@@ -97,11 +104,11 @@ function CompareView({ filtered, selCas, compareCas, setSelCas, setCompareCas, o
     return (
       <div>
         <div className="fg" style={{ marginBottom: 14 }}>
-          <label>{role}</label>
-          <select value={c?.cas || ""} onChange={e => setFn(e.target.value)}>
+          <Label>{role}</Label>
+          <NativeSelect value={c?.cas || ""} onChange={e => setFn(e.target.value)}>
             <option value="">Select compound</option>
             {filtered.map(x => <option key={x.cas} value={x.cas}>{x.name}</option>)}
-          </select>
+          </NativeSelect>
         </div>
         {c ? (
           <div className="chem-detail">
@@ -211,7 +218,7 @@ function BulkUpload({ toast }) {
         onDragOver={e => { e.preventDefault(); setDrag(true); }}
         onDragLeave={() => setDrag(false)}
         onDrop={e => { e.preventDefault(); setDrag(false); handleFile(e.dataTransfer.files[0]); }}
-        style={{ border: `2px dashed ${drag ? "var(--ink)" : "var(--hair-2)"}`, borderRadius: 10,
+        style={{ border: `2px dashed ${drag ? "var(--army)" : "var(--hair-2)"}`, borderRadius: 10,
           padding: "28px 20px", textAlign: "center", transition: "border-color .2s", cursor: "pointer",
           background: drag ? "var(--smoke)" : "transparent" }}
         onClick={() => document.getElementById("csv-input").click()}>
@@ -246,16 +253,16 @@ function BulkUpload({ toast }) {
             </table>
           </div>
           <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
-            <button className="btn btn-dark" onClick={submit}>Submit for review</button>
-            <button className="btn btn-ghost" onClick={() => { setFile(null); setPreview([]); }}>Clear</button>
+            <Button onClick={submit}>Submit for review</Button>
+            <Button variant="outline" onClick={() => { setFile(null); setPreview([]); }}>Clear</Button>
           </div>
         </div>
       )}
 
-      <button className="btn btn-ghost" style={{ marginTop: 14 }}
+      <Button variant="outline" style={{ marginTop: 14 }}
         onClick={() => { const blob = new Blob([TEMPLATE_CSV], { type: "text/csv" }); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "envirogenome-template.csv"; a.click(); toast("Template downloaded"); }}>
         Download CSV template
-      </button>
+      </Button>
     </div>
   );
 }
@@ -324,8 +331,8 @@ export default function Registry() {
           options={[{ value: "all", label: "All" }, { value: "geno", label: "Genotoxic" }, { value: "other", label: "Other" }]} />
         <Segmented value={view} onChange={setView}
           options={[{ value: "detail", label: "Detail" }, { value: "compare", label: "Compare" }]} />
-        <button className="btn btn-ghost" onClick={exportCSV}>Export CSV</button>
-        <button className="btn btn-dark" onClick={ask}><span className="ai-spark">✦</span> Ask Gemini</button>
+        <Button variant="outline" onClick={exportCSV}>Export CSV</Button>
+        <Button onClick={ask}><span className="ai-spark">✦</span> Ask Gemini</Button>
       </PageHeader>
 
       {ai.status !== "idle" && <div style={{ marginBottom: 18 }}><AiPanel label="Gemini interpretation" state={ai} onRetry={ask} /></div>}
@@ -341,7 +348,7 @@ export default function Registry() {
             {filtered.length === 0 ? <Empty text={q ? `No compounds match "${q}"` : "No contaminant entries loaded yet."} /> : filtered.map(c => (
               <div key={c.cas} className={"li" + (c.cas === selCas ? " sel" : "")} onClick={() => setSelCas(c.cas)}>
                 <div style={{ minWidth: 0 }}>
-                  <div className="t">{c.name}</div>
+                  <div className="t"><Term name={c.name} /></div>
                   <div className="s">{c.formula} / {c.cas}</div>
                 </div>
                 {c.genotoxic && <span className="badge sev s3" style={{ padding: "2px 6px" }}><span className="sq" /></span>}
@@ -361,16 +368,16 @@ export default function Registry() {
               <div>
                 <div className="eyebrow" style={{ marginBottom:10 }}>APA</div>
                 <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
-                  {selected.name} (CAS {selected.cas}). {selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}
+                  {selected.name} (CAS {selected.cas}). {selected.source || "EnviroGenome Guardian contaminant registry (project still in progress, not an official published source)."}
                 </div>
-                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} (CAS ${selected.cas}). ${selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}`); toast("APA citation copied"); }}>Copy APA</button>
+                <Button variant="outline" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} (CAS ${selected.cas}). ${selected.source || "EnviroGenome Guardian contaminant registry (project still in progress, not an official published source)."}`); toast("APA citation copied"); }}>Copy APA</Button>
               </div>
               <div>
                 <div className="eyebrow" style={{ marginBottom:10 }}>Vancouver / NLM</div>
                 <div className="mono" style={{ fontSize:12, lineHeight:1.8, background:"var(--smoke)", padding:"12px 14px", borderRadius:8 }}>
-                  {selected.name} [{selected.formula}]. CAS {selected.cas}. {selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}
+                  {selected.name} [{selected.formula}]. CAS {selected.cas}. {selected.source || "EnviroGenome Guardian contaminant registry (project still in progress, not an official published source)."}
                 </div>
-                <button className="btn btn-ghost" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} [${selected.formula}]. CAS ${selected.cas}. ${selected.source || "EnviroGenome Guardian contaminant registry (student coursework project, not an official published source)."}`); toast("Vancouver citation copied"); }}>Copy Vancouver</button>
+                <Button variant="outline" style={{ marginTop:10 }} onClick={() => { navigator.clipboard?.writeText(`${selected.name} [${selected.formula}]. CAS ${selected.cas}. ${selected.source || "EnviroGenome Guardian contaminant registry (project still in progress, not an official published source)."}`); toast("Vancouver citation copied"); }}>Copy Vancouver</Button>
               </div>
             </div>
           </div>

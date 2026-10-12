@@ -1,0 +1,90 @@
+/* Layer order: the app's own stylesheet (theme.css) sits above Tailwind's
+   base/preflight but below components and utilities, so shadcn components
+   styled with utilities always win over the app's element-level rules. */
+@layer theme, base, app, components, utilities;
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./theme.css" layer(app);
+
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn tokens mapped onto the EnviroGenome palette (see theme.css). */
+:root {
+  --radius: 0.625rem;
+  --background: #FAFAF8;
+  --foreground: #0A0A0A;
+  --card: #FFFFFF;
+  --card-foreground: #0A0A0A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A0A0A;
+  --primary: #4B5320;
+  --primary-foreground: #FFFFFF;
+  --secondary: #E8ECDA;
+  --secondary-foreground: #4B5320;
+  --muted: #F4F3EE;
+  --muted-foreground: #59584F;
+  --accent: #E8ECDA;
+  --accent-foreground: #0A0A0A;
+  --destructive: #D8442C;
+  --border: #E7E7E2;
+  --input: #D5D5CF;
+  --ring: #4B5320;
+  --chart-1: #4B5320;
+  --chart-2: #5E6B33;
+  --chart-3: #6B6B6B;
+  --chart-4: #A3561E;
+  --chart-5: #D8442C;
+}
+
+@theme inline {
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-serif: "Fraunces", Georgia, serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-army: #4B5320;
+  --color-army-hover: #3F461A;
+  --color-army-soft: #8F9F5A;
+  --color-army-tint: #E8ECDA;
+  --color-sev3: #D8442C;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+}
+
+/* Unlayered on purpose: leaflet.css is loaded unlayered from the CDN, so
+   these overrides must also be unlayered to beat it. */
+.leafmap .leaflet-tile{filter:grayscale(1) contrast(1.08) brightness(1.04);}
+.leafmap .leaflet-control-zoom a{font-family:var(--mono); color:var(--army);}
+.leafmap .leaflet-control-zoom a:hover{background:var(--army); color:#fff;}
+.leafmap .leaflet-control-zoom a:active{background:var(--army-hover); color:#fff;}
+.leafmap .leaflet-control-attribution a{color:var(--army);}
+.leafmap .leaflet-popup-content-wrapper{border-radius:10px; border:1px solid var(--hair);}
+.leafmap .leaflet-control-attribution{font-family:var(--mono); font-size:9px; color:var(--graphite);}

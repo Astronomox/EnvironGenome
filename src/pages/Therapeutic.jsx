@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { PageHeader } from "../components/ui";
+import { PageHeader } from "../components/kit";
 import AiPanel from "../components/AiPanel";
+import Term from "../components/Term";
 import { symptoms } from "../data/platform";
 import { sites, SEV_COLOR, SEV_LABEL } from "../data/platform";
 
@@ -27,10 +28,10 @@ function ProximityCalc() {
   return (
     <div>
       <div className="form-grid" style={{ marginBottom:12 }}>
-        <div className="fg"><label>Patient latitude</label><input value={lat} onChange={e=>setLat(e.target.value)} placeholder="e.g. 6.5244" /></div>
-        <div className="fg"><label>Patient longitude</label><input value={lng} onChange={e=>setLng(e.target.value)} placeholder="e.g. 3.3792" /></div>
+        <div className="fg"><Label>Patient latitude</Label><Input value={lat} onChange={e=>setLat(e.target.value)} placeholder="e.g. 6.5244" /></div>
+        <div className="fg"><Label>Patient longitude</Label><Input value={lng} onChange={e=>setLng(e.target.value)} placeholder="e.g. 3.3792" /></div>
       </div>
-      <button className="btn btn-ghost" onClick={calc}>Find nearby hazard sites within 10 km</button>
+      <Button variant="outline" onClick={calc}>Find nearby hazard sites within 10 km</Button>
       {results !== null && (
         <div style={{ marginTop:14 }}>
           {results.length === 0 ? (
@@ -59,8 +60,14 @@ function ProximityCalc() {
 }
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const Field = ({ label, children }) => <div className="fg"><label>{label}</label>{children}</div>;
+const Field = ({ label, children }) => <div className="fg"><Label>{label}</Label>{children}</div>;
 
 export default function Therapeutic() {
   const toast = useToast();
@@ -94,7 +101,7 @@ export default function Therapeutic() {
   return (
     <>
       <PageHeader eyebrow="Clinical" title="Therapeutic rehabilitation"
-        sub="Anonymised intake. Select presenting symptoms and rank probable environmental etiologies." />
+        sub={<>Anonymised intake. Select presenting symptoms and rank probable environmental <Term name="Etiology">etiologies</Term>.</>} />
 
       <div className="anon-note" style={{ marginBottom: 18 }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="10" width="16" height="11" rx="2" /><path d="M8 10V7a4 4 0 018 0v3" /></svg>
@@ -105,25 +112,28 @@ export default function Therapeutic() {
         <div className="card card-pad">
           <div className="eyebrow" style={{ marginBottom: 14 }}>Patient intake</div>
           <div className="form-grid">
-            <Field label="Age bracket"><select>{["Under 12", "13 to 17", "18 to 35", "36 to 55", "Over 56"].map(o => <option key={o}>{o}</option>)}</select></Field>
-            <Field label="Sex assigned at birth"><select>{["Male", "Female", "Intersex", "Prefer not to say"].map(o => <option key={o}>{o}</option>)}</select></Field>
-            <Field label="Residency near source"><input placeholder="Years / months" /></Field>
-            <Field label="Distance to hazard"><input placeholder="Kilometres" /></Field>
+            <Field label="Age bracket"><NativeSelect>{["Under 12", "13 to 17", "18 to 35", "36 to 55", "Over 56"].map(o => <option key={o}>{o}</option>)}</NativeSelect></Field>
+            <Field label="Sex assigned at birth"><NativeSelect>{["Male", "Female", "Intersex", "Prefer not to say"].map(o => <option key={o}>{o}</option>)}</NativeSelect></Field>
+            <Field label="Residency near source"><Input placeholder="Years / months" /></Field>
+            <Field label="Distance to hazard"><Input placeholder="Kilometres" /></Field>
           </div>
           <div className="eyebrow" style={{ margin: "20px 0 10px" }}>Presenting symptoms ({sel.length} selected)</div>
           <div className="checks">
             {symptoms.map(s => (
-              <div key={s} className={"chk" + (sel.includes(s) ? " on" : "")} onClick={() => toggle(s)}><span className="box" />{s}</div>
+              <Label key={s} className={"flex cursor-pointer items-center gap-2.5 rounded-lg border bg-card px-3 py-2.5 text-[13px] font-normal transition-colors hover:bg-muted " + (sel.includes(s) ? "border-primary bg-army-tint hover:bg-army-tint" : "")}>
+                <Checkbox checked={sel.includes(s)} onCheckedChange={() => toggle(s)} />
+                {s}
+              </Label>
             ))}
           </div>
           <div className="fg" style={{ marginTop: 14 }}>
-            <label>Not on this list? Describe it here</label>
-            <textarea rows={2} value={otherSymptom} onChange={e => setOtherSymptom(e.target.value)}
+            <Label>Not on this list? Describe it here</Label>
+            <Textarea rows={2} value={otherSymptom} onChange={e => setOtherSymptom(e.target.value)}
               placeholder="e.g. metallic taste, recurring nosebleeds, hand tremor only in the evenings" />
           </div>
-          <button className="btn btn-dark" style={{ width: "100%", marginTop: 16 }} onClick={match}>
+          <Button style={{ width: "100%", marginTop: 16 }} onClick={match}>
             <span className="ai-spark">✦</span> Match to environmental etiology
-          </button>
+          </Button>
         </div>
 
         <div>
@@ -139,18 +149,18 @@ export default function Therapeutic() {
             <div className="card card-pad" style={{ marginTop: 14 }}>
               <div className="eyebrow" style={{ marginBottom: 10 }}>Case actions</div>
               <div className="stack" style={{ gap: 8 }}>
-                <button className="btn btn-ghost" style={{ width: "100%", justifyContent: "flex-start" }} onClick={genReferral}>
+                <Button variant="outline" style={{ width: "100%", justifyContent: "flex-start" }} onClick={genReferral}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width: 15, height: 15 }}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8" /></svg>
                   Generate referral letter to LUTH
-                </button>
-                <button className="btn btn-ghost" style={{ width: "100%", justifyContent: "flex-start" }} onClick={() => toast("Follow-up scheduled for 30 days from today")}>
+                </Button>
+                <Button variant="outline" style={{ width: "100%", justifyContent: "flex-start" }} onClick={() => toast("Follow-up scheduled for 30 days from today")}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width: 15, height: 15 }}><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
                   Schedule 30-day follow-up
-                </button>
-                <button className="btn btn-ghost" style={{ width: "100%", justifyContent: "flex-start" }} onClick={() => { setSel([]); setAi({ status: "idle", text: "" }); toast("Form reset for next patient"); }}>
+                </Button>
+                <Button variant="outline" style={{ width: "100%", justifyContent: "flex-start" }} onClick={() => { setSel([]); setAi({ status: "idle", text: "" }); toast("Form reset for next patient"); }}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" style={{ width: 15, height: 15 }}><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" /></svg>
                   New patient intake
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -218,10 +228,10 @@ function TreatmentPlanner({ sel }) {
   return (
     <div className="card card-pad">
       <div className="fg" style={{ marginBottom:18 }}>
-        <label>Suspected primary pollutant exposure</label>
-        <select value={pollutant} onChange={e => setPollutant(e.target.value)}>
+        <Label>Suspected primary pollutant exposure</Label>
+        <NativeSelect value={pollutant} onChange={e => setPollutant(e.target.value)}>
           {Object.keys(PATHWAYS).map(p => <option key={p}>{p}</option>)}
-        </select>
+        </NativeSelect>
       </div>
       {pw && (
         <div className="stack" style={{ gap:10 }}>

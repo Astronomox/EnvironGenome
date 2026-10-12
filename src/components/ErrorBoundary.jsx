@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { Button } from "@/components/ui/button";
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -19,9 +20,9 @@ export default class ErrorBoundary extends Component {
         <div className="mono" style={{ fontSize: 11, background: "var(--smoke)", padding: "12px 16px", borderRadius: 8, marginTop: 18, textAlign: "left", color: "var(--graphite)", wordBreak: "break-all" }}>
           {this.state.error.message}
         </div>
-        <button className="btn btn-dark" style={{ marginTop: 22 }} onClick={() => { this.setState({ error: null }); window.location.href = "/app"; }}>
+        <Button style={{ marginTop: 22 }} onClick={() => { this.setState({ error: null }); window.location.href = "/app"; }}>
           Return to dashboard
-        </button>
+        </Button>
       </div>
     );
   }

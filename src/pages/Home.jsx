@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { PageHeader } from "../components/ui";
+import { PageHeader } from "../components/kit";
+import Term from "../components/Term";
 import { feed, sites, districts, SEV_COLOR, SEV_LABEL } from "../data/platform";
 import { contaminants } from "../data/contaminants";
-import { literature } from "../data/literature";
 import { askGemini } from "../utils/gemini";
+import { Button } from "@/components/ui/button";
 
 const Kpi = ({ lab, val, sub }) => (
   <div className="kpi"><div className="lab">{lab}</div><div className="val">{val}</div>{sub && <div className="sub"><b>{sub}</b></div>}</div>
@@ -12,7 +13,6 @@ const Kpi = ({ lab, val, sub }) => (
 
 export default function Home() {
   const nav = useNavigate();
-  const [openLit, setOpenLit] = useState(-1);
   const [geminiStatus, setGeminiStatus] = useState({ state: "checking" }); // checking | not-configured | configured | active | down
 
   useEffect(() => {
@@ -39,8 +39,8 @@ export default function Home() {
     <>
       <PageHeader eyebrow="Dashboard" title="Home portal"
         sub="A snapshot of the registry, hazard map, and regulatory data currently in the system.">
-        <button className="btn btn-ghost" onClick={() => nav("/app/map")}>Open map</button>
-        <button className="btn btn-dark" onClick={() => nav("/app/registry")}>Search registry</button>
+        <Button variant="outline" onClick={() => nav("/app/map")}>Open map</Button>
+        <Button onClick={() => nav("/app/registry")}>Search registry</Button>
       </PageHeader>
 
       <div style={{ borderRadius:"var(--r)", border:"1px solid var(--hair)", overflow:"hidden", marginBottom:18 }}>
@@ -64,7 +64,7 @@ export default function Home() {
       <div className="grid g4">
         <Kpi lab="Contaminants" val={contaminants.length} sub="cited entries only" />
         <Kpi lab="Hazard sites" val={sites.length} sub="published sources only" />
-        <Kpi lab="District scores" val={districts.length} sub="model estimates, 18 LGAs" />
+        <Kpi lab="District scores" val={districts.length} sub={<>model estimates, 18 <Term name="LGA">LGAs</Term></>} />
         <Kpi lab="Pending review" val={pending.length} />
       </div>
 
@@ -79,7 +79,7 @@ export default function Home() {
                 <div style={{ display:"flex", justifyContent:"space-between", fontSize:12.5, marginBottom:5 }}>
                   <span className="row" style={{ gap:7 }}>
                     <span style={{ width:9, height:9, borderRadius:2, background:SEV_COLOR[i] }} />
-                    L{i} {SEV_LABEL[i]}
+                    <Term name={"Level " + i}>L{i} {SEV_LABEL[i]}</Term>
                   </span>
                   <span className="mono" style={{ color:"var(--graphite)" }}>{c}</span>
                 </div>
@@ -90,7 +90,7 @@ export default function Home() {
           <div className="mono" style={{ fontSize:11, color:"var(--graphite)", marginTop:14 }}>
             {pending.length} sites pending verification
           </div>
-          <button className="btn btn-ghost" style={{ width:"100%", marginTop:12 }} onClick={() => nav("/app/map")}>View all on map</button>
+          <Button variant="outline" style={{ width:"100%", marginTop:12 }} onClick={() => nav("/app/map")}>View all on map</Button>
         </div>
 
         <div className="card card-pad">
@@ -113,7 +113,7 @@ export default function Home() {
         ].map(({ label, sub, path, icon }) => (
           <div key={path} className="card card-pad" style={{ cursor:"pointer", transition:"border-color .15s" }}
             onClick={() => nav(path)}
-            onMouseEnter={e => e.currentTarget.style.borderColor="var(--ink)"}
+            onMouseEnter={e => e.currentTarget.style.borderColor="var(--army)"}
             onMouseLeave={e => e.currentTarget.style.borderColor=""}>
             <svg viewBox="0 0 24 24" fill="none" stroke="var(--graphite)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ width:20, height:20, marginBottom:10 }}><path d={icon} /></svg>
             <div style={{ fontWeight:500, fontSize:13.5 }}>{label}</div>
@@ -122,39 +122,7 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="sect-t">Cited research ({literature.length})</div>
-      <div className="stack">
-        {literature.map((l, i) => (
-          <div className="card" key={i} style={{ cursor:"pointer" }} onClick={() => setOpenLit(openLit === i ? -1 : i)}>
-            <div className="card-pad lit-row">
-              <span className="pill lit-tag">{l.tag}</span>
-              <div style={{ minWidth:0 }}>
-                <div style={{ fontSize:13, lineHeight:1.5 }}>{l.cite}</div>
-                {openLit === i && <div style={{ fontSize:12.5, color:"var(--graphite)", lineHeight:1.6, marginTop:8 }}>{l.finding}</div>}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      <div className="sect-t" style={{ marginTop:28 }}>District score data sources</div>
-      <div className="stack">
-        {[
-          { tag:"AQI / Air", cite:"Research Square preprint (2026). AQI across five Lagos industrial estates (Ikeja/Ogba, Surulere, Oshodi/Ilupeju, Apapa, Odogunyan) - 12-month calibrated field monitoring. Dry-season AQI: Odogunyan 229, Surulere 130, Oshodi 129, Apapa 120, Ikeja 119, Alausa control 64 (moderate)." },
-          { tag:"AQI / Air", cite:"Ambient Air Quality Monitoring in Metropolitan Lagos - Tin-Can Port industrial estate, Apapa. ResearchGate (2016). SO₂ and NO₂ exceeded USEPA national standards. PC1 (38.92%) attributed to fossil fuel combustion and industrial point sources." },
-          { tag:"AQI / Air", cite:"Assessment of PM₁₀ and Associated Gaseous Elements in Selected Lagos Locations. Tropical Environment, Biology and Technology (2024). PM₁₀ 48.05–115.00 µg/m³; CO 12.46–58.50 µg/m³ across Obalende, Agege, and Apapa - all exceeding WHO limits." },
-          { tag:"WQI / Water", cite:"Evaluation of Groundwater Quality in Parts of Lagos-Nigeria. Academia.edu (2021). 29 borehole samples, Ikorodu LGA. Mean pH 7.0, BOD 11.59 mg/L, COD 14.90 mg/L - moderate-to-good quality for residential zones." },
-          { tag:"WQI / Water", cite:"Nubi, Ajao & Nubi (2008). Pollution Assessment of the Impact of Coastal Activities on Lagos Lagoon. Science World Journal, 3(2):83-88. Dissolved oxygen 1.16–2.09 mg/L, COD up to 786.5 mg/L, Pb 0.45–0.50 ppm at Oworonsoki and Ebute Meta tributaries." },
-          { tag:"Land cover / Nature", cite:"Adegoke et al. (2010). Multi-scale analyses of urban land use change in Lagos. Remote Sensing of Environment, 114(6):1336-1346. Satellite time series documenting mangrove clearance and green-cover loss rates across Lagos LGAs from 1985 onward." },
-          { tag:"PTE / Toxic", cite:"Impact of Land Use on Potentially Toxic Elements in Urban Soils of Lagos. NCBI PMC6257170 (2018). 126 soil samples across Victoria Island, Lagos Mainland, Ikeja, Ifako-Ijaiye, Makoko. Cr, Cu, Fe, Mn, Ni, Pb, Zn measured at industrial, roadside, dump-site, and residential sampling points." },
-          { tag:"Flood risk / Terrain", cite:"Lagos State Government flood-risk and coastal subsidence records. Lagos Island, Lekki Peninsula, Victoria Island - elevated subsidence risk. Ikeja upland and Alausa plateau - most terrain-stable zones in metropolitan Lagos." },
-        ].map((s, i) => (
-          <div className="card card-pad" key={i} style={{ display:"flex", gap:14, alignItems:"baseline" }}>
-            <span className="pill lit-tag" style={{ flexShrink:0 }}>{s.tag}</span>
-            <div style={{ fontSize:12.5, lineHeight:1.6, color:"var(--graphite)" }}>{s.cite}</div>
-          </div>
-        ))}
-      </div>
 
       <div className="sect-t">Platform status</div>
       <div className="grid g3 g3-stack-mobile">
@@ -168,7 +136,7 @@ export default function Home() {
               <div key={l} className="status-row" style={{ padding:"8px 0", borderBottom:"1px solid var(--hair)" }}>
                 <span style={{ fontSize:13 }}>{l}</span>
                 <span className="mono status-val" style={{ fontSize:10.5, padding:"2px 8px", borderRadius:5,
-                  background: t==="ok"?"rgba(47,158,68,.08)":"var(--smoke)",
+                  background: t==="ok"?"rgba(35,122,53,.08)":"var(--smoke)",
                   color: t==="ok"?"var(--ok)":"var(--graphite)" }}>{v}</span>
               </div>
             ))}
@@ -180,7 +148,7 @@ export default function Home() {
                   testing:   { text:"Testing...",             color:"var(--graphite)", bg:"var(--smoke)" },
                   "not-configured": { text:"Not configured",  color:"var(--sev3)",     bg:"rgba(216,68,44,.08)" },
                   configured:{ text:"Configured, not tested", color:"var(--graphite)", bg:"var(--smoke)" },
-                  active:    { text:"Active",                 color:"var(--ok)",       bg:"rgba(47,158,68,.08)" },
+                  active:    { text:"Active",                 color:"var(--ok)",       bg:"rgba(35,122,53,.08)" },
                   down:      { text:"Down",                   color:"var(--sev3)",     bg:"rgba(216,68,44,.08)" },
                 };
                 const s = map[geminiStatus.state] || map.checking;
@@ -191,10 +159,10 @@ export default function Home() {
               <div style={{ fontSize:11.5, color:"var(--sev3)", paddingBottom:8, lineHeight:1.5 }}>{geminiStatus.reason}</div>
             )}
             {geminiStatus.state !== "checking" && geminiStatus.state !== "not-configured" && (
-              <button className="btn btn-ghost" style={{ width:"100%", marginTop:2 }}
+              <Button variant="outline" style={{ width:"100%", marginTop:2 }}
                 onClick={testGeminiConnection} disabled={geminiStatus.state === "testing"}>
                 {geminiStatus.state === "testing" ? "Testing..." : "Test connection"}
-              </button>
+              </Button>
             )}
           </div>
         </div>

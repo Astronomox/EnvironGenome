@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import L from "leaflet";
-import { PageHeader, Segmented, SearchInput } from "../components/ui";
+import { PageHeader, Segmented, SearchInput } from "../components/kit";
 import AiPanel from "../components/AiPanel";
+import Term from "../components/Term";
 import { sites as initialSites, SEV_COLOR, SEV_LABEL, siteHistory } from "../data/platform";
 import { sitesToGeoJSON, download, auditReportHTML } from "../utils/export";
 
@@ -31,10 +32,10 @@ function TimeSlider({ siteId, siteName }) {
         ))}
       </div>
       <input type="range" min={0} max={11} value={pos} onChange={e => setPos(+e.target.value)}
-        style={{ width:"100%", accentColor:"var(--ink)" }} />
+        style={{ width:"100%", accentColor:"var(--army)" }} />
       <div style={{ display:"flex", justifyContent:"space-between", marginTop:4 }}>
         {MONTHS.map((m, i) => (
-          <span key={m} className="mono" style={{ fontSize:9, color: i===pos ? "var(--ink)" : "var(--graphite)", fontWeight: i===pos ? 600 : 400 }}>{m}</span>
+          <span key={m} className="mono" style={{ fontSize:9, color: i===pos ? "var(--army)" : "var(--graphite)", fontWeight: i===pos ? 600 : 400 }}>{m}</span>
         ))}
       </div>
       <div style={{ marginTop:12, display:"flex", alignItems:"center", gap:10 }}>
@@ -46,6 +47,10 @@ function TimeSlider({ siteId, siteName }) {
 }
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
@@ -113,7 +118,7 @@ export default function MapView() {
       const r = Math.min(22, 12 + cell.length * 2);
       const icon = L.divIcon({
         className: "",
-        html: `<div style="width:${r*2}px;height:${r*2}px;border-radius:50%;background:${SEV_COLOR[maxSev]};border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.25)">${cell.length}</div>`,
+        html: `<div style="width:${r*2}px;height:${r*2}px;border-radius:50%;background:${SEV_COLOR[maxSev]};border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600;color:${maxSev === 2 ? "#fff" : "#0A0A0A"};box-shadow:0 2px 8px rgba(0,0,0,.25)">${cell.length}</div>`,
         iconSize: [r * 2, r * 2], iconAnchor: [r, r]
       });
       const m = L.marker([lat, lng], { icon });
@@ -209,12 +214,12 @@ export default function MapView() {
       <PageHeader eyebrow="Field intelligence" title="Geolocation hazard map"
         sub="Geotagged hazard submissions across metropolitan Lagos, rated 0 to 3.">
         <SearchInput value={q} onChange={setQ} placeholder="Filter sites" />
-        <button className="btn btn-ghost" onClick={exportGeoJSON}>Export GeoJSON</button>
-        <button className="btn btn-ghost" onClick={printReport}>Print report</button>
-        <button className={"btn " + (tab === "submit" ? "btn-dark" : "btn-ghost")} onClick={() => setTab(t => t === "submit" ? "sites" : "submit")}>
+        <Button variant="outline" onClick={exportGeoJSON}>Export GeoJSON</Button>
+        <Button variant="outline" onClick={printReport}>Print report</Button>
+        <Button variant={tab === "submit" ? "default" : "outline"} onClick={() => setTab(t => t === "submit" ? "sites" : "submit")}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 15, height: 15 }}><path d="M12 5v14M5 12h14" /></svg>
           Flag site
-        </button>
+        </Button>
       </PageHeader>
 
       <div className="maplayout">
@@ -231,10 +236,8 @@ export default function MapView() {
 
         <div>
           {/* tab toggle */}
-          <div className="seg" style={{ width: "100%", marginBottom: 14 }}>
-            <button className={tab === "sites" ? "on" : ""} style={{ flex: 1 }} onClick={() => setTab("sites")}>Sites ({visible.length})</button>
-            <button className={tab === "submit" ? "on" : ""} style={{ flex: 1 }} onClick={() => setTab("submit")}>Submit new</button>
-          </div>
+          <Segmented value={tab} onChange={setTab} className="mb-3.5 w-full" itemClassName="flex-1"
+            options={[{ value: "sites", label: `Sites (${visible.length})` }, { value: "submit", label: "Submit new" }]} />
 
           {tab === "sites" ? (
             <>
@@ -251,21 +254,20 @@ export default function MapView() {
                 ))}
               </div>
               <div className="card card-pad" style={{ marginTop: 14 }}>
-                <div className={"sev s" + selected.sev}><span className="sq" />Level {selected.sev}, {SEV_LABEL[selected.sev]}</div>
+                <div className={"sev s" + selected.sev} style={{ whiteSpace: "normal" }}><span className="sq" /><Term name={"Level " + selected.sev}>Level {selected.sev}, {SEV_LABEL[selected.sev]}</Term></div>
                 <div className="serif" style={{ fontSize: 19, marginTop: 10 }}>{selected.name}</div>
                 <div className="mono" style={{ fontSize: 11.5, color: "var(--graphite)" }}>{selected.sub}</div>
                 <div className="site-meta" style={{ marginTop: 12 }}>
                   <b>{selected.coord}</b><br />Reported {selected.date}<br />By {selected.by}<br />Status: <b>{selected.status}</b>
-                  {selected.source && <><br />Source: {selected.source}</>}
                 </div>
                 {selected.photos && selected.photos.length > 0 ? (
                   <div className="site-photos">{selected.photos.map((p, i) => <div className="ph" key={i}>{p}</div>)}</div>
                 ) : (
                   <div style={{ fontSize:11.5, color:"var(--graphite)", marginTop:10 }}>No photo evidence attached to this entry.</div>
                 )}
-                <button className="btn btn-dark" style={{ width: "100%", marginTop: 14 }} onClick={draftReport}>
+                <Button style={{ width: "100%", marginTop: 14 }} onClick={draftReport}>
                   <span className="ai-spark">✦</span> Draft audit report
-                </button>
+                </Button>
               </div>
             </>
           ) : (
@@ -276,27 +278,26 @@ export default function MapView() {
                 Click anywhere on the map to set coordinates, or enter them manually.
               </div>
               <div className="stack" style={{ gap: 12 }}>
-                <div className="fg"><label>Site name</label><input value={sub.name} onChange={e => setSub(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Ojota Industrial Belt" /></div>
+                <div className="fg"><Label>Site name</Label><Input value={sub.name} onChange={e => setSub(p => ({ ...p, name: e.target.value }))} placeholder="e.g. Ojota Industrial Belt" /></div>
                 <div className="form-grid">
-                  <div className="fg"><label>Latitude</label><input value={sub.lat} onChange={e => setSub(p => ({ ...p, lat: e.target.value }))} placeholder="6.5883" /></div>
-                  <div className="fg"><label>Longitude</label><input value={sub.lng} onChange={e => setSub(p => ({ ...p, lng: e.target.value }))} placeholder="3.3792" /></div>
+                  <div className="fg"><Label>Latitude</Label><Input value={sub.lat} onChange={e => setSub(p => ({ ...p, lat: e.target.value }))} placeholder="6.5883" /></div>
+                  <div className="fg"><Label>Longitude</Label><Input value={sub.lng} onChange={e => setSub(p => ({ ...p, lng: e.target.value }))} placeholder="3.3792" /></div>
                 </div>
-                <div className="fg"><label>Substance / contaminant</label><input value={sub.substance} onChange={e => setSub(p => ({ ...p, substance: e.target.value }))} placeholder="e.g. Lead and PCB mixture" /></div>
-                <div className="fg"><label>Severity rating</label>
-                  <div className="seg" style={{ width: "100%" }}>
-                    {[0,1,2,3].map(s => <button key={s} className={sub.sev === s ? "on" : ""} style={{ flex: 1 }} onClick={() => setSub(p => ({ ...p, sev: s }))}>{`L${s}`}</button>)}
-                  </div>
-                  <div className="mono" style={{ fontSize: 10.5, color: "var(--graphite)", marginTop: 6 }}>{SEV_LABEL[sub.sev]}</div>
+                <div className="fg"><Label>Substance / contaminant</Label><Input value={sub.substance} onChange={e => setSub(p => ({ ...p, substance: e.target.value }))} placeholder="e.g. Lead and PCB mixture" /></div>
+                <div className="fg"><Label>Severity rating</Label>
+                  <Segmented value={sub.sev} onChange={s => setSub(p => ({ ...p, sev: s }))} className="w-full" itemClassName="flex-1"
+                    options={[0,1,2,3].map(s => ({ value: s, label: `L${s}` }))} />
+                  <div className="mono" style={{ fontSize: 10.5, color: "var(--graphite)", marginTop: 6 }}><Term name={"Level " + sub.sev}>{SEV_LABEL[sub.sev]}</Term></div>
                 </div>
-                <div className="fg"><label>Reporter name / institution</label><input value={sub.reporter} onChange={e => setSub(p => ({ ...p, reporter: e.target.value }))} placeholder="e.g. Jane Okafor, field survey team" /></div>
-                <div className="fg"><label>Notes / observations</label><textarea rows={3} value={sub.notes} onChange={e => setSub(p => ({ ...p, notes: e.target.value }))} placeholder="Chain-of-custody notes, containment observations" /></div>
-                <div className="fg"><label>Photo evidence</label>
+                <div className="fg"><Label>Reporter name / institution</Label><Input value={sub.reporter} onChange={e => setSub(p => ({ ...p, reporter: e.target.value }))} placeholder="e.g. Jane Okafor, field survey team" /></div>
+                <div className="fg"><Label>Notes / observations</Label><Textarea rows={3} value={sub.notes} onChange={e => setSub(p => ({ ...p, notes: e.target.value }))} placeholder="Chain-of-custody notes, containment observations" /></div>
+                <div className="fg"><Label>Photo evidence</Label>
                   <div style={{ display: "flex", gap: 8 }}>
                     <div className="site-photos" style={{ flex: 1, margin: 0 }}><div className="ph" style={{ height: 64 }}>+ Upload</div><div className="ph" style={{ height: 64 }}>+ Upload</div></div>
                   </div>
                   <div className="mono" style={{ fontSize: 10, color: "var(--graphite)", marginTop: 4 }}>JPEG, PNG, TIFF. EXIF metadata preserved.</div>
                 </div>
-                <button className="btn btn-dark" style={{ width: "100%" }} onClick={handleSubmit}>Submit for review</button>
+                <Button style={{ width: "100%" }} onClick={handleSubmit}>Submit for review</Button>
               </div>
             </div>
           )}

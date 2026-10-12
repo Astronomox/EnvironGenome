@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { PageHeader, Table, SearchInput } from "../components/ui";
+import { PageHeader, Table, SearchInput, Segmented } from "../components/kit";
 import AiPanel from "../components/AiPanel";
 import { species } from "../data/platform";
 import { useToast } from "../hooks/ToastContext";
 import { askGemini } from "../utils/gemini";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 
 // Intervention records grounded in real programmes and documented actions.
 // Outcome status reflects last known state from cited sources.
@@ -129,12 +132,8 @@ export default function Conservation() {
     <>
       <PageHeader eyebrow="Threat forecasting" title="Conservation intelligence"
         sub="Track at-risk species, monitor live interventions, and draft mitigation briefs the committee can act on.">
-        <div className="seg">
-          <button className={tab==="species"?"on":""} onClick={() => setTab("species")}>Species</button>
-          <button className={tab==="interventions"?"on":""} onClick={() => setTab("interventions")}>Interventions</button>
-          <button className={tab==="forecast"?"on":""} onClick={() => setTab("forecast")}>Forecast</button>
-          <button className={tab==="grants"?"on":""} onClick={() => setTab("grants")}>Grants</button>
-        </div>
+        <Segmented value={tab} onChange={setTab}
+          options={[{ value:"species", label:"Species" }, { value:"interventions", label:"Interventions" }, { value:"forecast", label:"Forecast" }, { value:"grants", label:"Grants" }]} />
       </PageHeader>
 
       {tab === "species" && (
@@ -167,17 +166,17 @@ export default function Conservation() {
         <div className="card card-pad">
           <div className="eyebrow" style={{ marginBottom:12 }}>Describe the emerging threat</div>
           <div className="fg" style={{ marginBottom:14 }}>
-            <textarea rows={5} value={threat} onChange={e => setThreat(e.target.value)}
+            <Textarea rows={5} value={threat} onChange={e => setThreat(e.target.value)}
               placeholder="e.g. Rising chromium levels in the Agege canal after new tannery discharge, mangroves showing dieback over 6 months" />
           </div>
-          <button className="btn btn-dark" onClick={forecast}>
+          <Button onClick={forecast}>
             <span className="ai-spark">✦</span> Forecast and draft mitigation
-          </button>
+          </Button>
           {ai.status !== "idle" && <div style={{ marginTop:16 }}><AiPanel label="Gemini mitigation brief" state={ai} onRetry={forecast} /></div>}
           {ai.status === "done" && (
             <div style={{ display:"flex", gap:8, marginTop:14 }}>
-              <button className="btn btn-ghost" onClick={() => toast("Brief sent to committee portal")}>Send to committee</button>
-              <button className="btn btn-ghost" onClick={() => { setThreat(""); setAi({ status:"idle", text:"" }); }}>Clear</button>
+              <Button variant="outline" onClick={() => toast("Brief sent to committee portal")}>Send to committee</Button>
+              <Button variant="outline" onClick={() => { setThreat(""); setAi({ status:"idle", text:"" }); }}>Clear</Button>
             </div>
           )}
         </div>
@@ -200,7 +199,7 @@ export default function Conservation() {
                   <h4>{g.name}</h4>
                   <p>{g.match}</p>
                   <div className="chem-links" style={{ marginTop:8 }}>
-                    <span className="pill">Real programme. Amounts and deadlines change - check the official site before applying.</span>
+                    <Badge variant="secondary" className="whitespace-normal">Real programme. Amounts and deadlines change - check the official site before applying.</Badge>
                   </div>
                 </div>
               </div>
