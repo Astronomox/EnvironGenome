@@ -83,7 +83,6 @@ export default function Landing() {
         </nav>
 
         <div className="lp-hero-body">
-          <p className="lp-kicker">Lagos Lagoon <span aria-hidden="true">/</span> 6.45 N, 3.39 E</p>
           <h1>Pollution in Lagos, traced from the water to the <em>genome</em>.</h1>
           <p className="lp-lede">
             EnviroGenome Guardian brings together cited <Term name="Contaminant">contaminant</Term> data,
