@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@': path.resolve(import.meta.dirname, './src') },
+    // radix-ui's scroll-lock helpers import tslib; resolve it from the project
+    // root so a stale or partially linked install can't break the build
+    dedupe: ['tslib'],
   },
   build: {
     chunkSizeWarningLimit: 600,
