@@ -36,8 +36,6 @@
 .lp-nav-links a:hover{color:#fff; border-bottom-color:var(--army-tint);}
 
 .lp-hero-body{align-self:end; max-width:var(--lp-max); width:100%; margin:0 auto; padding:40px clamp(20px,4vw,48px) 30px;}
-.lp-kicker{font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--army-tint); margin-bottom:22px;}
-.lp-kicker span{opacity:.6; margin:0 6px;}
 .lp-hero h1{font-family:var(--serif); font-weight:400; font-size:clamp(44px,7.2vw,108px); line-height:.96; letter-spacing:-.035em;
   max-width:13ch; margin-bottom:28px; text-wrap:balance;}
 .lp-hero h1 em{font-style:italic; color:var(--army-soft);}
