@@ -114,7 +114,7 @@
 
 /* ===== reach ===== */
 .lp-reach{background:var(--army-tint); padding:clamp(64px,9vw,112px) var(--lp-pad);}
-.lp-reach-grid{max-width:var(--lp-max); margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(24px,4vw,56px);}
+.lp-reach-grid{max-width:var(--lp-max); margin:0 auto; display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(24px,4vw,56px);}
 .lp-reach-grid > div{border-top:2px solid var(--army); padding-top:16px;}
 .lp-reach-grid p{color:var(--mute); font-size:15.5px; line-height:1.6;}
 

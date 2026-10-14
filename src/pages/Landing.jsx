@@ -268,10 +268,6 @@ export default function Landing() {
               <h3>Already wider</h3>
               <p>The standards library already runs from global treaties to Nigerian state law, and the research behind the platform spans Nigeria and beyond.</p>
             </div>
-            <div>
-              <h3>Next on the roadmap</h3>
-              <p>Oil spill zones in Port Harcourt, the Kano tannery district, construction dust in Abuja and auto recycling in Nnewi, then more jurisdictions worldwide.</p>
-            </div>
           </div>
         </section>
 
