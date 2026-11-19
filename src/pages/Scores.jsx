@@ -5,21 +5,13 @@ import { computeGCS, computeAllGCS } from "../utils/gcs";
 import { toCSV, download } from "../utils/export";
 import { Button } from "@/components/ui/button";
 
-// Every band except the bottom one takes white text at 4.5:1 or better.
-// The bottom band is the unchanged Level 3 red, where white is 4.39:1, so
-// it takes ink text instead (4.51:1).
+// Every band takes white text at 4.5:1 or better.
 function scoreColor(v) {
-  return v >= 80 ? "#1F3B44" : v >= 65 ? "#3E5F68" : v >= 50 ? "#6B6B6B" : v >= 40 ? "#A3561E" : "#A63D2F";
+  return v >= 80 ? "#1F3B44" : v >= 65 ? "#3E5F68" : v >= 50 ? "#5F7479" : v >= 40 ? "#9A6B4F" : "#A63D2F";
 }
 
 function scoreText(v) {
-  return v >= 40 ? "#fff" : "var(--ink)";
-}
-
-function TrendArrow({ v }) {
-  if (v >= 70) return <span style={{ color:"var(--ok)", fontSize:13 }}>↑</span>;
-  if (v >= 50) return <span style={{ color:"var(--graphite)", fontSize:13 }}>→</span>;
-  return <span style={{ color:"var(--sev3)", fontSize:13 }}>↓</span>;
+  return "#fff";
 }
 
 function WeightBar({ label, raw, weight, weighted }) {
@@ -40,21 +32,6 @@ function WeightBar({ label, raw, weight, weighted }) {
   );
 }
 
-function MiniSparkline({ vals, color }) {
-  const max = Math.max(...vals, 100), min = Math.min(...vals, 0);
-  const W = 80, H = 24, pad = 2;
-  const pts = vals.map((v, i) => {
-    const x = pad + (i / (vals.length - 1)) * (W - pad * 2);
-    const y = H - pad - ((v - min) / (max - min || 1)) * (H - pad * 2);
-    return `${x},${y}`;
-  }).join(" ");
-  return (
-    <svg width={W} height={H} style={{ overflow:"visible" }}>
-      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export default function Scores() {
   const computed = useMemo(() => computeAllGCS(districts), []);
   const [pick, setPick] = useState(computed[0] || null);
@@ -63,25 +40,18 @@ export default function Scores() {
 
   const detail = useMemo(() => pick ? computeGCS(pick[0]) : null, [pick]);
 
-  // mock 6-month trend per district
-  const trend = useMemo(() => {
-    return computed.map(([name, v]) => {
-      const hist = [Math.max(0,v-8), Math.max(0,v-5), Math.max(0,v-3), v, Math.min(100,v+2), Math.min(100,v+1)];
-      return [name, v, hist];
-    });
-  }, [computed]);
 
   const shown = useMemo(() => {
     const term = q.trim().toLowerCase();
-    let d = trend.filter(([n]) => !term || n.toLowerCase().includes(term));
+    let d = computed.filter(([n]) => !term || n.toLowerCase().includes(term));
     if (sort === "score") d = [...d].sort((a, b) => b[1] - a[1]);
     else d = [...d].sort((a, b) => a[0].localeCompare(b[0]));
     return d;
-  }, [q, sort, trend]);
+  }, [q, sort, computed]);
 
   function exportScores() {
-    const cols = [{ key:"name", label:"District" }, { key:"score", label:"GCS Score (0-100)" }, { key:"trend", label:"6-month trend" }];
-    const rows = shown.map(([name, v, hist]) => ({ name, score: v, trend: v >= 70 ? "Improving" : v >= 50 ? "Stable" : "Declining" }));
+    const cols = [{ key:"name", label:"District" }, { key:"score", label:"GCS Score (0-100)" }, { key:"grade", label:"Grade" }];
+    const rows = shown.map(([name, v, hist]) => ({ name, score: v, grade: v >= 80 ? "Optimal" : v >= 50 ? "Moderate" : "Poor" }));
     download(toCSV(rows, cols), "envirogenome-district-scores.csv", "text/csv");
   }
 
@@ -98,8 +68,8 @@ export default function Scores() {
 
   return (
     <>
-      <PageHeader eyebrow="Habitability" title="District risk scores"
-        sub="Live-computed composite district grades. Scores are calculated from air quality, natural features, water purity, toxic-exposure probability, and terrain stability.">
+      <PageHeader eyebrow="Platform" title="District risk scores"
+        sub="A composite exposure-risk grade for each Lagos district, from air quality, water purity, toxic exposure, natural features and terrain. Higher is safer.">
         <SearchInput value={q} onChange={setQ} placeholder="Find a district" />
         <Segmented value={sort} onChange={setSort}
           options={[{ value:"score", label:"By score" }, { value:"name", label:"A to Z" }]} />
@@ -110,7 +80,7 @@ export default function Scores() {
       {shown.length === 0 && (
         <div className="empty">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 20V10M10 20V4M16 20v-8" /></svg>
-          No district data yet. This module has no real per-district input data behind it, so nothing is shown.
+          No district data loaded.
         </div>
       )}
 
@@ -118,7 +88,7 @@ export default function Scores() {
       <div className="grid g2" style={{ alignItems:"start" }}>
         {/* grid + sparklines */}
         <div className="card card-pad">
-          <div className="eyebrow" style={{ marginBottom:14 }}>District grades ({shown.length}), live computed</div>
+          <div className="eyebrow" style={{ marginBottom:14 }}>District grades ({shown.length})</div>
           <div className="scoregrid">
             {shown.map(([name, v]) => (
               <div key={name} className={"scell" + (pick && pick[0] === name ? " sel" : "")}
@@ -129,19 +99,8 @@ export default function Scores() {
           </div>
           <div style={{ display:"flex", gap:14, marginTop:18, flexWrap:"wrap", fontFamily:"var(--mono)", fontSize:10, color:"var(--graphite)" }}>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#1F3B44" }} />80 to 100 optimal</span>
-            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#6B6B6B" }} />50 to 79 moderate</span>
+            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#5F7479" }} />50 to 79 moderate</span>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#A63D2F" }} />0 to 49 poor</span>
-          </div>
-          <div className="sect-t" style={{ marginTop:18 }}>6-month trend</div>
-          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
-            {shown.slice(0, 8).map(([name, v, hist]) => (
-              <div key={name} style={{ display:"flex", alignItems:"center", gap:12, padding:"6px 0", borderBottom:"1px solid var(--hair)" }}>
-                <span style={{ width:130, fontSize:12.5, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{name}</span>
-                <MiniSparkline vals={hist} color={scoreColor(v)} />
-                <TrendArrow v={v} />
-                <span className="mono" style={{ fontSize:11, color:"var(--graphite)", marginLeft:"auto" }}>{v}%</span>
-              </div>
-            ))}
           </div>
         </div>
 

@@ -173,7 +173,7 @@ export default function Therapeutic() {
           <div className="card card-pad" style={{ marginTop: 14 }}>
             <div className="eyebrow" style={{ marginBottom: 10 }}>Referral</div>
             <div style={{ fontSize: 13.5, lineHeight: 1.6 }}>
-              This demo doesn't have a real referral channel to any hospital. The letter above is a draft template only -- routing it anywhere is a manual, human step.
+              Referral letters are drafts for a clinician to review and send. The platform does not route patients automatically.
             </div>
           </div>
         </div>

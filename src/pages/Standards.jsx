@@ -175,7 +175,7 @@ export default function Standards() {
       <PageHeader eyebrow="Regulation" title="Regulatory standards"
         sub={standards.length === 0
           ? "No instruments loaded yet."
-          : `${standards.length} instruments loaded, each a real, named treaty or Nigerian act. Click Set A or Set B on any row to load it into the comparator.`}>
+          : `${standards.length} treaties, guidelines and Nigerian laws. Use Set A and Set B to compare two instruments.`}>
         <SearchInput value={q} onChange={setQ} placeholder="Search instruments" />
         <Segmented value={tier} onChange={setTier}
           options={[{ value: "all", label: "All" }, { value: "Global", label: "Global" }, { value: "Regional", label: "Regional" }, { value: "Nigeria", label: "Nigeria" }]} />

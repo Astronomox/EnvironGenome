@@ -58,7 +58,7 @@ function ChemDetail({ c, onCite }) {
           <h2>{c.name}</h2>
           <div className="formula">{c.formula} / <Term name="CAS" /> {c.cas}</div>
         </div>
-        {c.genotoxic && <div className="geno-flag"><Term name="Genotoxic" />, {c.iarc}</div>}
+        {c.iarc && <div className="geno-flag">{c.genotoxic ? "Genotoxic \u00b7 " : ""}IARC {(c.iarc.match(/^Group \w+/) || [c.iarc])[0]}</div>}
       </div>
       <div className="chem-body">
         <div className="chem-col brd">
@@ -324,8 +324,8 @@ export default function Registry() {
 
   return (
     <>
-      <PageHeader eyebrow="Chemistry and genome" title="Genotoxic agent registry"
-        sub="Filter the registry, or ask a question in plain language and let Gemini interpret.">
+      <PageHeader eyebrow="Platform" title="Genotoxic agent registry"
+        sub="Priority pollutants in Nigeria, with IARC class, sources and the DNA damage they cause.">
         <SearchInput value={q} onChange={setQ} onEnter={ask} placeholder="Name, CAS, formula, or a question" />
         <Segmented value={cat} onChange={setCat}
           options={[{ value: "all", label: "All" }, { value: "geno", label: "Genotoxic" }, { value: "other", label: "Other" }]} />
@@ -351,7 +351,7 @@ export default function Registry() {
                   <div className="t"><Term name={c.name} /></div>
                   <div className="s">{c.formula} / {c.cas}</div>
                 </div>
-                {c.genotoxic && <span className="badge sev s3" style={{ padding: "2px 6px" }}><span className="sq" /></span>}
+                <span className="tag">{(c.iarc.match(/^Group \w+/) || [""])[0]}</span>
               </div>
             ))}
           </div>
@@ -382,11 +382,13 @@ export default function Registry() {
             </div>
           </div>
 
-          <div className="sect-t">Propose a compound association</div>
-          <PeerSubmit compound={selected.name} toast={toast} />
-
-          <div className="sect-t">Bulk upload</div>
-          <BulkUpload toast={toast} />
+          <details className="contrib">
+            <summary>Contribute evidence <span>Propose a gene association or upload entries in bulk</span></summary>
+            <div className="sect-t">Propose a gene association</div>
+            <PeerSubmit compound={selected.name} toast={toast} />
+            <div className="sect-t">Bulk upload</div>
+            <BulkUpload toast={toast} />
+          </details>
         </>
       )}
     </>
