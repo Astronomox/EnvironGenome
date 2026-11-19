@@ -16,6 +16,22 @@ import { Textarea } from "@/components/ui/textarea";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+// Map pin. Critical sites (Level 3) get a solid red pin; everything else a
+// black outline pin on white. `count` adds a badge when sites are grouped.
+function pinIcon(critical, count = 1) {
+  const body = critical
+    ? `<path d="M16 1.5C8.3 1.5 2.5 7.3 2.5 14.6 2.5 24.4 16 40.5 16 40.5S29.5 24.4 29.5 14.6C29.5 7.3 23.7 1.5 16 1.5z" fill="#C8102E"/><circle cx="16" cy="14.5" r="6" fill="#fff"/>`
+    : `<path d="M16 2.5C8.8 2.5 3.5 7.9 3.5 14.6 3.5 23.8 16 39 16 39S28.5 23.8 28.5 14.6C28.5 7.9 23.2 2.5 16 2.5z" fill="#fff" stroke="#111" stroke-width="2.6" stroke-linejoin="round"/><circle cx="16" cy="14.5" r="5" fill="none" stroke="#111" stroke-width="2.6"/>`;
+  const badge = count > 1
+    ? `<span style="position:absolute;top:-6px;right:-8px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#111;color:#fff;font:600 10.5px/18px Montserrat,system-ui,sans-serif;text-align:center;box-shadow:0 0 0 2px #fff">${count}</span>`
+    : "";
+  return L.divIcon({
+    className: "eg-pin",
+    html: `<div style="position:relative;width:32px;height:42px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))"><svg width="32" height="42" viewBox="0 0 32 42" aria-hidden="true">${body}</svg>${badge}</div>`,
+    iconSize: [32, 42], iconAnchor: [16, 41], tooltipAnchor: [0, 0],
+  });
+}
+
 export default function MapView() {
   const mapEl = useRef(null);
   const mapObj = useRef(null);
@@ -43,11 +59,10 @@ export default function MapView() {
 
   const addMarkerToMap = useCallback((s) => {
     if (!mapObj.current) return;
-    const r = s.sev === 3 ? 14 : s.sev === 2 ? 11 : s.sev === 1 ? 9 : 7;
-    const m = L.circleMarker([s.lat, s.lng], { radius: r, fillColor: SEV_COLOR[s.sev], color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.92 });
+    const m = L.marker([s.lat, s.lng], { icon: pinIcon(s.sev === 3), riseOnHover: true, zIndexOffset: s.sev === 3 ? 500 : 0 });
     m.siteId = s.id;
     m.on("click", () => selectSite(s.id, false));
-    m.bindTooltip(`L${s.sev}, ${s.name}`, { direction: "top", offset: [0, -8] });
+    m.bindTooltip(`L${s.sev}, ${s.name}`, { direction: "top", offset: [0, -34] });
     m.addTo(mapObj.current);
     markersRef.current.push(m);
   }, []);
@@ -77,15 +92,10 @@ export default function MapView() {
       const lat = cell.reduce((a, s) => a + s.lat, 0) / cell.length;
       const lng = cell.reduce((a, s) => a + s.lng, 0) / cell.length;
       const maxSev = Math.max(...cell.map(s => s.sev));
-      const r = Math.min(22, 12 + cell.length * 2);
-      const icon = L.divIcon({
-        className: "",
-        html: `<div style="width:${r*2}px;height:${r*2}px;border-radius:50%;background:${SEV_COLOR[maxSev]};border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:11px;font-weight:600;color:${maxSev === 2 ? "#fff" : "#0A0A0A"};box-shadow:0 2px 8px rgba(0,0,0,.25)">${cell.length}</div>`,
-        iconSize: [r * 2, r * 2], iconAnchor: [r, r]
-      });
-      const m = L.marker([lat, lng], { icon });
+      const icon = pinIcon(maxSev === 3, cell.length);
+      const m = L.marker([lat, lng], { icon, riseOnHover: true, zIndexOffset: maxSev === 3 ? 500 : 0 });
       m.on("click", () => map.setView([lat, lng], 13));
-      m.bindTooltip(`${cell.length} site${cell.length > 1 ? "s" : ""}, click to zoom`, { direction: "top" });
+      m.bindTooltip(cell.length > 1 ? `${cell.length} sites, click to zoom` : `L${cell[0].sev}, ${cell[0].name}`, { direction: "top", offset: [0, -34] });
       group.addLayer(m);
     });
     group.addTo(map);
@@ -102,9 +112,7 @@ export default function MapView() {
       const { lat, lng } = e.latlng;
       setSub(p => ({ ...p, lat: lat.toFixed(5), lng: lng.toFixed(5) }));
       if (dropPinRef.current) map.removeLayer(dropPinRef.current);
-      dropPinRef.current = L.circleMarker([lat, lng], {
-        radius: 10, fillColor: "#A63D2F", color: "#fff", weight: 2.5, opacity: 1, fillOpacity: 0.7
-      }).addTo(map);
+      dropPinRef.current = L.marker([lat, lng], { icon: pinIcon(false), opacity: 0.85 }).addTo(map);
       setTab("submit");
     });
     map.on("zoomend", () => updateClusters(map, sites));
@@ -124,7 +132,7 @@ export default function MapView() {
       const s = sites.find(x => x.id === m.siteId);
       if (!s) return;
       const vis = visible.some(v => v.id === s.id);
-      m.setStyle({ opacity: vis ? 1 : 0.12, fillOpacity: vis ? 0.92 : 0.08 });
+      m.setOpacity(vis ? 1 : 0.15);
     });
   }, [visible, sites]);
 
