@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 // sync the way the old hardcoded `unread = 3` did). This file just renders
 // what it's given.
 export const initialNotifs = [
-  { id: 1, type: "info", text: "Welcome to EnviroGenome Guardian. This is a coursework demo build.", time: "now", unread: true },
+  { id: 1, type: "info", text: "Welcome to EnviroGenome Guardian.", time: "now", unread: true },
 ];
 
 export default function NotifPanel({ open, setOpen, items, onMarkAll, onDismiss }) {

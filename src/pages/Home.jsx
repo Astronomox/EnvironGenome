@@ -94,9 +94,9 @@ export default function Home() {
         </div>
 
         <div className="card card-pad">
-          <div className="eyebrow" style={{ marginBottom:14 }}>About this build</div>
+          <div className="eyebrow" style={{ marginBottom:14 }}>About the data</div>
           <div style={{ fontSize:13.5, lineHeight:1.7, color:"var(--graphite)" }}>
-            This is a coursework demo. Numbers on this page reflect what's actually
+            Every number on this page reflects what is actually
             loaded in the app's data files, not simulated activity. Modules with no
             cited data behind them show an empty state instead of placeholder figures.
           </div>

@@ -8,7 +8,7 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { Textarea } from "@/components/ui/textarea";
 
 const FAQS = [
-  { q: "How do I create an account?", a: "The demo build runs in open access. In production, accounts will be provisioned by your institution with role-based access for Researcher, Auditor, Clinician, or Policy Maker." },
+  { q: "How do I create an account?", a: "The platform currently runs in open access. In production, accounts will be provisioned by your institution with role-based access for Researcher, Auditor, Clinician, or Policy Maker." },
   { q: "What data formats can I upload?", a: "The contaminant registry accepts CSV bulk uploads using the downloadable template. Map submissions accept JPEG, PNG, and TIFF photo evidence with EXIF metadata preserved." },
   { q: "How is patient data protected?", a: "In this demo, the therapeutic intake form doesn't submit anywhere or persist data. In production, patient-linked data would need to be anonymised and handled to a formal data-protection standard, with identifiers replaced by system-generated codes rather than names." },
   { q: "What are the API usage quotas?", a: "This demo has no public API or accounts yet. The AI features call a server-side endpoint the app controls; there's no quota system in front of it." },
@@ -36,7 +36,7 @@ export default function Contact() {
   return (
     <>
       <PageHeader eyebrow="Support" title="Contact"
-        sub="This is a coursework demo. For a real environmental emergency in Lagos, contact NEMA, LASEPA, or the emergency services directly, not this form." />
+        sub="For a environmental emergency in Lagos, contact NEMA, LASEPA, or the emergency services directly, not this form." />
 
       <div className="grid g2" style={{ alignItems: "start" }}>
         {/* Inquiry form */}

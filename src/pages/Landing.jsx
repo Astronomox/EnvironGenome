@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ChevronDown, ArrowUpRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { MODULES } from "../data/modules";
 import { sites, standards, districts, species, symptoms } from "../data/platform";
 import { contaminants } from "../data/contaminants";
@@ -11,52 +11,7 @@ import "./landing.css";
 
 // The landing page covers the whole platform: air, water, soil and land,
 // habitats and species, human health, the genome and the law. Every number
-// on it is read from the data files. Photos are licensed Wikimedia Commons
-// images; their credits live behind the References toggle in the footer
-// (keep that list complete if a photo changes, CC BY-SA requires it).
-const IMG = "/images/landing/";
-const SA4 = "https://creativecommons.org/licenses/by-sa/4.0";
-const PHOTOS = {
-  air:     { src: "air-gas-flare.webp", w: 1200, h: 1202, author: "Sara Leigh Lewis", license: "CC BY-SA 4.0", licenseUrl: SA4,
-             page: "https://commons.wikimedia.org/wiki/File:Burning_Gas_Flare_Nembe_Creek,_Nigeria.tif",
-             alt: "Black smoke rising from a gas flare over Nembe Creek", caption: "Gas flare at Nembe Creek, Bayelsa" },
-  water:   { src: "lagos-lagoon-dusk.webp", w: 2400, h: 1368, author: "Obii Okongwu", license: "CC BY-SA 4.0", licenseUrl: SA4,
-             page: "https://commons.wikimedia.org/wiki/File:Lagos_Lagoon_-_Brothers_at_Dusk.jpg",
-             alt: "Two fishermen casting a net from a canoe on the Lagos Lagoon", caption: "Fishermen on the Lagos Lagoon" },
-  land:    { src: "land-gully-erosion.webp", w: 1200, h: 1600, author: "Abdulazeez Taufeeq", license: "CC BY-SA 4.0", licenseUrl: SA4,
-             page: "https://commons.wikimedia.org/wiki/File:Gully_erosion_in_Gombe_01.jpg",
-             alt: "A deep erosion gully cutting through bare red soil beside houses", caption: "Gully erosion in Gombe" },
-  habitat: { src: "habitat-forest-canopy.webp", w: 1200, h: 899, author: "Juganutt", license: "CC BY-SA 4.0", licenseUrl: SA4,
-             page: "https://commons.wikimedia.org/wiki/File:Forest_Canopy_walkway.jpg",
-             alt: "Aerial view of dense forest canopy meeting the edge of a city", caption: "Forest canopy at the Lekki Conservation Centre" },
-  people:  { src: "people-clinic.webp", w: 1024, h: 768, author: "Susan Elden, DFID Nigeria", license: "CC BY-SA 2.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0",
-             page: "https://commons.wikimedia.org/wiki/File:Mother_and_child,_ante-natal_care_clinic,_Jigawa,_Nigeria,_December_2011_(8379199175).jpg",
-             alt: "A mother and child at the door of an antenatal clinic", caption: "Antenatal care clinic in Jigawa" },
-  genome:  { src: "dna-gel.webp", w: 1200, h: 900, author: "Mnolf", license: "CC BY-SA 3.0", licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0",
-             page: "https://commons.wikimedia.org/wiki/File:Gel_electrophoresis_2.jpg",
-             alt: "DNA bands glowing in an agarose gel under ultraviolet light", caption: "DNA fragments separated in an agarose gel" },
-  field:   { src: "field-contamination-study.webp", w: 1600, h: 1200, author: "Moancho", license: "CC BY-SA 4.0", licenseUrl: SA4,
-             page: "https://commons.wikimedia.org/wiki/File:Contamination_Studies_1,_Keffi,_Nigeria.jpg",
-             alt: "A field scientist setting up survey equipment on a waste dump", caption: "Contamination study on a waste site in Keffi" },
-};
-
-function Credit({ p }) {
-  return (
-    <>
-      {p.caption}. Photo: <a href={p.page} target="_blank" rel="noreferrer">{p.author}</a>, {p.licenseUrl
-        ? <a href={p.licenseUrl} target="_blank" rel="noreferrer">{p.license}</a>
-        : p.license}.
-    </>
-  );
-}
-
-function Photo({ p, className, eager }) {
-  return (
-    <img className={className} src={IMG + p.src} width={p.w} height={p.h} alt={p.alt}
-      loading={eager ? "eager" : "lazy"} decoding="async" fetchPriority={eager ? "high" : "auto"} />
-  );
-}
-
+// on it is read from the data files. The page carries no photographs.
 const Mark = () => (
   <svg className="lp-mark" viewBox="0 0 26 26" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
     <path d="M7 3c6 4 6 8 0 12 6 4 6 8 0 12M19 3c-6 4-6 8 0 12-6 4-6 8 0 12" />
@@ -72,15 +27,6 @@ export default function Landing() {
   const ranked = [...computeAllGCS(districts)].sort((a, b) => b[1] - a[1]);
   const best = ranked[0], worst = ranked[ranked.length - 1];
   const tiers = standards.reduce((acc, s) => ({ ...acc, [s.tier]: (acc[s.tier] || 0) + 1 }), {});
-
-  const tiles = [
-    { label: "Air", p: PHOTOS.air, to: "/app/scores" },
-    { label: "Water", p: PHOTOS.water, to: "/app/map" },
-    { label: "Soil and land", p: PHOTOS.land, to: "/app/scores" },
-    { label: "Habitats", p: PHOTOS.habitat, to: "/app/conservation" },
-    { label: "People", p: PHOTOS.people, to: "/app/therapeutic" },
-    { label: "Genome", p: PHOTOS.genome, to: "/app/registry" },
-  ];
 
   const domains = [
     { n: "Air", to: "/app/scores", link: "Habitability scores",
@@ -146,16 +92,6 @@ export default function Landing() {
             </div>
           </div>
 
-          <ul className="lp-mosaic" aria-label="What the platform covers">
-            {tiles.map((t, i) => (
-              <li key={t.label}>
-                <Link to={t.to} className="lp-tile">
-                  <Photo p={t.p} className="lp-tile-img" eager={i < 3} />
-                  <span className="lp-tile-label">{t.label}<ArrowUpRight aria-hidden="true" /></span>
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
 
         <dl className="lp-counts">
@@ -205,7 +141,6 @@ export default function Landing() {
         </section>
 
         <section className="lp-field" aria-labelledby="field-h">
-          <figure className="lp-field-fig"><Photo p={PHOTOS.field} className="lp-cover" /></figure>
           <div className="lp-field-body">
             <p className="lp-label">Field evidence</p>
             <h2 id="field-h">Evidence starts on the ground.</h2>
@@ -301,7 +236,7 @@ export default function Landing() {
       <footer className="lp-foot">
         <div className="lp-foot-top">
           <Link to="/" className="lp-brand"><Mark /><span>Enviro<em>Genome</em></span></Link>
-          <p>EnviroGenome, demo build v4.1.32. A project still in progress. Built by Astronomox.</p>
+          <p>EnviroGenome Guardian v4.1. Built by Astronomox.</p>
         </div>
         <Collapsible className="lp-refs">
           <CollapsibleTrigger asChild>
@@ -310,11 +245,7 @@ export default function Landing() {
             </Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="lp-refs-body">
-            <p className="lp-label">Photography</p>
-            <ul>
-              {Object.values(PHOTOS).map(p => <li key={p.src}><Credit p={p} /></li>)}
-            </ul>
-            <p className="lp-foot-note">Photographs via Wikimedia Commons, resized for the web. The gel photograph is illustrative. Data sources for every module are listed under References inside the platform.</p>
+            <p className="lp-foot-note">Data sources for every module are listed under References inside the platform.</p>
           </CollapsibleContent>
         </Collapsible>
       </footer>

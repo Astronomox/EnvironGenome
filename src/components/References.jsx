@@ -32,7 +32,7 @@ export default function References() {
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="border-t border-border bg-background max-[760px]:pb-[72px]">
       <div className="mx-auto flex max-w-[1280px] flex-wrap items-center justify-between gap-3 px-6 py-4">
-        <p className="font-mono text-[11px] text-muted-foreground">EnviroGenome Guardian, demo build v4.1.32. A project still in progress.</p>
+        <p className="font-mono text-[11px] text-muted-foreground">EnviroGenome Guardian v4.1.</p>
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="sm" className="font-mono text-xs uppercase tracking-[.12em] text-army">
             References

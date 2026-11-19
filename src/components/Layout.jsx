@@ -71,7 +71,7 @@ export default function Layout() {
           </NavLink>
         ))}
         <div className="side-foot">
-          Demo build v4.1.32<br />Coursework project<br />
+          EnviroGenome Guardian v4.1<br />
           <div className="mt-1.5 flex flex-col items-start">
             <Button variant="link" size="xs" className="h-auto px-0 font-mono text-[10px] text-muted-foreground"
               onClick={() => setShortcutsOpen(true)}>? Shortcuts</Button>

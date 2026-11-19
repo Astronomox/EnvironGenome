@@ -8,7 +8,7 @@ const DEFS = new Map();
 for (const line of raw.split("\n")) {
   const m = line.match(/^\|\s*(.+?)\s*\|\s*(.*?)\s*\|\s*$/);
   if (!m || /^:?-+:?$/.test(m[1]) || m[1] === "Term") continue;
-  if (m[2]) DEFS.set(m[1].toLowerCase(), m[2]);
+  if (m[2] && !/^placeholder/i.test(m[2])) DEFS.set(m[1].toLowerCase(), m[2]);
 }
 
 // name: the key in docs/definitions.md. children: optional display text when
