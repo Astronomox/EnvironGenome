@@ -111,7 +111,10 @@ export default function MapView() {
     let cancelled = false;
     setTimeout(() => {
       if (cancelled || mapObj.current !== map) return;
-      map.invalidateSize(); selectSite(selId, true); updateClusters(map, sites);
+      map.invalidateSize();
+      // open on the whole dataset, not just the first site
+      if (sites.length > 1) map.fitBounds(sites.map(x => [x.lat, x.lng]), { padding: [40, 40], maxZoom: 13 });
+      selectSite(selId, false); updateClusters(map, sites);
     }, 140);
     return () => { cancelled = true; map.remove(); mapObj.current = null; };
   }, []);
@@ -174,7 +177,7 @@ export default function MapView() {
   return (
     <>
       <PageHeader eyebrow="Platform" title="Hazard sites"
-        sub="Geotagged hazard submissions across metropolitan Lagos, rated 0 to 3.">
+        sub="Contaminated sites across Lagos from peer-reviewed field studies, rated 0 to 3 by severity.">
         <SearchInput value={q} onChange={setQ} placeholder="Filter sites" />
         <Button variant="outline" onClick={exportGeoJSON}>Export GeoJSON</Button>
         <Button variant="outline" onClick={printReport}>Print report</Button>
@@ -220,12 +223,16 @@ export default function MapView() {
                 <div className="serif" style={{ fontSize: 19, marginTop: 10 }}>{selected.name}</div>
                 <div className="mono" style={{ fontSize: 11.5, color: "var(--graphite)" }}>{selected.sub}</div>
                 <div className="site-meta" style={{ marginTop: 12 }}>
-                  <b>{selected.coord}</b><br />Reported {selected.date}<br />By {selected.by}<br />Status: <b>{selected.status}</b>
+                  <b>{selected.coord}</b><br />Reported {selected.date}<br />By {selected.by}
                 </div>
-                {selected.photos && selected.photos.length > 0 ? (
+                {selected.source && (
+                  <div style={{ fontSize:12, lineHeight:1.55, color:"var(--graphite)", marginTop:12, paddingTop:12, borderTop:"1px solid var(--hair)" }}>
+                    <b style={{ color:"var(--ink)", fontWeight:600 }}>Source.</b> {selected.source}
+                    {selected.doi && <> <a href={selected.doi.startsWith("PMC") ? `https://www.ncbi.nlm.nih.gov/pmc/articles/${selected.doi}/` : `https://doi.org/${selected.doi}`} target="_blank" rel="noreferrer" style={{ color:"var(--army)", textDecoration:"underline" }}>{selected.doi.startsWith("PMC") ? "PubMed Central" : "DOI"}</a></>}
+                  </div>
+                )}
+                {selected.photos && selected.photos.length > 0 && (
                   <div className="site-photos">{selected.photos.map((p, i) => <div className="ph" key={i}>{p}</div>)}</div>
-                ) : (
-                  <div style={{ fontSize:11.5, color:"var(--graphite)", marginTop:10 }}>No photo evidence attached to this entry.</div>
                 )}
                 <Button style={{ width: "100%", marginTop: 14 }} onClick={draftReport}>
                   <span className="ai-spark">✦</span> Draft audit report

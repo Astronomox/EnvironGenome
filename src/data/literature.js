@@ -61,4 +61,44 @@ export const literature = [
     cite: "Garces-Ordonez, O., Saldarriaga-Velez, J.F., Espinosa-Diaz, L.F., Canals, M., Sanchez-Vidal, A. & Thiel, M. (2022). A Systematic Review on Microplastic Pollution in Water, Sediments, and Organisms from 50 Coastal Lagoons Across the Globe. Environmental Pollution, 315, 120366.",
     finding: "Reviewing 57 publications on 50 coastal lagoons worldwide, microplastic abundance was consistently higher in lagoons bordered by dense urban development and lower in lagoons within protected natural areas."
   },
+  {
+    tag: "Genotoxicity",
+    cite: "Sogbanmu, T.O., Nagy, E., Phillips, D.H., Arlt, V.M., Otitoloju, A.A. & Bury, N.R. (2016). Lagos lagoon sediment organic extracts and polycyclic aromatic hydrocarbons induce embryotoxic, teratogenic and genotoxic effects in Danio rerio (zebrafish) embryos. Environmental Science and Pollution Research, 23(14), 14489-14501. doi:10.1007/s11356-016-6490-y",
+    finding: "Sediment extracts from Ilaje and Iddo significantly raised oxidative DNA damage in zebrafish embryos; benzo[a]pyrene and phenanthrene alone also caused oxidative DNA damage."
+  },
+  {
+    tag: "Genotoxicity",
+    cite: "Amaeze, N.H., Schnell, S., Sozeri, O., Otitoloju, A.A., Egonmwan, R.I., Arlt, V.M. & Bury, N.R. (2015). Cytotoxic and genotoxic responses of the RTgill-W1 fish cells in combination with the yeast oestrogen screen to determine the sediment quality of Lagos lagoon, Nigeria. Mutagenesis, 30(1), 117-127. doi:10.1093/mutage/geu032",
+    finding: "Sediment extracts from all 11 Lagos lagoon sites caused significant DNA damage in the alkaline comet assay."
+  },
+  {
+    tag: "PAHs",
+    cite: "Sogbanmu, T.O., Osibona, A.O. & Otitoloju, A.A. (2019). Specific polycyclic aromatic hydrocarbons identified as ecological risk factors in the Lagos lagoon, Nigeria. Environmental Pollution, 255, 113295. doi:10.1016/j.envpol.2019.113295",
+    finding: "Total PAHs of 302-1,290 ug/kg in lagoon sediment; the Apapa zone was highly polluted with frequent biological effects expected."
+  },
+  {
+    tag: "PAHs",
+    cite: "Aborisade, A.B., Adetutu, A. & Adegbola, P.I. (2023). Polycyclic aromatic hydrocarbons distribution in fish tissues and human health risk assessment on consumption of four fish species collected from Lagos Lagoon, Nigeria. Environmental Science and Pollution Research, 30(58), 122740-122754. doi:10.1007/s11356-023-30954-2",
+    finding: "Benzo[a]pyrene in tilapia and bonga from the lagoon exceeded the 0.002 ug/g guideline; excess cancer risk from eating the fish was above threshold for all four species."
+  },
+  {
+    tag: "E-waste",
+    cite: "Anselm, O.H., Cavoura, O., Davidson, C.M., Oluseyi, T.O., Oyeyiola, A.O. & Togias, K. (2021). Mobility, spatial variation and human health risk assessment of mercury in soil from an informal e-waste recycling site, Lagos, Nigeria. Environmental Monitoring and Assessment, 193(7), 416. doi:10.1007/s10661-021-09165-0",
+    finding: "Soil mercury at Alaba reached 624 mg/kg, with Cd, Cu, Ni, Pb and Zn above soil guideline values in the main recycling area."
+  },
+  {
+    tag: "Groundwater",
+    cite: "Aboyeji, O.S. & Eigbokhan, S.F. (2016). Evaluations of groundwater contamination by leachates around Olusosun open dumpsite in Lagos metropolis, southwest Nigeria. Journal of Environmental Management, 183, 333-341. doi:10.1016/j.jenvman.2016.09.002",
+    finding: "35% of boreholes and wells around Olusosun were unsuitable for drinking, and suitability fell with proximity to the dumpsite."
+  },
+  {
+    tag: "Industrial effluent",
+    cite: "Ndimele, P.E., Pedro, M.O., Agboola, J.I., Chukwuka, K.S. & Ekwu, A.O. (2017). Heavy metal accumulation in organs of Oreochromis niloticus from industrial effluent-polluted aquatic ecosystem in Lagos, Nigeria. Environmental Monitoring and Assessment, 189(6), 255. doi:10.1007/s10661-017-5944-0",
+    finding: "Metals in tilapia from Ologe Lagoon, nearest the Agbara Industrial Estate outfall, exceeded WHO limits."
+  },
+  {
+    tag: "Abattoir effluent",
+    cite: "Oyeniran, D.O., Sogbanmu, T.O. & Adesalu, T.A. (2021). Antibiotics, algal evaluations and subacute effects of abattoir wastewater on liver function enzymes, genetic and haematologic biomarkers in the freshwater fish, Clarias gariepinus. Ecotoxicology and Environmental Safety, 212, 111982. doi:10.1016/j.ecoenv.2021.111982",
+    finding: "Abattoir wastewater discharged to the Ogun River significantly increased erythrocyte nuclear abnormalities, a marker of genotoxicity, in catfish after 28 days."
+  },
 ];
