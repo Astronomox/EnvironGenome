@@ -10,9 +10,9 @@ import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Logo = ({ light }) => (
-  <svg className="mark" viewBox="0 0 26 26" fill="none" stroke={light ? "#FAFAF8" : "#4B5320"} strokeWidth="1.6">
+  <svg className="mark" viewBox="0 0 26 26" fill="none" stroke={light ? "#F7F6F3" : "#1F3B44"} strokeWidth="1.6">
     <path d="M7 3c6 4 6 8 0 12 6 4 6 8 0 12M19 3c-6 4-6 8 0 12-6 4-6 8 0 12" />
-    <circle cx="13" cy="13" r="1.5" fill="#D8442C" stroke="none" />
+    <circle cx="13" cy="13" r="1.5" fill="#A63D2F" stroke="none" />
   </svg>
 );
 
@@ -61,8 +61,10 @@ export default function Layout() {
           <Logo />
           <span className="brand-name">Enviro<em>Genome</em></span>
         </div>
-        <div className="side-sect">Platform</div>
-        {MODULES.map((m, i) => (
+        {[["core","Platform"],["support","Supporting tools"]].map(([g,title]) => (
+          <div key={g}>
+          <div className="side-sect">{title}</div>
+        {MODULES.map((m, i) => m.group !== g ? null : (
           <NavLink key={m.id} to={m.path} end={m.id === "home"}
             className={({ isActive }) => "side-link" + (isActive ? " on" : "")}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon} /></svg>
@@ -70,8 +72,10 @@ export default function Layout() {
             <span className="kbd">{i + 1}</span>
           </NavLink>
         ))}
+          </div>
+        ))}
         <div className="side-foot">
-          EnviroGenome Guardian v4.1<br />
+          EnviroGenome Guardian<br />
           <div className="mt-1.5 flex flex-col items-start">
             <Button variant="link" size="xs" className="h-auto px-0 font-mono text-[10px] text-muted-foreground"
               onClick={() => setShortcutsOpen(true)}>? Shortcuts</Button>

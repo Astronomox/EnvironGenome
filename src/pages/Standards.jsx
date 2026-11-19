@@ -172,7 +172,7 @@ export default function Standards() {
 
   return (
     <>
-      <PageHeader eyebrow="Regulation" title="Standards reference library"
+      <PageHeader eyebrow="Regulation" title="Regulatory standards"
         sub={standards.length === 0
           ? "No instruments loaded yet."
           : `${standards.length} instruments loaded, each a real, named treaty or Nigerian act. Click Set A or Set B on any row to load it into the comparator.`}>

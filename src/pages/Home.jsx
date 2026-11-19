@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader } from "../components/kit";
 import Term from "../components/Term";
-import { feed, sites, districts, SEV_COLOR, SEV_LABEL } from "../data/platform";
+import { sites, districts, SEV_COLOR, SEV_LABEL } from "../data/platform";
 import { contaminants } from "../data/contaminants";
 import { askGemini } from "../utils/gemini";
 import { Button } from "@/components/ui/button";
@@ -37,35 +37,39 @@ export default function Home() {
 
   return (
     <>
-      <PageHeader eyebrow="Dashboard" title="Home portal"
-        sub="A snapshot of the registry, hazard map, and regulatory data currently in the system.">
+      <PageHeader eyebrow="Overview" title="Exposure and genetic risk"
+        sub="Where pollutants are found in Lagos, and the genetic damage they are known to cause.">
         <Button variant="outline" onClick={() => nav("/app/map")}>Open map</Button>
         <Button onClick={() => nav("/app/registry")}>Search registry</Button>
       </PageHeader>
 
-      <div style={{ borderRadius:"var(--r)", border:"1px solid var(--hair)", overflow:"hidden", marginBottom:18 }}>
-        <div style={{ padding:"14px 18px", background:"var(--panel)" }}>
-          <div className="eyebrow" style={{ marginBottom:14 }}>Recent activity</div>
-          {feed.length === 0 ? (
-            <div style={{ fontSize:13.5, color:"var(--graphite)" }}>
-              No activity feed yet. This module isn't wired to a real event source, so it stays empty rather than showing invented events.
-            </div>
-          ) : (
-            feed.map(([t, x], i) => (
-              <div key={i} style={{ display:"flex", gap:14, padding:"10px 0", borderBottom: i < feed.length-1 ? "1px solid var(--hair)" : "none", alignItems:"baseline" }}>
-                <span className="mono" style={{ fontSize:11, color:"var(--graphite)", minWidth:48 }}>{t}</span>
-                <span style={{ fontSize:13.5 }} dangerouslySetInnerHTML={{ __html:x }} />
-              </div>
-            ))
-          )}
-        </div>
+      <div className="grid g4">
+        <Kpi lab="Genotoxic agents" val={contaminants.filter(c => c.genotoxic).length} sub="damage DNA directly or indirectly" />
+        <Kpi lab="Group 1 carcinogens" val={contaminants.filter(c => /^Group 1\b/.test(c.iarc)).length} sub="IARC classification" />
+        <Kpi lab="Hazard sites" val={sites.length} sub={pending.length + " pending verification"} />
+        <Kpi lab="Districts scored" val={districts.length} sub="Lagos exposure-risk grades" />
       </div>
 
-      <div className="grid g4">
-        <Kpi lab="Contaminants" val={contaminants.length} sub="cited entries only" />
-        <Kpi lab="Hazard sites" val={sites.length} sub="published sources only" />
-        <Kpi lab="District scores" val={districts.length} sub={<>model estimates, 18 <Term name="LGA">LGAs</Term></>} />
-        <Kpi lab="Pending review" val={pending.length} />
+      <div className="card" style={{ marginTop:14, overflow:"hidden" }}>
+        <div className="card-pad" style={{ paddingBottom:6, display:"flex", justifyContent:"space-between", alignItems:"baseline", gap:12, flexWrap:"wrap" }}>
+          <div className="eyebrow">From exposure to DNA damage</div>
+          <Button variant="link" size="sm" className="h-auto px-0" onClick={() => nav("/app/registry")}>Open registry</Button>
+        </div>
+        <div style={{ overflowX:"auto" }}>
+          <table className="risk-tbl">
+            <thead><tr><th>Agent</th><th>Where it comes from</th><th>IARC</th><th>Genetic signature</th></tr></thead>
+            <tbody>
+              {contaminants.map(c => (
+                <tr key={c.cas}>
+                  <td><b>{c.name}</b></td>
+                  <td>{(c.props.find(([k]) => k === "Main sources") || [, ""])[1]}</td>
+                  <td style={{ whiteSpace:"nowrap" }}>{(c.iarc.match(/^Group \w+/) || [""])[0]}</td>
+                  <td>{c.mutations[0] ? <><b>{c.mutations[0][1]}</b>, {c.mutations[0][2].replace(/ \(.*\)$/, "")}</> : <span style={{ color:"var(--graphite)" }}>{(c.props.find(([k]) => k === "Mechanism") || [, "Not established"])[1]}</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="grid g2" style={{ marginTop:14, alignItems:"start" }}>
@@ -96,9 +100,10 @@ export default function Home() {
         <div className="card card-pad">
           <div className="eyebrow" style={{ marginBottom:14 }}>About the data</div>
           <div style={{ fontSize:13.5, lineHeight:1.7, color:"var(--graphite)" }}>
-            Every number on this page reflects what is actually
-            loaded in the app's data files, not simulated activity. Modules with no
-            cited data behind them show an empty state instead of placeholder figures.
+            This is a demonstration build. Agent classifications and genetic
+            signatures come from IARC Monographs and primary studies, cited on each
+            registry entry. Site and district figures are model estimates from published
+            Lagos studies.
           </div>
         </div>
       </div>
@@ -107,9 +112,9 @@ export default function Home() {
       <div className="grid g4">
         {[
           { label:"Flag a hazard site", sub:"Submit new field observation", path:"/app/map", icon:"M9 3L4 5v16l5-2 6 2 5-2V3l-5 2-6-2z" },
-          { label:"Look up a contaminant", sub:contaminants.length + " compounds loaded", path:"/app/registry", icon:"M4 4h16v4H4zM4 10h16v10H4z" },
-          { label:"Check district scores", sub:districts.length + " districts scored", path:"/app/scores", icon:"M4 20V10M10 20V4M16 20v-8" },
-          { label:"File a clinical case", sub:"Anonymised therapeutic intake", path:"/app/therapeutic", icon:"M12 5v14M5 12h14" },
+          { label:"Look up an agent", sub:contaminants.length + " priority pollutants", path:"/app/registry", icon:"M4 4h16v4H4zM4 10h16v10H4z" },
+          { label:"Check district risk", sub:districts.length + " districts graded", path:"/app/scores", icon:"M4 20V10M10 20V4M16 20v-8" },
+          { label:"Screen a patient", sub:"Symptoms to likely exposures", path:"/app/therapeutic", icon:"M12 5v14M5 12h14" },
         ].map(({ label, sub, path, icon }) => (
           <div key={path} className="card card-pad" style={{ cursor:"pointer", transition:"border-color .15s" }}
             onClick={() => nav(path)}
@@ -131,7 +136,6 @@ export default function Home() {
           <div className="stack" style={{ gap:10 }}>
             {[
               ["Map tiles","OpenStreetMap, live","ok"],
-              ["Build version","4.1.32","info"],
             ].map(([l,v,t]) => (
               <div key={l} className="status-row" style={{ padding:"8px 0", borderBottom:"1px solid var(--hair)" }}>
                 <span style={{ fontSize:13 }}>{l}</span>

@@ -130,7 +130,7 @@ export default function Conservation() {
 
   return (
     <>
-      <PageHeader eyebrow="Threat forecasting" title="Conservation intelligence"
+      <PageHeader eyebrow="Threat forecasting" title="Ecosystem impact"
         sub="Track at-risk species, monitor live interventions, and draft mitigation briefs the committee can act on.">
         <Segmented value={tab} onChange={setTab}
           options={[{ value:"species", label:"Species" }, { value:"interventions", label:"Interventions" }, { value:"forecast", label:"Forecast" }, { value:"grants", label:"Grants" }]} />

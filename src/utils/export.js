@@ -53,7 +53,7 @@ export function auditReportHTML(site, reportText) {
 <div class="body">${reportText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")}</div>
 <hr>
 <div class="foot">
-  EnviroGenome Guardian &nbsp;|&nbsp; v4.1<br>
+  EnviroGenome Guardian<br>
   Generated: ${new Date().toISOString().slice(0,19).replace("T"," ")} UTC
 </div>
 </body></html>`;

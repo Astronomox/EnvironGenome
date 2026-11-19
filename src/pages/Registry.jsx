@@ -324,7 +324,7 @@ export default function Registry() {
 
   return (
     <>
-      <PageHeader eyebrow="Chemistry and genome" title="Contaminant registry"
+      <PageHeader eyebrow="Chemistry and genome" title="Genotoxic agent registry"
         sub="Filter the registry, or ask a question in plain language and let Gemini interpret.">
         <SearchInput value={q} onChange={setQ} onEnter={ask} placeholder="Name, CAS, formula, or a question" />
         <Segmented value={cat} onChange={setCat}

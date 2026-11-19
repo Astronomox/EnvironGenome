@@ -4,8 +4,8 @@
   "description": "Environmental health and genomic hazard intelligence platform",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#4B5320",
-  "theme_color": "#4B5320",
+  "background_color": "#1F3B44",
+  "theme_color": "#1F3B44",
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
   ]

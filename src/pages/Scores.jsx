@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 // The bottom band is the unchanged Level 3 red, where white is 4.39:1, so
 // it takes ink text instead (4.51:1).
 function scoreColor(v) {
-  return v >= 80 ? "#4B5320" : v >= 65 ? "#5E6B33" : v >= 50 ? "#6B6B6B" : v >= 40 ? "#A3561E" : "#D8442C";
+  return v >= 80 ? "#1F3B44" : v >= 65 ? "#3E5F68" : v >= 50 ? "#6B6B6B" : v >= 40 ? "#A3561E" : "#A63D2F";
 }
 
 function scoreText(v) {
@@ -91,14 +91,14 @@ export default function Scores() {
     </head><body><h1>EnviroGenome Guardian</h1><p style="font-family:monospace;font-size:12px;color:#666;">Global Classification Score, District Report, ${new Date().toISOString().slice(0,10)}</p>
     <table><thead><tr><th>District</th><th>GCS Score</th><th>Grade</th><th>Trend</th></tr></thead><tbody>
     ${shown.map(([n,v]) => `<tr><td>${n}</td><td class="score">${v}%</td><td>${v>=80?"Optimal":v>=65?"Good":v>=50?"Moderate":v>=40?"Poor":"Critical"}</td><td>${v>=70?"Improving":v>=50?"Stable":"Declining"}</td></tr>`).join("")}
-    </tbody></table><div class="foot">EnviroGenome Guardian v4.1</div></body></html>`;
+    </tbody></table><div class="foot">EnviroGenome Guardian</div></body></html>`;
     const w = window.open("", "_blank");
     w.document.write(html); w.document.close(); w.focus(); w.print();
   }
 
   return (
     <>
-      <PageHeader eyebrow="Habitability" title="Global classification score"
+      <PageHeader eyebrow="Habitability" title="District risk scores"
         sub="Live-computed composite district grades. Scores are calculated from air quality, natural features, water purity, toxic-exposure probability, and terrain stability.">
         <SearchInput value={q} onChange={setQ} placeholder="Find a district" />
         <Segmented value={sort} onChange={setSort}
@@ -128,9 +128,9 @@ export default function Scores() {
             ))}
           </div>
           <div style={{ display:"flex", gap:14, marginTop:18, flexWrap:"wrap", fontFamily:"var(--mono)", fontSize:10, color:"var(--graphite)" }}>
-            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#4B5320" }} />80 to 100 optimal</span>
+            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#1F3B44" }} />80 to 100 optimal</span>
             <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#6B6B6B" }} />50 to 79 moderate</span>
-            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#D8442C" }} />0 to 49 poor</span>
+            <span className="row" style={{ gap:5 }}><span style={{ width:10, height:10, borderRadius:2, background:"#A63D2F" }} />0 to 49 poor</span>
           </div>
           <div className="sect-t" style={{ marginTop:18 }}>6-month trend</div>
           <div style={{ display:"flex", flexDirection:"column", gap:6 }}>

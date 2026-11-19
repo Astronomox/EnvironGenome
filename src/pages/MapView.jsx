@@ -141,7 +141,7 @@ export default function MapView() {
       setSub(p => ({ ...p, lat: lat.toFixed(5), lng: lng.toFixed(5) }));
       if (dropPinRef.current) map.removeLayer(dropPinRef.current);
       dropPinRef.current = L.circleMarker([lat, lng], {
-        radius: 10, fillColor: "#D8442C", color: "#fff", weight: 2.5, opacity: 1, fillOpacity: 0.7
+        radius: 10, fillColor: "#A63D2F", color: "#fff", weight: 2.5, opacity: 1, fillOpacity: 0.7
       }).addTo(map);
       setTab("submit");
     });
@@ -211,7 +211,7 @@ export default function MapView() {
 
   return (
     <>
-      <PageHeader eyebrow="Field intelligence" title="Geolocation hazard map"
+      <PageHeader eyebrow="Field intelligence" title="Hazard sites"
         sub="Geotagged hazard submissions across metropolitan Lagos, rated 0 to 3.">
         <SearchInput value={q} onChange={setQ} placeholder="Filter sites" />
         <Button variant="outline" onClick={exportGeoJSON}>Export GeoJSON</Button>

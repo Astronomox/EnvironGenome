@@ -14,7 +14,7 @@ export default function NotFound() {
         <Button onClick={() => nav("/app")}>Go to dashboard</Button>
         <Button variant="outline" onClick={() => nav("/")}>Landing page</Button>
       </div>
-      <div className="mono" style={{ fontSize: 10, color: "var(--mute)", marginTop: 40 }}>EnviroGenome Guardian, v4.1</div>
+      <div className="mono" style={{ fontSize: 10, color: "var(--mute)", marginTop: 40 }}>EnviroGenome Guardian</div>
     </div>
   );
 }

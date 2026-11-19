@@ -1,4 +1,4 @@
-export const SEV_COLOR = ["#B9B9B3","#8A8A83","#3C3C38","#D8442C"];
+export const SEV_COLOR = ["#B9B9B3","#8A8A83","#3C3C38","#A63D2F"];
 export const SEV_LABEL = ["Baseline monitoring","Minor concern","Moderate risk","Severe danger"];
 
 // Two entries with real, citable sources. All others need a field report

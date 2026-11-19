@@ -100,7 +100,7 @@ export default function Therapeutic() {
 
   return (
     <>
-      <PageHeader eyebrow="Clinical" title="Therapeutic rehabilitation"
+      <PageHeader eyebrow="Clinical" title="Clinical exposure intake"
         sub={<>Anonymised intake. Select presenting symptoms and rank probable environmental <Term name="Etiology">etiologies</Term>.</>} />
 
       <div className="anon-note" style={{ marginBottom: 18 }}>

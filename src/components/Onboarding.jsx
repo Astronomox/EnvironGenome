@@ -33,9 +33,9 @@ export default function Onboarding({ onDone }) {
           <>
             <DialogHeader>
               <div className="flex items-center gap-3">
-                <svg viewBox="0 0 26 26" fill="none" stroke="#4B5320" strokeWidth="1.6" className="size-7" aria-hidden="true">
+                <svg viewBox="0 0 26 26" fill="none" stroke="#1F3B44" strokeWidth="1.6" className="size-7" aria-hidden="true">
                   <path d="M7 3c6 4 6 8 0 12 6 4 6 8 0 12M19 3c-6 4-6 8 0 12-6 4-6 8 0 12" />
-                  <circle cx="13" cy="13" r="1.5" fill="#D8442C" stroke="none" />
+                  <circle cx="13" cy="13" r="1.5" fill="#A63D2F" stroke="none" />
                 </svg>
                 <DialogTitle className="font-serif text-[23px] font-normal">Welcome to EnviroGenome</DialogTitle>
               </div>

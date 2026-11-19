@@ -1,9 +1,5 @@
-// Every entry here is a real, citable source the user supplied directly
-// (published papers, or coursework term papers/presentations from their
-// own CBG 816/813 course at UNILAG, shared by the user for this purpose).
-// The "finding" text paraphrases a specific reported number or claim from
-// that source -- nothing here is invented. Course presentations are cited
-// by author and course code, not presented as peer-reviewed literature.
+// Every entry is a published, citable source. The "finding" text
+// paraphrases a specific reported number or claim from that source.
 export const literature = [
   {
     tag: "Waste behaviour",
@@ -64,50 +60,5 @@ export const literature = [
     tag: "Microplastics",
     cite: "Garces-Ordonez, O., Saldarriaga-Velez, J.F., Espinosa-Diaz, L.F., Canals, M., Sanchez-Vidal, A. & Thiel, M. (2022). A Systematic Review on Microplastic Pollution in Water, Sediments, and Organisms from 50 Coastal Lagoons Across the Globe. Environmental Pollution, 315, 120366.",
     finding: "Reviewing 57 publications on 50 coastal lagoons worldwide, microplastic abundance was consistently higher in lagoons bordered by dense urban development and lower in lagoons within protected natural areas."
-  },
-  {
-    tag: "Air quality",
-    cite: "Onyeike, C.M. (2026). Managing Pollution Using Pollution Indices. CBG 816 term paper, University of Lagos.",
-    finding: "WHO's 2021 Air Quality Guidelines set a 24-hour PM2.5 limit of 15 ug/m3 (annual 5 ug/m3) and an 8-hour ozone limit of 0.06 ppm; the paper notes machine-learning models (e.g. XGBoost, AdaBoost) are increasingly used to forecast short-term index spikes."
-  },
-  {
-    tag: "E-waste",
-    cite: "Ajibade, E.O. (2026). Managing Electronic Waste (E-waste) Using Recycling and Recovery. CBG 816 term paper, University of Lagos.",
-    finding: "Citing the Global E-waste Monitor 2023, global e-waste generation reached 62 million tonnes in 2022 (an 82% rise since 2010); Africa's formal e-waste collection rate was 0.9%, the lowest of any region, against a 22.3% global average."
-  },
-  {
-    tag: "AI & pollution",
-    cite: "Suraju, O.C. (2026). Managing Pollution Using AI. CBG 816 term paper, University of Lagos.",
-    finding: "Cites an AI water-quality classification model reaching 95.2% accuracy and 89.18% anomaly-detection accuracy in a Niger Delta case study, and notes Lagos State's smart-city plans reportedly include 450+ AI traffic/air-quality cameras."
-  },
-  {
-    tag: "Climate change",
-    cite: "Olagunju, O.M. (2026). Pollution & Climate Change. CBG 816 term paper, University of Lagos.",
-    finding: "Cites atmospheric CO2 rising from about 280 ppm pre-industrial to over 422 ppm by 2024, and Climate Action Tracker's (2023) estimate that current national climate pledges project roughly 2.5-2.9 degC of warming by 2100."
-  },
-  {
-    tag: "Light pollution",
-    cite: "Adeleye, H.S. (2026). Environmental, Health and Economic Effects of Light Pollution. CBG 816 term paper, University of Lagos.",
-    finding: "Following the International Dark-Sky Association's framework, identifies four categories of light pollution (skyglow, glare, light trespass, light clutter) and their links to disrupted circadian rhythm, bird migration, and sea-turtle navigation."
-  },
-  {
-    tag: "Consumer toxicants",
-    cite: "Oyesomi, A.A. (2026). Fragrance as an Imagined Toxicant. CBG 816 term paper, University of Lagos.",
-    finding: "Notes synthetic fragrance formulations can contain over 100 undisclosed chemicals, including phthalates (endocrine disruptors) and styrene, declared a human carcinogen by the US National Toxicology Program in 2011."
-  },
-  {
-    tag: "Climate change",
-    cite: "Tawal, A.A., Oyedele, D.R., Adebayo, S.O., Ogunbona, A.O. & Nnaemeka, V.P. (2026). Climate Change and the Nigerian Experience. CBG 813 group term paper, University of Lagos.",
-    finding: "Notes Nigeria's COP26 (2021) pledge of net-zero emissions by 2060 and a conditional 45% cut in greenhouse-gas emissions by 2030, alongside domestic programmes such as the Great Green Wall Sahel-Sahara Initiative."
-  },
-  {
-    tag: "Environmental health",
-    cite: "Omoweh, B.D. (2026). Health Effects of Conducive Living. CBG 816 term paper, University of Lagos.",
-    finding: "Using WHO's (2022) definition of a conducive living environment (safe housing, clean water, sanitation, ventilation, waste management), links Lagos State's drainage and waste-collection systems to reduced flooding and disease incidence."
-  },
-  {
-    tag: "Soil ecology",
-    cite: "Onyeike, C.M. (2026). The Tripartite Symbiosis: Earthworm-Driven Rhizosphere Dynamics as a Bioindicator Framework. CBG 816 presentation, University of Lagos.",
-    finding: "Case study using a 14-day Eisenia fetida (earthworm) static acute toxicity test found significantly higher mortality and suppressed weight gain in soils sampled 10m and 30m from a river axis versus controls (p<0.01 and p<0.001 respectively), across 7 sampling locations, supporting earthworm/collembolan/fungi soil communities as an affordable early screening tool for chemical pollution."
   },
 ];

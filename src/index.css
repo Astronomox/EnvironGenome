@@ -12,35 +12,35 @@
 /* shadcn tokens mapped onto the EnviroGenome palette (see theme.css). */
 :root {
   --radius: 0.625rem;
-  --background: #FAFAF8;
-  --foreground: #0A0A0A;
+  --background: #F7F6F3;
+  --foreground: #15191B;
   --card: #FFFFFF;
   --card-foreground: #0A0A0A;
   --popover: #FFFFFF;
   --popover-foreground: #0A0A0A;
-  --primary: #4B5320;
+  --primary: #1F3B44;
   --primary-foreground: #FFFFFF;
-  --secondary: #E8ECDA;
-  --secondary-foreground: #4B5320;
+  --secondary: #E5EDEE;
+  --secondary-foreground: #1F3B44;
   --muted: #F4F3EE;
   --muted-foreground: #59584F;
-  --accent: #E8ECDA;
+  --accent: #E5EDEE;
   --accent-foreground: #0A0A0A;
-  --destructive: #D8442C;
+  --destructive: #A63D2F;
   --border: #E7E7E2;
   --input: #D5D5CF;
-  --ring: #4B5320;
-  --chart-1: #4B5320;
-  --chart-2: #5E6B33;
+  --ring: #1F3B44;
+  --chart-1: #1F3B44;
+  --chart-2: #3E5F68;
   --chart-3: #6B6B6B;
   --chart-4: #A3561E;
-  --chart-5: #D8442C;
+  --chart-5: #A63D2F;
 }
 
 @theme inline {
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Montserrat",system-ui,sans-serif;
+  --font-mono: "Montserrat",system-ui,sans-serif;
+  --font-serif: "Montserrat",system-ui,sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -68,11 +68,11 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --color-army: #4B5320;
-  --color-army-hover: #3F461A;
-  --color-army-soft: #8F9F5A;
-  --color-army-tint: #E8ECDA;
-  --color-sev3: #D8442C;
+  --color-army: #1F3B44;
+  --color-army-hover: #172E35;
+  --color-army-soft: #8DB0B5;
+  --color-army-tint: #E5EDEE;
+  --color-sev3: #A63D2F;
 }
 
 @layer base {

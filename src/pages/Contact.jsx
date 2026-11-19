@@ -93,7 +93,7 @@ export default function Contact() {
       <div className="sect-t">Regional offices</div>
       <div className="empty">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M4 4h16v16H4zM4 10h16" /></svg>
-        No offices to list. The earlier version of this section invented physical addresses and hours at UNILAG, LUTH, and the Federal Ministry of Environment that this project has no real presence at -- removed rather than corrected in place.
+        No physical offices are listed. Use the form above for enquiries.
       </div>
     </>
   );

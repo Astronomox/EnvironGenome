@@ -17,10 +17,6 @@ How to edit:
 | Genotoxic | placeholder definition |
 | CAS | placeholder definition |
 | Styrene | placeholder definition |
-| Camphor | placeholder definition |
-| Benzyl acetate | placeholder definition |
-| Ethyl acetate | placeholder definition |
-| Benzaldehyde | placeholder definition |
 | Level 0 | placeholder definition |
 | Level 1 | placeholder definition |
 | Level 2 | placeholder definition |
